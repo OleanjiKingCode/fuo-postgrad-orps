@@ -1,14 +1,6 @@
 import * as React from "react";
-import Simple from "../components/pricings";
-import { Flex } from "@chakra-ui/react";
-import SimpleSidebar from "@/components/Sidebar";
+import { Login } from "@/components/login";
 
 export default function Home() {
-  return (
-    <SimpleSidebar>
-      <Flex>
-        <Simple />
-      </Flex>
-    </SimpleSidebar>
-  );
+  return <Login />;
 }

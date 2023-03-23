@@ -32,15 +32,20 @@ import {
   FiChevronDown,
 } from "react-icons/fi";
 
+import { dataAttr } from "@chakra-ui/utils";
+
+import { usePathname } from "next/navigation";
+
 const LinkItems = [
-  { name: "Home", icon: FiHome },
-  { name: "Courses", icon: FiCompass },
-  { name: "Results", icon: FiStar },
-  { name: "Fees", icon: FiTrendingUp },
-  { name: "Profile", icon: FiSettings },
+  { name: "Home", icon: FiHome, route: "/dashboard" },
+  { name: "Courses", icon: FiCompass, route: "/dashboard/courses" },
+  { name: "Results", icon: FiStar, route: "/dashboard/result" },
+  { name: "Fees", icon: FiTrendingUp, route: "/dashboard/fees" },
+  { name: "Settings", icon: FiSettings, route: "/dashboard/settings" },
 ];
 
 const SidebarWithHeader = ({ children }) => {
+  const pathname = usePathname();
   const { isOpen, onOpen, onClose } = useDisclosure();
   return (
     <Box minH="100vh" bg={useColorModeValue("gray.100", "gray.900")}>
@@ -117,6 +122,11 @@ const NavItem = ({ icon, children }) => {
         role="group"
         cursor="pointer"
         _hover={{
+          bg: "#4ed879",
+          color: "white",
+        }}
+        data-active={dataAttr(pathname === item.route)}
+        _active={{
           bg: "#4ed879",
           color: "white",
         }}

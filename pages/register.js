@@ -18,7 +18,7 @@ import { signIn, useSession } from "next-auth/react";
 import { useEffect } from "react";
 import axios from "axios";
 
-export default function register() {
+const register = () => {
   const { data: session } = useSession();
   const router = useRouter();
   const toast = useToast();
@@ -104,6 +104,29 @@ export default function register() {
                     minLength: {
                       value: 6,
                       message: "Full name should be more than 6 chars",
+                    },
+                  })}
+                  autoFocus
+                />
+                {/* {errors.name && (
+                    <Text color="red.500" py="1">
+                      {errors.name.message}
+                    </Text>
+                  )} */}
+              </FormControl>
+            </Box>
+            <Box w={{ sm: "full", md: "50%" }}>
+              <FormControl>
+                <FormLabel htmlFor="name">Matric Number</FormLabel>
+                <Input
+                  id="name"
+                  type="text"
+                  placeholder="Enter your Matric no"
+                  {...register("name", {
+                    required: "Please enter your Matric no",
+                    minLength: {
+                      value: 10,
+                      message: "Matric no should be more than 10 chars",
                     },
                   })}
                   autoFocus
@@ -209,7 +232,7 @@ export default function register() {
           </Flex>
         </form>
         <Flex w={{ sm: "full", md: "50%" }}>
-          <Text color="white">Already have an account? &nbsp; </Text>
+          <Text color="white">Already registered? &nbsp; </Text>
           <Link href="/">
             <Text color="#4ed879" fontWeight="semibold">
               Login{" "}
@@ -219,4 +242,6 @@ export default function register() {
       </>
     </Flex>
   );
-}
+};
+
+export default register;

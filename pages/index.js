@@ -1,6 +1,12 @@
-import * as React from "react";
-import { Login } from "@/components/login";
+import { useRouter } from "next/router";
+import React, { useEffect } from "react";
 
-export default function Home() {
-  return <Login />;
-}
+const HomePage = () => {
+  const router = useRouter();
+  useEffect(() => {
+    router.push("/login");
+  }, [router]);
+  return <></>;
+};
+
+export default HomePage;

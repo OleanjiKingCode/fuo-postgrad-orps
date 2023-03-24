@@ -14,11 +14,6 @@ import {
   DrawerContent,
   Text,
   useDisclosure,
-  Menu,
-  MenuButton,
-  MenuDivider,
-  MenuItem,
-  MenuList,
   chakra,
 } from "@chakra-ui/react";
 import {
@@ -29,7 +24,6 @@ import {
   FiSettings,
   FiMenu,
   FiBell,
-  FiChevronDown,
 } from "react-icons/fi";
 
 import { dataAttr } from "@chakra-ui/utils";
@@ -45,7 +39,6 @@ const LinkItems = [
 ];
 
 const SidebarWithHeader = ({ children }) => {
-  const pathname = usePathname();
   const { isOpen, onOpen, onClose } = useDisclosure();
   return (
     <Box minH="100vh" bg={useColorModeValue("gray.100", "gray.900")}>
@@ -109,6 +102,7 @@ const SidebarContent = ({ onClose }) => {
 };
 
 const NavItem = ({ icon, children }) => {
+  const pathname = usePathname();
   return (
     <Link
       href="#"

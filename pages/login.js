@@ -13,7 +13,7 @@ import {
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 
-export const Login = () => {
+const Login = () => {
   const {
     handleSubmit,
     register,
@@ -48,7 +48,7 @@ export const Login = () => {
             alignItems={{ md: "center" }}
             w="full"
           >
-            <Box w={{ sm: "full", md: "50%" }}>
+            {/* <Box w={{ sm: "full", md: "50%" }}>
               <FormControl>
                 <FormLabel htmlFor="email">Email</FormLabel>
                 <Input
@@ -65,8 +65,31 @@ export const Login = () => {
                   autoFocus
                 />
                 <FormErrorMessage>
-                  {/* {errors.email && errors.email.message} */}
+                   {errors.email && errors.email.message} 
                 </FormErrorMessage>
+              </FormControl>
+            </Box> */}
+            <Box w={{ sm: "full", md: "50%" }}>
+              <FormControl>
+                <FormLabel htmlFor="name">Matric Number</FormLabel>
+                <Input
+                  id="name"
+                  type="text"
+                  placeholder="Enter your Matric no"
+                  {...register("name", {
+                    required: "Please enter your Matric no",
+                    minLength: {
+                      value: 10,
+                      message: "Matric no should be more than 10 chars",
+                    },
+                  })}
+                  autoFocus
+                />
+                {/* {errors.name && (
+                    <Text color="red.500" py="1">
+                      {errors.name.message}
+                    </Text>
+                  )} */}
               </FormControl>
             </Box>
             <Box w={{ sm: "full", md: "50%" }}>
@@ -104,7 +127,7 @@ export const Login = () => {
           </Flex>
         </form>
         <Flex w={{ sm: "full", md: "50%" }}>
-          <Text color="white">Don&apos;t have an account? &nbsp; </Text>
+          <Text color="white">Not yet registered? &nbsp; </Text>
           <Link href="/register">
             <Text color="#4ed879" fontWeight="semibold">
               Register
@@ -115,3 +138,5 @@ export const Login = () => {
     </Flex>
   );
 };
+
+export default Login;

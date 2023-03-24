@@ -93,7 +93,7 @@ const SidebarContent = ({ onClose }) => {
         <CloseButton display={{ base: "flex", md: "none" }} onClick={onClose} />
       </Flex>
       {LinkItems.map((link) => (
-        <NavItem key={link.name} icon={link.icon}>
+        <NavItem key={link.name} icon={link.icon} route={link.route}>
           {link.name}
         </NavItem>
       ))}
@@ -101,11 +101,11 @@ const SidebarContent = ({ onClose }) => {
   );
 };
 
-const NavItem = ({ icon, children }) => {
+const NavItem = ({ icon, children, route }) => {
   const pathname = usePathname();
   return (
     <Link
-      href="#"
+      href={route}
       style={{ textDecoration: "none" }}
       _focus={{ boxShadow: "none" }}
     >
@@ -119,7 +119,7 @@ const NavItem = ({ icon, children }) => {
           bg: "#4ed879",
           color: "white",
         }}
-        data-active={dataAttr(pathname === item.route)}
+        data-active={dataAttr(pathname === route)}
         _active={{
           bg: "#4ed879",
           color: "white",

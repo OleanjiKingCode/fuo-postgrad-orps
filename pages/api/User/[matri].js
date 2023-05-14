@@ -16,21 +16,23 @@ export default async (req, res) => {
     query: { matri },
   } = req;
   await db.connect();
+  function addSlash(input) {
+    const regex = /^([A-Z]{3})(\d{2})(\d{4})$/;
+    const match = input.match(regex);
+
+    if (match) {
+      const [, prefix, middle, suffix] = match;
+      return `${prefix}/${middle}/${suffix}`;
+    }
+
+    return input;
+  }
+  let matric = addSlash(matri);
   if (method === "GET") {
     try {
-      function addSlash(input) {
-        const regex = /^([A-Z]{3})(\d{2})(\d{4})$/;
-        const match = input.match(regex);
-
-        if (match) {
-          const [, prefix, middle, suffix] = match;
-          return `${prefix}/${middle}/${suffix}`;
-        }
-
-        return input;
-      }
-      let matric = addSlash(matri);
-      const student = await Student.findOne({ matricno: matric });
+      const student = matri.includes("/")
+        ? await Student.findOne({ matricno: matric })
+        : await Student.findOne({ email: matri });
 
       if (!student) {
         await db.disConnect();
@@ -42,7 +44,9 @@ export default async (req, res) => {
     }
   } else if (method === "PUT") {
     try {
-      const student = await Student.findOne({ matricno: matric });
+      const student = matri.includes("/")
+        ? await Student.findOne({ email: matri })
+        : await Student.findOne({ matricno: matric });
       const id = student._id;
       const updatedUser = await Student.findByIdAndUpdate(id, body, {
         new: true,

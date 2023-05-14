@@ -8,7 +8,6 @@ async function handler(req, res) {
   const { name, email, password, phoneNumber, level, sex, dob, matricno } =
     req.body;
 
-  console.log(name, email, password, phoneNumber, level, sex, dob, matricno);
   if (
     !name ||
     !email ||

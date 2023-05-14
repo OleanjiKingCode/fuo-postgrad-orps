@@ -7,6 +7,7 @@ const HomePage = () => {
   const { data: session } = useSession();
   useEffect(() => {
     if (session?.user) {
+      console.log(session?.user);
       router.push("/dashboard");
     } else {
       router.push("/login");

@@ -29,8 +29,8 @@ export default NextAuth({
           return {
             _id: user._id,
             name: user.name,
-            email: user.email,
             matricno: user.matricno,
+            email: user.email,
           };
         }
         throw new Error("Invalid email or password");

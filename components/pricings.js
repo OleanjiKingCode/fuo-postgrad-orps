@@ -1,11 +1,20 @@
-import { Box, Container, Stack, Text, Image, Flex } from "@chakra-ui/react";
+import {
+  Box,
+  Container,
+  Stack,
+  Text,
+  Image,
+  Flex,
+  HStack,
+  chakra,
+} from "@chakra-ui/react";
 
 const Simple = () => {
   return (
     <Container maxW={"7xl"}>
       <Box
         bg="white"
-        py="1"
+        py="3"
         px={8}
         boxShadow="md"
         borderRadius="md"
@@ -25,7 +34,19 @@ const Simple = () => {
             mb={4}
           />
           <Stack spacing={4} w="full">
-            <Text fontWeight="bold">Name: John Doe</Text>
+            <HStack w="full" fontWeight="bold">
+              <chakra.span>Name:</chakra.span>{" "}
+              <chakra.div
+                py={3}
+                px={5}
+                borderRadius="2xl"
+                borderWidth="2px"
+                w="full"
+              >
+                {" "}
+                John Doe
+              </chakra.div>
+            </HStack>
             <Text>Age: 20</Text>
             <Text>Sex: Male</Text>
             <Text>Matric Number: ABC123</Text>

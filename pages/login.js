@@ -63,7 +63,6 @@ const Login = () => {
             isClosable: true,
           });
         } else {
-          console.log(router);
           toast({
             title: "Signed In Successfully",
             description: "",

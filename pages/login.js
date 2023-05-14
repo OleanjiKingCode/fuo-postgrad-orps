@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Box,
   FormControl,
@@ -7,11 +7,14 @@ import {
   FormLabel,
   Input,
   Text,
-  FormErrorMessage,
   Spinner,
+  useToast,
 } from "@chakra-ui/react";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
+import { useRouter } from "next/router";
+import axios from "axios";
+import { signIn, useSession } from "next-auth/react";
 
 const Login = () => {
   const {
@@ -19,8 +22,61 @@ const Login = () => {
     register,
     formState: { errors, isSubmitting },
   } = useForm();
+  const toast = useToast();
+  const router = useRouter();
+  const { data: session } = useSession();
 
-  const submitHandler = ({ email, password }) => {};
+  useEffect(() => {
+    if (session?.user) {
+      router.push("/dashboard");
+    }
+  }, [session, router]);
+
+  const submitHandler = async ({ matricno, password }) => {
+    try {
+      let matri = matricno.replace(/\//g, "");
+      const response = await axios.get(`./api/User/${matri}`);
+      if (response) {
+        const data = await response.data;
+        if (data.password !== password) {
+          toast({
+            title: `Wrong Password`,
+            description: "",
+            status: "error",
+            duration: 4000,
+            isClosable: true,
+          });
+          return;
+        }
+
+        const result = await signIn("credentials", {
+          redirect: false,
+          email: data.email,
+          password: data.password,
+        });
+        if (result.error) {
+          toast({
+            title: `${result.error}`,
+            description: "",
+            status: "error",
+            duration: 4000,
+            isClosable: true,
+          });
+        } else {
+          console.log(router);
+          toast({
+            title: "Signed In Successfully",
+            description: "",
+            status: "success",
+            duration: 4000,
+            isClosable: true,
+          });
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <Flex
       w="full"
@@ -39,7 +95,7 @@ const Login = () => {
         w="full"
       >
         <form
-          // onSubmit={handleSubmit(submitHandler)}
+          onSubmit={handleSubmit(submitHandler)}
           style={{ width: "inherit" }}
         >
           <Flex
@@ -48,35 +104,14 @@ const Login = () => {
             alignItems={{ md: "center" }}
             w="full"
           >
-            {/* <Box w={{ sm: "full", md: "50%" }}>
-              <FormControl>
-                <FormLabel htmlFor="email">Email</FormLabel>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="Enter your email address"
-                  {...register("email", {
-                    required: "Please enter email",
-                    pattern: {
-                      value: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$/i,
-                      message: "Please enter valid email",
-                    },
-                  })}
-                  autoFocus
-                />
-                <FormErrorMessage>
-                   {errors.email && errors.email.message} 
-                </FormErrorMessage>
-              </FormControl>
-            </Box> */}
             <Box w={{ sm: "full", md: "50%" }}>
               <FormControl>
-                <FormLabel htmlFor="name">Matric Number</FormLabel>
+                <FormLabel htmlFor="matricno">Matric Number</FormLabel>
                 <Input
-                  id="name"
+                  id="matricno"
                   type="text"
                   placeholder="Enter your Matric no"
-                  {...register("name", {
+                  {...register("matricno", {
                     required: "Please enter your Matric no",
                     minLength: {
                       value: 10,
@@ -85,11 +120,11 @@ const Login = () => {
                   })}
                   autoFocus
                 />
-                {/* {errors.name && (
-                    <Text color="red.500" py="1">
-                      {errors.name.message}
-                    </Text>
-                  )} */}
+                {errors.matricno && (
+                  <Text color="red.500" py="1">
+                    {errors.matricno.message}
+                  </Text>
+                )}
               </FormControl>
             </Box>
             <Box w={{ sm: "full", md: "50%" }}>
@@ -98,7 +133,6 @@ const Login = () => {
                 <Input
                   type="password"
                   id="password"
-                  autoFocus
                   placeholder="Enter your password"
                   {...register("password", {
                     required: "Please enter password",
@@ -108,9 +142,11 @@ const Login = () => {
                     },
                   })}
                 />
-                <FormErrorMessage>
-                  {/* {errors.password && errors.password.message} */}
-                </FormErrorMessage>
+                {errors.password && (
+                  <Text color="red.500" py="1">
+                    {errors.password.message}
+                  </Text>
+                )}
               </FormControl>
             </Box>
             <Button

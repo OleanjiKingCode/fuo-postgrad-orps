@@ -14,19 +14,11 @@ import React from "react";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/router";
-import { signIn, useSession } from "next-auth/react";
-import { useEffect } from "react";
 import axios from "axios";
 
 const register = () => {
-  const { data: session } = useSession();
   const router = useRouter();
   const toast = useToast();
-  useEffect(() => {
-    if (session?.user) {
-      router.push("/");
-    }
-  }, [session, router]);
   const {
     handleSubmit,
     register,
@@ -34,27 +26,29 @@ const register = () => {
     formState: { errors, isSubmitting },
   } = useForm();
 
-  const submitHandler = async ({ name, email, password }) => {
+  const submitHandler = async ({
+    name,
+    email,
+    matric,
+    password,
+    phoneNumber,
+    level,
+    sex,
+    dob,
+  }) => {
     try {
-      await axios.post("/api/auth/signup", {
+      const matricno = matric;
+      await axios.post("/api/User/signup", {
         name,
         email,
         password,
+        phoneNumber,
+        level,
+        sex,
+        dob,
+        matricno,
       });
-      const result = await signIn("credentials", {
-        redirect: false,
-        email,
-        password,
-      });
-      if (result.error) {
-        toast({
-          title: `${result.error}`,
-          description: "",
-          status: "error",
-          duration: 4000,
-          isClosable: true,
-        });
-      }
+      router.push("/dashboard");
     } catch (error) {
       toast({
         title: `${error.response.data.message}`,
@@ -80,7 +74,7 @@ const register = () => {
       bgColor="#5b5b5b"
     >
       <Heading>Register</Heading>
-      <>
+      <Flex height="100vh" overflowY="scroll" w="full" direction="column">
         <form
           onSubmit={handleSubmit(submitHandler)}
           style={{ width: "inherit" }}
@@ -108,34 +102,117 @@ const register = () => {
                   })}
                   autoFocus
                 />
-                {/* {errors.name && (
-                    <Text color="red.500" py="1">
-                      {errors.name.message}
-                    </Text>
-                  )} */}
+                {errors.name && (
+                  <Text color="red.500" py="1">
+                    {errors.name.message}
+                  </Text>
+                )}
               </FormControl>
             </Box>
             <Box w={{ sm: "full", md: "50%" }}>
               <FormControl>
-                <FormLabel htmlFor="name">Matric Number</FormLabel>
+                <FormLabel htmlFor="matric">Matric Number</FormLabel>
                 <Input
-                  id="name"
+                  id="matric"
                   type="text"
                   placeholder="Enter your Matric no"
-                  {...register("name", {
+                  {...register("matric", {
                     required: "Please enter your Matric no",
                     minLength: {
                       value: 10,
                       message: "Matric no should be more than 10 chars",
                     },
                   })}
-                  autoFocus
                 />
-                {/* {errors.name && (
-                    <Text color="red.500" py="1">
-                      {errors.name.message}
-                    </Text>
-                  )} */}
+                {errors.matric && (
+                  <Text color="red.500" py="1">
+                    {errors.matric.message}
+                  </Text>
+                )}
+              </FormControl>
+            </Box>
+
+            <Box w={{ sm: "full", md: "50%" }}>
+              <FormControl>
+                <FormLabel htmlFor="phoneNumber">Phone Number</FormLabel>
+                <Input
+                  id="phoneNumber"
+                  type="text"
+                  placeholder="Enter your Phone Number"
+                  {...register("phoneNumber", {
+                    required: "Please enter your Phone Number",
+                    minLength: {
+                      value: 10,
+                      message: "Phone Number should be more than 10 chars",
+                    },
+                  })}
+                />
+                {errors.phoneNumber && (
+                  <Text color="red.500" py="1">
+                    {errors.phoneNumber.message}
+                  </Text>
+                )}
+              </FormControl>
+            </Box>
+
+            <Box w={{ sm: "full", md: "50%" }}>
+              <FormControl>
+                <FormLabel htmlFor="level">Level</FormLabel>
+                <Input
+                  id="level"
+                  type="text"
+                  placeholder="Enter your Level"
+                  {...register("level", {
+                    required: "Please enter your Level",
+                    minLength: {
+                      value: 3,
+                      message: "Level should be more than 3 chars",
+                    },
+                  })}
+                />
+                {errors.level && (
+                  <Text color="red.500" py="1">
+                    {errors.level.message}
+                  </Text>
+                )}
+              </FormControl>
+            </Box>
+
+            <Box w={{ sm: "full", md: "50%" }}>
+              <FormControl>
+                <FormLabel htmlFor="sex">Sex</FormLabel>
+                <Input
+                  id="sex"
+                  type="text"
+                  placeholder="Enter your Sex"
+                  {...register("sex", {
+                    required: "Please enter your Sex",
+                  })}
+                />
+                {errors.sex && (
+                  <Text color="red.500" py="1">
+                    {errors.sex.message}
+                  </Text>
+                )}
+              </FormControl>
+            </Box>
+
+            <Box w={{ sm: "full", md: "50%" }}>
+              <FormControl>
+                <FormLabel htmlFor="dob">Date Of Birth</FormLabel>
+                <Input
+                  id="dob"
+                  type="date"
+                  placeholder="choose your Date Of Birth"
+                  {...register("dob", {
+                    required: "Please choose your Date Of Birth",
+                  })}
+                />
+                {errors.dob && (
+                  <Text color="red.500" py="1">
+                    {errors.dob.message}
+                  </Text>
+                )}
               </FormControl>
             </Box>
 
@@ -154,11 +231,11 @@ const register = () => {
                     },
                   })}
                 />
-                {/* {errors.email && (
-                    <Text color="red.500" py="1">
-                      {errors.email.message}
-                    </Text>
-                  )} */}
+                {errors.email && (
+                  <Text color="red.500" py="1">
+                    {errors.email.message}
+                  </Text>
+                )}
               </FormControl>
             </Box>
             <Box w={{ sm: "full", md: "50%" }}>
@@ -176,11 +253,11 @@ const register = () => {
                     },
                   })}
                 />
-                {/* {errors.password && (
-                    <Text color="red.500" py="1">
-                      {errors.password.message}
-                    </Text>
-                  )} */}
+                {errors.password && (
+                  <Text color="red.500" py="1">
+                    {errors.password.message}
+                  </Text>
+                )}
               </FormControl>
             </Box>
             <Box w={{ sm: "full", md: "50%" }}>
@@ -201,17 +278,17 @@ const register = () => {
                     },
                   })}
                 />
-                {/* {errors.confirmPassword && (
+                {errors.confirmPassword && (
+                  <Text color="red.500" py="1">
+                    {errors.confirmPassword.message}
+                  </Text>
+                )}
+                {errors.confirmPassword &&
+                  errors.confirmPassword.type === "validate" && (
                     <Text color="red.500" py="1">
-                      {errors.confirmPassword.message}
+                      Passwords do not match
                     </Text>
-                  )} */}
-                {/* {errors.confirmPassword &&
-                    errors.confirmPassword.type === "validate" && (
-                      <Text color="red.500" py="1">
-                        Passwords do not match
-                      </Text>
-                    )} */}
+                  )}
               </FormControl>
             </Box>
             <Button
@@ -231,7 +308,13 @@ const register = () => {
             </Button>
           </Flex>
         </form>
-        <Flex w={{ sm: "full", md: "50%" }}>
+        <Flex
+          w="full"
+          textAlign="center"
+          justifyContent="center"
+          alignItems="center"
+          pb="20"
+        >
           <Text color="white">Already registered? &nbsp; </Text>
           <Link href="/">
             <Text color="#4ed879" fontWeight="semibold">
@@ -239,7 +322,7 @@ const register = () => {
             </Text>
           </Link>
         </Flex>
-      </>
+      </Flex>
     </Flex>
   );
 };

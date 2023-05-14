@@ -6,6 +6,11 @@ const studentSchema = new mongoose.Schema(
     email: { type: String, required: true },
     matricno: { type: String, required: true },
     password: { type: String, required: true },
+    dob: { type: Date },
+    sex: { type: String, required: true },
+    level: { type: String, required: true },
+    phoneNumber: { type: String, required: true },
+    // role: { type: String, required: true },
   },
   {
     timestamps: true,

@@ -1,17 +1,25 @@
-import User from "../../../components/models/userSchema";
-import db from "../../../utils/db";
+import Student from "@/models/userSchema";
+import db from "@/utils/db";
 
 async function handler(req, res) {
   if (req.method !== "POST") {
     return;
   }
-  const { name, email, password } = req.body;
+  const { name, email, password, phoneNumber, level, sex, dob, matricno } =
+    req.body;
+
+  console.log(name, email, password, phoneNumber, level, sex, dob, matricno);
   if (
     !name ||
     !email ||
     !email.includes("@") ||
     !password ||
-    password.trim().length < 5
+    password.trim().length < 5 ||
+    !phoneNumber ||
+    !level ||
+    !sex ||
+    !dob ||
+    !matricno
   ) {
     res.status(422).json({
       message: "Validation Error",
@@ -21,30 +29,35 @@ async function handler(req, res) {
 
   await db.connect();
 
-  const alreadyAUser = await User.findOne({ email: email });
+  const alreadyAUser = await Student.findOne({ email: email });
 
   if (alreadyAUser) {
     res.status(422).json({
-      message: "This User already exists",
+      message: "This Student already exists",
     });
     await db.disConnect();
     return;
   }
 
-  const newUser = new User({
+  const newStudent = new Student({
     name,
     email,
     password,
+    phoneNumber,
+    level,
+    sex,
+    dob,
+    matricno,
   });
 
-  const user = await newUser.save();
+  const student = await newStudent.save();
   await db.disConnect();
 
   res.send(201).json({
-    message: "Created User Successfully",
-    _id: user._id,
-    name: user.name,
-    email: user.email,
+    message: "Created Student Successfully",
+    _id: student._id,
+    name: student.name,
+    email: student.email,
   });
 }
 export default handler;

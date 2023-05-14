@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   IconButton,
   Avatar,
@@ -15,6 +15,7 @@ import {
   Text,
   useDisclosure,
   chakra,
+  useToast,
 } from "@chakra-ui/react";
 import {
   FiHome,
@@ -26,6 +27,8 @@ import {
   FiBell,
 } from "react-icons/fi";
 
+import { useRouter } from "next/router";
+import { signIn, signOut, useSession } from "next-auth/react";
 import { dataAttr } from "@chakra-ui/utils";
 
 import { usePathname } from "next/navigation";
@@ -34,8 +37,7 @@ const LinkItems = [
   { name: "Home", icon: FiHome, route: "/dashboard" },
   { name: "Courses", icon: FiCompass, route: "/dashboard/courses" },
   { name: "Results", icon: FiStar, route: "/dashboard/result" },
-  { name: "Fees", icon: FiTrendingUp, route: "/dashboard/fees" },
-  { name: "Settings", icon: FiSettings, route: "/dashboard/settings" },
+  { name: "Profile Settings", icon: FiSettings, route: "/dashboard/settings" },
 ];
 
 const SidebarWithHeader = ({ children }) => {
@@ -81,14 +83,15 @@ const SidebarContent = ({ onClose }) => {
       h="full"
     >
       <Flex
-        h="20"
+        h="32"
         alignItems="center"
         mx="8"
         mb="3"
+        textAlign="center"
         justifyContent="space-between"
       >
-        <Text fontSize="2xl" fontFamily="monospace" fontWeight="bold">
-          Logo
+        <Text fontSize="xl" w="full" fontFamily="monospace" fontWeight="bold">
+          Fountain University Postrgraduate
         </Text>
         <CloseButton display={{ base: "flex", md: "none" }} onClick={onClose} />
       </Flex>
@@ -110,18 +113,19 @@ const NavItem = ({ icon, children, route }) => {
       _focus={{ boxShadow: "none" }}
     >
       <Flex
+        mt="2"
         align="center"
         py="4"
         px="8"
         role="group"
         cursor="pointer"
         _hover={{
-          bg: "#4ed879",
+          bg: "green.200  ",
           color: "white",
         }}
         data-active={dataAttr(pathname === route)}
         _active={{
-          bg: "#4ed879",
+          bg: "green.600",
           color: "white",
         }}
       >
@@ -142,6 +146,26 @@ const NavItem = ({ icon, children, route }) => {
 };
 
 const MobileNav = ({ onOpen }) => {
+  const { status, data: session } = useSession();
+  const router = useRouter();
+
+  const toast = useToast();
+  const logOutUser = async () => {
+    const signOutsUser = await signOut({ redirect: false });
+    toast({
+      title: "Signed Out Successfully",
+      description: "",
+      status: "success",
+      duration: 4000,
+      isClosable: true,
+    });
+    router.push("/login");
+  };
+  const [username, setUsername] = useState("");
+  useEffect(() => {
+    setUsername(session?.user.name);
+  }, [session?.user?.email]);
+
   return (
     <Flex
       ml={{ base: 0, md: "280px" }}
@@ -191,7 +215,7 @@ const MobileNav = ({ onOpen }) => {
               spacing="1px"
             >
               <Text fontSize="sm" fontWeight="semibold">
-                Justina Clark
+                {username}
               </Text>
               <Text fontSize="xs" fontWeight="normal" color="gray.600">
                 Student

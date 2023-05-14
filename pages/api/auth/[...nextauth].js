@@ -1,7 +1,7 @@
 import NextAuth from "next-auth/next";
-import db from "../../../utils/db";
 import CredentialsProvider from "next-auth/providers/credentials";
-import User from "../../../components/models/userSchema";
+import Student from "@/models/userSchema";
+import db from "@/utils/db";
 
 export default NextAuth({
   session: {
@@ -21,7 +21,7 @@ export default NextAuth({
     CredentialsProvider({
       async authorize(credentials) {
         await db.connect();
-        const user = await User.findOne({
+        const user = await Student.findOne({
           email: credentials.email,
         });
         await db.disConnect();
@@ -30,6 +30,7 @@ export default NextAuth({
             _id: user._id,
             name: user.name,
             email: user.email,
+            matricno: user.matricno,
           };
         }
         throw new Error("Invalid email or password");

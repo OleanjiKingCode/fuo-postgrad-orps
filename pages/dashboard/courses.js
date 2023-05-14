@@ -5,9 +5,11 @@ import React from "react";
 
 const Courses = () => {
   return (
-    <Flex>
-      <Simple />
-    </Flex>
+    <SidebarWithHeader>
+      <Flex>
+        <Simple />
+      </Flex>
+    </SidebarWithHeader>
   );
 };
 

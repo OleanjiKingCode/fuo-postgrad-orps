@@ -30,9 +30,10 @@ export default async (req, res) => {
   let matric = addSlash(matri);
   if (method === "GET") {
     try {
-      const student = matri.includes("/")
-        ? await Student.findOne({ matricno: matric })
-        : await Student.findOne({ email: matri });
+      const student = matri.includes(".com")
+        ? await Student.findOne({ email: matri })
+        : await Student.findOne({ matricno: matric });
+      console.log(student, matric, matri);
 
       if (!student) {
         await db.disConnect();

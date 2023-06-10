@@ -35,9 +35,9 @@ import { usePathname } from "next/navigation";
 
 const LinkItems = [
   { name: "Home", icon: FiHome, route: "/dashboard" },
-  { name: "Courses", icon: FiCompass, route: "/dashboard/courses" },
-  { name: "Results", icon: FiStar, route: "/dashboard/result" },
-  { name: "Profile Settings", icon: FiSettings, route: "/dashboard/settings" },
+  { name: "Courses", icon: FiCompass, route: "/courses" },
+  { name: "Results", icon: FiStar, route: "/result" },
+  { name: "Profile Settings", icon: FiSettings, route: "/settings" },
 ];
 
 const SidebarWithHeader = ({ children }) => {

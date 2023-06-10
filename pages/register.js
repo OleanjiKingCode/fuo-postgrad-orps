@@ -72,8 +72,9 @@ const register = () => {
       bgSize="cover !important"
       bgBlendMode="overlay"
       bgColor="#5b5b5b"
+      py="10"
     >
-      <Heading>Register</Heading>
+      <Heading color="white">Register</Heading>
       <Flex height="100vh" overflowY="scroll" w="full" direction="column">
         <form
           onSubmit={handleSubmit(submitHandler)}

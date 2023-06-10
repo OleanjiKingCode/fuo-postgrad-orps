@@ -1,22 +1,31 @@
+import { useRouter } from "next/router";
+import React, { useEffect, useState } from "react";
+import { signIn, useSession } from "next-auth/react";
 import SidebarWithHeader from "@/components/Sidebar";
 import {
   Flex,
-  Box,
   Container,
-  Stack,
-  Text,
+  Box,
   Image,
+  Stack,
   HStack,
   chakra,
 } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { signIn, signOut, useSession } from "next-auth/react";
 
-const index = () => {
-  const { status, data: session } = useSession();
+const HomePage = () => {
+  const router = useRouter();
+  const { data: session } = useSession();
   const [userData, setUserData] = useState();
+
+  // useEffect(() => {
+  //   if (!session?.user) {
+  //     router.push("/login");
+  //   }
+  // }, [session]);
+
   const email = session?.user?.email;
+
   useEffect(() => {
     console.log(session?.user?.email);
     const fetchData = async () => {
@@ -28,6 +37,7 @@ const index = () => {
     };
     fetchData();
   }, [email, session]);
+
   return (
     <SidebarWithHeader>
       <Flex>
@@ -128,4 +138,4 @@ const index = () => {
   );
 };
 
-export default index;
+export default HomePage;

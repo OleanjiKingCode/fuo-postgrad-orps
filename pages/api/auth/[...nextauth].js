@@ -30,6 +30,7 @@ export default NextAuth({
             _id: user._id,
             name: user.name,
             matricno: user.matricno,
+            role: user.role,
             email: user.email,
           };
         }

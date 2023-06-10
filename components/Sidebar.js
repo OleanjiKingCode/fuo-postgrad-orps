@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import {
   IconButton,
   Avatar,
@@ -19,25 +19,29 @@ import {
 } from "@chakra-ui/react";
 import {
   FiHome,
-  FiTrendingUp,
   FiCompass,
   FiStar,
   FiSettings,
   FiMenu,
   FiBell,
 } from "react-icons/fi";
-
+import axios from "axios";
 import { useRouter } from "next/router";
-import { signIn, signOut, useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { dataAttr } from "@chakra-ui/utils";
-
 import { usePathname } from "next/navigation";
 
 const LinkItems = [
-  { name: "Home", icon: FiHome, route: "/dashboard" },
-  { name: "Courses", icon: FiCompass, route: "/courses" },
-  { name: "Results", icon: FiStar, route: "/result" },
-  { name: "Profile Settings", icon: FiSettings, route: "/settings" },
+  { name: "Home", icon: FiHome, route: "/dashboard", role: "all" },
+  { name: "Courses", icon: FiCompass, route: "/courses", role: "all" },
+  { name: "Results", icon: FiStar, route: "/result", role: "all" },
+  { name: "Result Calc", icon: FiStar, route: "/calc", role: "Lecturers" },
+  {
+    name: "Profile Settings",
+    icon: FiSettings,
+    route: "/settings",
+    role: "all",
+  },
 ];
 
 const SidebarWithHeader = ({ children }) => {
@@ -72,6 +76,26 @@ const SidebarWithHeader = ({ children }) => {
 export default SidebarWithHeader;
 
 const SidebarContent = ({ onClose }) => {
+  const { data: session } = useSession();
+  const router = useRouter();
+  const [username, setUsername] = useState("");
+  const [userRole, setUserRole] = useState("");
+
+  const getData = async (email) => {
+    const response = await axios.get(`./api/User/${email}`);
+    if (response) {
+      const data = await response.data;
+      setUserRole(data.role);
+    }
+  };
+
+  useEffect(() => {
+    if (session?.user?.email) {
+      setUsername(session?.user.name);
+      getData(session?.user?.email);
+    }
+  }, [session?.user?.email]);
+
   return (
     <Box
       transition="3s ease"
@@ -95,11 +119,16 @@ const SidebarContent = ({ onClose }) => {
         </Text>
         <CloseButton display={{ base: "flex", md: "none" }} onClick={onClose} />
       </Flex>
-      {LinkItems.map((link) => (
-        <NavItem key={link.name} icon={link.icon} route={link.route}>
-          {link.name}
-        </NavItem>
-      ))}
+      {LinkItems.map((link) => {
+        return (
+          userRole === link.role ||
+          (link.role === "all" && (
+            <NavItem key={link.name} icon={link.icon} route={link.route}>
+              {link.name}
+            </NavItem>
+          ))
+        );
+      })}
     </Box>
   );
 };
@@ -146,12 +175,14 @@ const NavItem = ({ icon, children, route }) => {
 };
 
 const MobileNav = ({ onOpen }) => {
-  const { status, data: session } = useSession();
+  const { data: session } = useSession();
   const router = useRouter();
+  const [username, setUsername] = useState("");
+  const [userRole, setUserRole] = useState("");
 
   const toast = useToast();
   const logOutUser = async () => {
-    const signOutsUser = await signOut({ redirect: false });
+    await signOut({ redirect: false });
     toast({
       title: "Signed Out Successfully",
       description: "",
@@ -159,11 +190,22 @@ const MobileNav = ({ onOpen }) => {
       duration: 4000,
       isClosable: true,
     });
-    router.push("/login");
+    router.push("/");
   };
-  const [username, setUsername] = useState("");
+
+  const getData = async (email) => {
+    const response = await axios.get(`./api/User/${email}`);
+    if (response) {
+      const data = await response.data;
+      setUserRole(data.role);
+    }
+  };
+
   useEffect(() => {
-    setUsername(session?.user.name);
+    if (session?.user?.email) {
+      setUsername(session?.user.name);
+      getData(session?.user?.email);
+    }
   }, [session?.user?.email]);
 
   return (
@@ -218,7 +260,7 @@ const MobileNav = ({ onOpen }) => {
                 {username}
               </Text>
               <Text fontSize="xs" fontWeight="normal" color="gray.600">
-                Student
+                {userRole}
               </Text>
             </VStack>
           </HStack>

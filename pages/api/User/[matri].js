@@ -1,4 +1,4 @@
-import Student from "@/models/userSchema";
+import Users from "@/models/userSchema";
 import db from "@/utils/db";
 
 export const config = {
@@ -16,28 +16,25 @@ export default async (req, res) => {
     query: { matri },
   } = req;
   await db.connect();
+
   function addSlash(input) {
-    const regex = /^([A-Z]{3})(\d{2})(\d{4})$/;
-    const match = input.match(regex);
+    const prefix = input.substring(0, 3);
+    const middle = input.substring(3, 5);
+    const suffix = input.substring(5);
 
-    if (match) {
-      const [, prefix, middle, suffix] = match;
-      return `${prefix}/${middle}/${suffix}`;
-    }
-
-    return input;
+    return `${prefix}/${middle}/${suffix}`;
   }
+
   let matric = addSlash(matri);
   if (method === "GET") {
     try {
       const student = matri.includes(".com")
-        ? await Student.findOne({ email: matri })
-        : await Student.findOne({ matricno: matric });
-      console.log(student, matric, matri);
+        ? await Users.findOne({ email: matri })
+        : await Users.findOne({ matricno: matric });
 
       if (!student) {
         await db.disConnect();
-        return res.status(404).json({ msg: "Student doesnt exist" });
+        return res.status(404).json({ msg: "User doesnt exist" });
       }
       return res.status(200).json(student);
     } catch (error) {
@@ -46,10 +43,10 @@ export default async (req, res) => {
   } else if (method === "PUT") {
     try {
       const student = matri.includes("/")
-        ? await Student.findOne({ email: matri })
-        : await Student.findOne({ matricno: matric });
+        ? await Users.findOne({ email: matri })
+        : await Users.findOne({ matricno: matric });
       const id = student._id;
-      const updatedUser = await Student.findByIdAndUpdate(id, body, {
+      const updatedUser = await Users.findByIdAndUpdate(id, body, {
         new: true,
         runValidators: true,
       });

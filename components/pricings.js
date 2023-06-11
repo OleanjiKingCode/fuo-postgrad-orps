@@ -50,7 +50,6 @@ const Simple = () => {
             <Text>Age: 20</Text>
             <Text>Sex: Male</Text>
             <Text>Matric Number: ABC123</Text>
-            <Text>Level: 2</Text>
             <Text>Phone Number: 1234567890</Text>
           </Stack>
         </Flex>

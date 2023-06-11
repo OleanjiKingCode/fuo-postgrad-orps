@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const studentSchema = new mongoose.Schema(
+const userSchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
     email: { type: String, required: true },
@@ -8,7 +8,6 @@ const studentSchema = new mongoose.Schema(
     password: { type: String, required: true },
     dob: { type: Date },
     sex: { type: String, required: true },
-    level: { type: String, required: true },
     phoneNumber: { type: String, required: true },
     role: { type: String, required: true },
     department: { type: String, required: true },
@@ -18,6 +17,6 @@ const studentSchema = new mongoose.Schema(
   }
 );
 
-const Student =
-  mongoose.models.Student || mongoose.model("Student", studentSchema);
-export default Student;
+const Users =
+  mongoose.models.Users || mongoose.model("Users", userSchema);
+export default Users;

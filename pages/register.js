@@ -4,10 +4,13 @@ import {
   Flex,
   Button,
   FormLabel,
+  InputGroup,
+  InputRightElement,
   Input,
   Text,
   Spinner,
   useToast,
+  Select,
   Heading,
 } from "@chakra-ui/react";
 import React from "react";
@@ -32,22 +35,46 @@ const register = () => {
     matric,
     password,
     phoneNumber,
-    level,
     sex,
     dob,
+    dept,
   }) => {
     try {
       const matricno = matric;
-      await axios.post("/api/User/signup", {
+      await axios.post("/api/auth/signup", {
         name,
         email,
         password,
         phoneNumber,
-        level,
         sex,
         dob,
         matricno,
+        dept,
       });
+
+      const result = await signIn("credentials", {
+        redirect: false,
+        email: data.email,
+        password: data.password,
+      });
+      if (result.error) {
+        toast({
+          title: `${result.error}`,
+          description: "",
+          status: "error",
+          duration: 4000,
+          isClosable: true,
+        });
+      } else {
+        toast({
+          title: "Registered Successfully",
+          description: "",
+          status: "success",
+          duration: 4000,
+          isClosable: true,
+        });
+      }
+
       router.push("/dashboard");
     } catch (error) {
       toast({
@@ -59,6 +86,12 @@ const register = () => {
       });
     }
   };
+
+  const [show, setShow] = React.useState(false);
+  const handleClick = () => setShow(!show);
+
+  const [showConfirm, setShowConfirm] = React.useState(false);
+  const handleClickConfirm = () => setShowConfirm(!showConfirm);
 
   return (
     <Flex
@@ -88,7 +121,7 @@ const register = () => {
             pb="6"
           >
             <Box w={{ sm: "full", md: "50%" }}>
-              <FormControl>
+              <FormControl isRequired>
                 <FormLabel htmlFor="name">Full Name</FormLabel>
                 <Input
                   id="name"
@@ -111,7 +144,7 @@ const register = () => {
               </FormControl>
             </Box>
             <Box w={{ sm: "full", md: "50%" }}>
-              <FormControl>
+              <FormControl isRequired>
                 <FormLabel htmlFor="matric">Matric Number</FormLabel>
                 <Input
                   id="matric"
@@ -134,7 +167,26 @@ const register = () => {
             </Box>
 
             <Box w={{ sm: "full", md: "50%" }}>
-              <FormControl>
+              <FormControl isRequired>
+                <FormLabel htmlFor="dob">Date Of Birth</FormLabel>
+                <Input
+                  id="dob"
+                  type="date"
+                  placeholder="choose your Date Of Birth"
+                  {...register("dob", {
+                    required: "Please choose your Date Of Birth",
+                  })}
+                />
+                {errors.dob && (
+                  <Text color="red.500" py="1">
+                    {errors.dob.message}
+                  </Text>
+                )}
+              </FormControl>
+            </Box>
+
+            <Box w={{ sm: "full", md: "50%" }}>
+              <FormControl isRequired>
                 <FormLabel htmlFor="phoneNumber">Phone Number</FormLabel>
                 <Input
                   id="phoneNumber"
@@ -157,30 +209,7 @@ const register = () => {
             </Box>
 
             <Box w={{ sm: "full", md: "50%" }}>
-              <FormControl>
-                <FormLabel htmlFor="level">Level</FormLabel>
-                <Input
-                  id="level"
-                  type="text"
-                  placeholder="Enter your Level"
-                  {...register("level", {
-                    required: "Please enter your Level",
-                    minLength: {
-                      value: 3,
-                      message: "Level should be more than 3 chars",
-                    },
-                  })}
-                />
-                {errors.level && (
-                  <Text color="red.500" py="1">
-                    {errors.level.message}
-                  </Text>
-                )}
-              </FormControl>
-            </Box>
-
-            <Box w={{ sm: "full", md: "50%" }}>
-              <FormControl>
+              <FormControl isRequired>
                 <FormLabel htmlFor="sex">Sex</FormLabel>
                 <Input
                   id="sex"
@@ -199,26 +228,28 @@ const register = () => {
             </Box>
 
             <Box w={{ sm: "full", md: "50%" }}>
-              <FormControl>
-                <FormLabel htmlFor="dob">Date Of Birth</FormLabel>
-                <Input
-                  id="dob"
-                  type="date"
-                  placeholder="choose your Date Of Birth"
-                  {...register("dob", {
-                    required: "Please choose your Date Of Birth",
+              <FormControl isRequired>
+                <FormLabel htmlFor="dept">Department</FormLabel>
+                <Select
+                  placeholder="Select Department"
+                  {...register("dept", {
+                    required: "Please select a valid option",
                   })}
-                />
-                {errors.dob && (
+                >
+                  <option value="CPS">Computer Science</option>
+                  <option value="MLS">Medical Laboratory Science</option>
+                  <option value="MIB">Microbiology</option>
+                </Select>
+                {errors.dept && (
                   <Text color="red.500" py="1">
-                    {errors.dob.message}
+                    {errors.dept.message}
                   </Text>
                 )}
               </FormControl>
             </Box>
 
             <Box w={{ sm: "full", md: "50%" }}>
-              <FormControl>
+              <FormControl isRequired>
                 <FormLabel htmlFor="email">Email</FormLabel>
                 <Input
                   id="email"
@@ -242,18 +273,26 @@ const register = () => {
             <Box w={{ sm: "full", md: "50%" }}>
               <FormControl>
                 <FormLabel htmlFor="password">Password</FormLabel>
-                <Input
-                  type="password"
-                  id="password"
-                  placeholder="Enter your password"
-                  {...register("password", {
-                    required: "Please enter password",
-                    minLength: {
-                      value: 6,
-                      message: "password is more than 5 chars",
-                    },
-                  })}
-                />
+                <InputGroup size="md">
+                  <Input
+                    type={show ? "text" : "password"}
+                    id="password"
+                    placeholder="Enter your password"
+                    {...register("password", {
+                      required: "Please enter password",
+                      minLength: {
+                        value: 6,
+                        message: "password is more than 5 chars",
+                      },
+                    })}
+                  />
+                  <InputRightElement width="4.5rem">
+                    <Button h="1.75rem" size="sm" onClick={handleClick}>
+                      {show ? "Hide" : "Show"}
+                    </Button>
+                  </InputRightElement>
+                </InputGroup>
+
                 {errors.password && (
                   <Text color="red.500" py="1">
                     {errors.password.message}
@@ -266,19 +305,26 @@ const register = () => {
                 <FormLabel htmlFor="confirmPassword">
                   Confirm Password
                 </FormLabel>
-                <Input
-                  type="password"
-                  id="confirmPassword"
-                  placeholder="Enter Confirm password"
-                  {...register("confirmPassword", {
-                    required: "Please enter confirm password",
-                    validate: (value) => value === getValues("password"),
-                    minLength: {
-                      value: 6,
-                      message: "password is more than 5 chars",
-                    },
-                  })}
-                />
+                <InputGroup size="md">
+                  <Input
+                    type={showConfirm ? "text" : "password"}
+                    id="confirmPassword"
+                    placeholder="Enter Confirm password"
+                    {...register("confirmPassword", {
+                      required: "Please enter confirm password",
+                      validate: (value) => value === getValues("password"),
+                      minLength: {
+                        value: 6,
+                        message: "password is more than 5 chars",
+                      },
+                    })}
+                  />
+                  <InputRightElement width="4.5rem">
+                    <Button h="1.75rem" size="sm" onClick={handleClickConfirm}>
+                      {showConfirm ? "Hide" : "Show"}
+                    </Button>
+                  </InputRightElement>
+                </InputGroup>
                 {errors.confirmPassword && (
                   <Text color="red.500" py="1">
                     {errors.confirmPassword.message}

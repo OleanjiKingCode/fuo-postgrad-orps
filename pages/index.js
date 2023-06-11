@@ -39,7 +39,6 @@ const Login = () => {
   const submitHandler = async ({ matricno, password }) => {
     try {
       let matri = matricno.replace(/\//g, "");
-      console.log(matri);
       const response = await axios.get(`./api/User/${matri}`);
       if (response) {
         const data = await response.data;

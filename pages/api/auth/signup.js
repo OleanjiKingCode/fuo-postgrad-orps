@@ -1,11 +1,11 @@
-import Student from "@/models/userSchema";
+import Users from "@/models/userSchema";
 import db from "@/utils/db";
 
 async function handler(req, res) {
   if (req.method !== "POST") {
     return;
   }
-  const { name, email, password, phoneNumber, level, sex, dob, matricno } =
+  const { name, email, password, phoneNumber, sex, dob, matricno, dept } =
     req.body;
 
   if (
@@ -15,10 +15,10 @@ async function handler(req, res) {
     !password ||
     password.trim().length < 5 ||
     !phoneNumber ||
-    !level ||
     !sex ||
     !dob ||
-    !matricno
+    !matricno ||
+    !dept
   ) {
     res.status(422).json({
       message: "Validation Error",
@@ -28,25 +28,29 @@ async function handler(req, res) {
 
   await db.connect();
 
-  const alreadyAUser = await Student.findOne({ email: email });
+  const alreadyAUser = await Users.findOne({ email: email });
 
   if (alreadyAUser) {
     res.status(422).json({
-      message: "This Student already exists",
+      message: "This User already exists",
     });
     await db.disConnect();
     return;
   }
 
-  const newStudent = new Student({
+  let role = matricno.includes("LEC") ? "Lecturer" : "Student";
+  let department = dept;
+
+  const newStudent = new Users({
     name,
     email,
     password,
     phoneNumber,
-    level,
     sex,
     dob,
     matricno,
+    role,
+    department,
   });
 
   const student = await newStudent.save();

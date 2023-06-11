@@ -14,20 +14,12 @@ import {
 import axios from "axios";
 
 const HomePage = () => {
-  const router = useRouter();
   const { data: session } = useSession();
   const [userData, setUserData] = useState();
-
-  // useEffect(() => {
-  //   if (!session?.user) {
-  //     router.push("/login");
-  //   }
-  // }, [session]);
 
   const email = session?.user?.email;
 
   useEffect(() => {
-    console.log(session?.user?.email);
     const fetchData = async () => {
       const response = await axios.get(`/api/User/${email}`);
       if (response) {
@@ -103,19 +95,7 @@ const HomePage = () => {
                     {userData?.matricno}
                   </chakra.div>
                 </HStack>
-                <HStack w="full">
-                  <chakra.span w="40%">Level:</chakra.span>{" "}
-                  <chakra.div
-                    py={3}
-                    px={5}
-                    borderRadius="2xl"
-                    borderWidth="2px"
-                    w="full"
-                  >
-                    {" "}
-                    {userData?.level}
-                  </chakra.div>
-                </HStack>
+                
                 <HStack w="full">
                   <chakra.span w="40%">Phone Number:</chakra.span>{" "}
                   <chakra.div

@@ -1,4 +1,5 @@
 import Users from "@/models/userSchema";
+import Department from "@/models/deptSchema";
 import db from "@/utils/db";
 
 async function handler(req, res) {
@@ -28,9 +29,10 @@ async function handler(req, res) {
 
   await db.connect();
 
-  const alreadyAUser = await Users.findOne({ email: email });
+  const alreadyAUserOne = await Users.findOne({ matricno: matricno });
+  const alreadyAUserTwo = await Users.findOne({ email: email });
 
-  if (alreadyAUser) {
+  if (alreadyAUserOne || alreadyAUserTwo) {
     res.status(422).json({
       message: "This User already exists",
     });
@@ -39,9 +41,21 @@ async function handler(req, res) {
   }
 
   let role = matricno.includes("LEC") ? "Lecturer" : "Student";
-  let department = dept;
+  const alreadyADept = await Department.findOne({ name: dept });
 
-  const newStudent = new Users({
+  if (role === "Lecturer" && !alreadyADept) {
+    const newDepts = new Department({
+      name: dept,
+      createdBy: email,
+      courses: [],
+      maxCourses: 0,
+      maxUnits: 0,
+    });
+
+    await newDepts.save();
+  }
+
+  const newUser = new Users({
     name,
     email,
     password,
@@ -50,17 +64,12 @@ async function handler(req, res) {
     dob,
     matricno,
     role,
-    department,
+    department: dept,
   });
 
-  const student = await newStudent.save();
+  const user = await newUser.save();
   await db.disConnect();
 
-  res.send(201).json({
-    message: "Created Student Successfully",
-    _id: student._id,
-    name: student.name,
-    email: student.email,
-  });
+  return res.status(200).json(user);
 }
 export default handler;

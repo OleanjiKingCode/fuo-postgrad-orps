@@ -42,7 +42,7 @@ export default async (req, res) => {
     }
   } else if (method === "PUT") {
     try {
-      const student = matri.includes("/")
+      const student = matri.includes(".com")
         ? await Users.findOne({ email: matri })
         : await Users.findOne({ matricno: matric });
       const id = student._id;

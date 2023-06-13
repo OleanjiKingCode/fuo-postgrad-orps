@@ -18,6 +18,7 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/router";
 import axios from "axios";
+import { signIn, useSession } from "next-auth/react";
 
 const register = () => {
   const router = useRouter();
@@ -41,7 +42,7 @@ const register = () => {
   }) => {
     try {
       const matricno = matric;
-      await axios.post("/api/auth/signup", {
+      const data = await axios.post("/api/auth/signup", {
         name,
         email,
         password,
@@ -54,8 +55,8 @@ const register = () => {
 
       const result = await signIn("credentials", {
         redirect: false,
-        email: data.email,
-        password: data.password,
+        email: data?.data?.email,
+        password: data?.data?.password,
       });
       if (result.error) {
         toast({
@@ -74,9 +75,9 @@ const register = () => {
           isClosable: true,
         });
       }
-
       router.push("/dashboard");
     } catch (error) {
+      console.log(error);
       toast({
         title: `${error.response.data.message}`,
         description: "",

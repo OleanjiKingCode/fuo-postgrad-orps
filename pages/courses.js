@@ -1,7 +1,15 @@
 import SidebarWithHeader from "@/components/Sidebar";
 import React, { useEffect, useState } from "react";
 import { signIn, useSession } from "next-auth/react";
-import { Flex } from "@chakra-ui/react";
+import {
+  Flex,
+  Box,
+  Input,
+  Button,
+  VStack,
+  HStack,
+  Heading,
+} from "@chakra-ui/react";
 import axios from "axios";
 
 const Courses = () => {
@@ -33,7 +41,7 @@ const Courses = () => {
   return (
     <SidebarWithHeader>
       <Flex>
-        {deptData?.courses?.length === 0 ? (
+        {/* {deptData?.courses?.length === 0 ? (
           userRole === "lecturer" ? (
             <span>You can add courses as there are no courses available.</span>
           ) : (
@@ -45,7 +53,96 @@ const Courses = () => {
           <span>List of students that have added the courses.</span>
         ) : (
           <span>List of the courses you added.</span>
-        )}
+        )} */}
+        <Box p={4} w="full" bg="white">
+          <Heading fontSize="lg" w="full" py="5" textAlign="center">
+            ADD COURSES
+          </Heading>
+          <Flex justify="space-between" mb={4} gap={2}>
+            <Flex>
+              <Input
+                placeholder="Department"
+                flex="8"
+                mr={2}
+                value={deptData?.name}
+              />
+            </Flex>
+            <Flex>
+              <Input placeholder="Text" flex="9" />
+              <Input placeholder="Number" flex="1" />
+            </Flex>
+
+            <Flex>
+              <Input placeholder="Text" flex="9" />
+              <Input placeholder="Number" flex="1" />
+            </Flex>
+          </Flex>
+          <VStack mt={4}>
+            <HStack spacing={4}>
+              {[...Array(4)].map((_, index) => (
+                <VStack key={index} spacing={2} align="center">
+                  <Flex>
+                    <Input placeholder="Text" flex="8" mr={2} />
+                    <Input placeholder="Number" flex="2" />
+                  </Flex>
+                </VStack>
+              ))}
+            </HStack>
+            <HStack spacing={4}>
+              {[...Array(4)].map((_, index) => (
+                <VStack key={index} spacing={2} align="center">
+                  <Flex>
+                    <Input placeholder="Text" flex="8" mr={2} />
+                    <Input placeholder="Number" flex="2" />
+                  </Flex>
+                </VStack>
+              ))}
+            </HStack>
+            <HStack spacing={4}>
+              {[...Array(4)].map((_, index) => (
+                <VStack key={index} spacing={2} align="center">
+                  <Flex>
+                    <Input placeholder="Text" flex="8" mr={2} />
+                    <Input placeholder="Number" flex="2" />
+                  </Flex>
+                </VStack>
+              ))}
+            </HStack>
+            <HStack spacing={4}>
+              {[...Array(4)].map((_, index) => (
+                <VStack key={index} spacing={2} align="center">
+                  <Flex>
+                    <Input placeholder="Text" flex="8" mr={2} />
+                    <Input placeholder="Number" flex="2" />
+                  </Flex>
+                </VStack>
+              ))}
+            </HStack>
+            <HStack spacing={4}>
+              {[...Array(4)].map((_, index) => (
+                <VStack key={index} spacing={2} align="center">
+                  <Flex>
+                    <Input placeholder="Text" flex="8" mr={2} />
+                    <Input placeholder="Number" flex="2" />
+                  </Flex>
+                </VStack>
+              ))}
+            </HStack>
+            <HStack spacing={4}>
+              {[...Array(4)].map((_, index) => (
+                <VStack key={index} spacing={2} align="center">
+                  <Flex>
+                    <Input placeholder="Text" flex="8" mr={2} />
+                    <Input placeholder="Number" flex="2" />
+                  </Flex>
+                </VStack>
+              ))}
+            </HStack>
+          </VStack>
+          <Button mt={4} colorScheme="green">
+            Save Changes
+          </Button>
+        </Box>
       </Flex>
     </SidebarWithHeader>
   );

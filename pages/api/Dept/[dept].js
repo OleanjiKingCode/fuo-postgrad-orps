@@ -25,6 +25,7 @@ export default async (req, res) => {
         await db.disConnect();
         return res.status(404).json({ msg: "Department doesnt exist" });
       }
+      console.log(department);
       return res.status(200).json(department);
     } catch (error) {
       console.log("error", error);

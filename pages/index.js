@@ -28,13 +28,8 @@ const Login = () => {
   } = useForm();
   const toast = useToast();
   const router = useRouter();
-  const { data: session } = useSession();
   const [show, setShow] = React.useState(false);
   const handleClick = () => setShow(!show);
-
-  // useEffect(() => {
-
-  // }, [session, router]);
 
   const submitHandler = async ({ matricno, password }) => {
     try {

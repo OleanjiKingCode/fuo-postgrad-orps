@@ -7,6 +7,7 @@ const departmentSchema = new mongoose.Schema(
     courses: [{ name: String, units: Number }],
     maxUnits: { type: Number, required: true },
     maxCourses: { type: Number, required: true },
+    students: [{ name: String }],
   },
   {
     timestamps: true,

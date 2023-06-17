@@ -25,6 +25,7 @@ import {
   FiMenu,
   FiBell,
 } from "react-icons/fi";
+import { MdExitToApp } from "react-icons/md";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { signOut, useSession } from "next-auth/react";
@@ -237,12 +238,6 @@ const MobileNav = ({ onOpen }) => {
       </Text>
 
       <HStack spacing={{ base: "0", md: "6" }}>
-        <IconButton
-          size="lg"
-          variant="ghost"
-          aria-label="open menu"
-          icon={<FiBell />}
-        />
         <Flex alignItems={"center"} px="5">
           <HStack cursor="pointer">
             <Avatar
@@ -265,6 +260,13 @@ const MobileNav = ({ onOpen }) => {
             </VStack>
           </HStack>
         </Flex>
+        <IconButton
+          size="lg"
+          variant="ghost"
+          aria-label="open menu"
+          icon={<MdExitToApp />}
+          onClick={logOutUser}
+        />
       </HStack>
     </Flex>
   );

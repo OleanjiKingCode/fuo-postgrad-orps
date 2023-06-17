@@ -25,16 +25,36 @@ const Courses = () => {
   const [maxCourseNo, setMaxCourseNo] = useState(0);
 
   const [maxUnitsNo, setMaxUnitsNo] = useState(0);
-  const [courses, setCourses] = useState(
-    Array(16).fill({ course: "", number: "" })
-  );
+  const [courseData, setCourseData] = useState([
+    { name: "", units: "" },
+    { name: "", units: "" },
+    { name: "", units: "" },
+    { name: "", units: "" },
+    { name: "", units: "" },
+    { name: "", units: "" },
+    { name: "", units: "" },
+    { name: "", units: "" },
+    { name: "", units: "" },
+    { name: "", units: "" },
+    { name: "", units: "" },
+    { name: "", units: "" },
+    { name: "", units: "" },
+    { name: "", units: "" },
+    { name: "", units: "" },
+    { name: "", units: "" },
+    { name: "", units: "" },
+  ]);
 
-  const handleInputChange = (index, field, value) => {
-    setCourses((prevCourses) => {
-      const updatedCourses = [...prevCourses];
-      updatedCourses[index][field] = value;
-      return updatedCourses;
-    });
+  const handleCourseChange = (index, value) => {
+    const updatedCourseData = [...courseData];
+    updatedCourseData[index].name = value;
+    setCourseData(updatedCourseData);
+  };
+
+  const handleUnitsChange = (index, value) => {
+    const updatedCourseData = [...courseData];
+    updatedCourseData[index].units = value;
+    setCourseData(updatedCourseData);
   };
 
   const email = session?.user?.email;
@@ -58,9 +78,9 @@ const Courses = () => {
   }, [email, session]);
 
   const submitCourses = async () => {
-    if (maxCourseNo <= 8) {
+    if (maxCourseNo <= 8 || maxCourseNo > 16) {
       toast({
-        title: "Maximum number of courses to add is low",
+        title: "Maximum number of courses should be within 9-16",
         description: "",
         status: "warning",
         duration: 4000,
@@ -82,27 +102,51 @@ const Courses = () => {
     // Validate the input fields
     let isValid = true;
 
-    // Check the first 12 input fields
-    for (let i = 0; i < 12; i++) {
-      const { course, number } = courses[i];
-      if (course === "" || number === "0") {
-        isValid = false;
-        break;
+    // // Check the first 12 input fields
+    // for (let i = 1; i < maxCourseNo; i++) {
+    //   const { name, units } = courseData[i];
+    //   if (name === "" || units === "") {
+    //     isValid = false;
+    //     break;
+    //   }
+    // }
+
+    const minRequiredItems = 9;
+    let validCourseData = [];
+
+    for (let i = 1; i < maxCourseNo; i++) {
+      const { name, units } = courseData[i];
+
+      if (name.trim() !== "" && units.trim() !== "") {
+        validCourseData.push(courseData[i]);
       }
+    }
+
+    if (validCourseData.length < minRequiredItems) {
+      isValid = false;
     }
 
     if (isValid) {
       console.log("All input fields are valid");
       try {
-        await axios.put("/api/dept", {
-          courses,
+        await axios.put(`/api/Dept/${deptData?.name}`, {
+          courses: validCourseData,
+          maxCourses: maxCourseNo,
+          maxUnits: maxUnitsNo,
+        });
+        toast({
+          title: "Successfully added Courses",
+          description: "",
+          status: "success",
+          duration: 4000,
+          isClosable: true,
         });
       } catch (err) {
         console.log(err);
       }
     } else {
       toast({
-        title: "Input at least 8 courses ",
+        title: "Input at least 9 courses ",
         description: "",
         status: "warning",
         duration: 4000,
@@ -152,22 +196,22 @@ const Courses = () => {
                       <Flex gap="1" alignItems="center" justifyContent="center">
                         <span>{(index += 1)}</span>
                         <Input
-                          id={`course-${index + 1}`}
+                          id={`course-${index}`}
                           placeholder="Course"
                           flex="8"
                           mr={2}
-                          value={courses[index].course}
+                          value={courseData[index].name}
                           onChange={(e) =>
-                            handleInputChange(index, "course", e.target.value)
+                            handleCourseChange(index, e.target.value)
                           }
                         />
                         <Input
-                          id={`course-${index + 1}`}
+                          id={`course-${index}`}
                           placeholder="Number"
                           flex="2"
-                          value={courses[index].number}
+                          value={courseData[index].units}
                           onChange={(e) =>
-                            handleInputChange(index, "number", e.target.value)
+                            handleUnitsChange(index, e.target.value)
                           }
                         />
                       </Flex>
@@ -184,11 +228,19 @@ const Courses = () => {
                           placeholder="Course"
                           flex="8"
                           mr={2}
+                          value={courseData[index].name}
+                          onChange={(e) =>
+                            handleCourseChange(index, e.target.value)
+                          }
                         />
                         <Input
                           id={`course-${index + 5}`}
                           placeholder="Number"
                           flex="2"
+                          value={courseData[index].units}
+                          onChange={(e) =>
+                            handleUnitsChange(index, e.target.value)
+                          }
                         />
                       </Flex>
                     </VStack>
@@ -204,11 +256,19 @@ const Courses = () => {
                           placeholder="Course"
                           flex="8"
                           mr={2}
+                          value={courseData[index].name}
+                          onChange={(e) =>
+                            handleCourseChange(index, e.target.value)
+                          }
                         />
                         <Input
                           id={`course-${index + 9}`}
                           placeholder="Number"
                           flex="2"
+                          value={courseData[index].units}
+                          onChange={(e) =>
+                            handleUnitsChange(index, e.target.value)
+                          }
                         />
                       </Flex>
                     </VStack>
@@ -224,11 +284,19 @@ const Courses = () => {
                           placeholder="Course"
                           flex="8"
                           mr={2}
+                          value={courseData[index].name}
+                          onChange={(e) =>
+                            handleCourseChange(index, e.target.value)
+                          }
                         />
                         <Input
                           id={`course-${index + 13}`}
                           placeholder="Number"
                           flex="2"
+                          value={courseData[index].units}
+                          onChange={(e) =>
+                            handleUnitsChange(index, e.target.value)
+                          }
                         />
                       </Flex>
                     </VStack>

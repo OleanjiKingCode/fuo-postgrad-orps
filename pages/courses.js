@@ -11,11 +11,19 @@ import {
   Heading,
   Text,
   useToast,
+  Checkbox,
+  Table,
+  Thead,
+  Tbody,
+  Tr,
+  Th,
+  Td,
 } from "@chakra-ui/react";
 import axios from "axios";
 
 const Courses = () => {
   const { data: session } = useSession();
+  const [refetchData, setRefetchData] = useState(false);
   const [userData, setUserData] = useState();
   const [deptData, setDeptData] = useState();
   const [userRole, setUserRole] = useState("");
@@ -57,6 +65,20 @@ const Courses = () => {
     setCourseData(updatedCourseData);
   };
 
+  const handleCheckboxChange = (index) => {
+    const updatedCourseData = [...deptData.courses];
+    updatedCourseData[index].checked = !updatedCourseData[index].checked;
+    setDeptData({ ...deptData, courses: updatedCourseData });
+  };
+
+  const checkAllBoxes = () => {
+    const updatedCourseData = deptData.courses.map((course) => ({
+      ...course,
+      checked: true,
+    }));
+    setDeptData({ ...deptData, courses: updatedCourseData });
+  };
+
   const email = session?.user?.email;
 
   useEffect(() => {
@@ -70,12 +92,13 @@ const Courses = () => {
         const response2 = await axios.get(`/api/Dept/${data.department}`);
         if (response2) {
           const data2 = await response2.data;
+          console.log(data2);
           setDeptData(data2);
         }
       }
     };
     fetchData();
-  }, [email, session]);
+  }, [email, session, refetchData]);
 
   const submitCourses = async () => {
     if (maxCourseNo <= 8 || maxCourseNo > 16) {
@@ -102,19 +125,10 @@ const Courses = () => {
     // Validate the input fields
     let isValid = true;
 
-    // // Check the first 12 input fields
-    // for (let i = 1; i < maxCourseNo; i++) {
-    //   const { name, units } = courseData[i];
-    //   if (name === "" || units === "") {
-    //     isValid = false;
-    //     break;
-    //   }
-    // }
-
     const minRequiredItems = 9;
     let validCourseData = [];
 
-    for (let i = 1; i < maxCourseNo; i++) {
+    for (let i = 0; i < maxCourseNo; i++) {
       const { name, units } = courseData[i];
 
       if (name.trim() !== "" && units.trim() !== "") {
@@ -127,20 +141,22 @@ const Courses = () => {
     }
 
     if (isValid) {
-      console.log("All input fields are valid");
       try {
-        await axios.put(`/api/Dept/${deptData?.name}`, {
+        const result = await axios.put(`/api/Dept/${deptData?.name}`, {
           courses: validCourseData,
           maxCourses: maxCourseNo,
           maxUnits: maxUnitsNo,
         });
-        toast({
-          title: "Successfully added Courses",
-          description: "",
-          status: "success",
-          duration: 4000,
-          isClosable: true,
-        });
+        if (result) {
+          setRefetchData((prevValue) => !prevValue);
+          toast({
+            title: "Successfully added Courses",
+            description: "",
+            status: "success",
+            duration: 4000,
+            isClosable: true,
+          });
+        }
       } catch (err) {
         console.log(err);
       }
@@ -315,7 +331,36 @@ const Courses = () => {
         ) : userRole === "Lecturer" ? (
           <span>List of students that have added the courses.</span>
         ) : (
-          <span>List of the courses you added.</span>
+          <VStack mt={4} p={4} w="full" bg="white">
+            <Table variant="striped" colorScheme="blue" w="full">
+              <Thead>
+                <Tr>
+                  <Th>#</Th>
+                  <Th>Course Name</Th>
+                  <Th>Units</Th>
+                  <Th>Check</Th>
+                </Tr>
+              </Thead>
+              <Tbody>
+                {deptData.courses.map((course, index) => (
+                  <Tr key={index}>
+                    <Td>{index + 1}</Td>
+                    <Td>{course.name}</Td>
+                    <Td>{course.units}</Td>
+                    <Td>
+                      <Checkbox
+                        isChecked={course.checked}
+                        onChange={() => handleCheckboxChange(index)}
+                      />
+                    </Td>
+                  </Tr>
+                ))}
+              </Tbody>
+            </Table>
+            <Button my={4} colorScheme="blue" onClick={checkAllBoxes}>
+              Check All
+            </Button>
+          </VStack>
         )}
       </Flex>
     </SidebarWithHeader>

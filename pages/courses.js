@@ -25,6 +25,7 @@ const Courses = () => {
   const { data: session } = useSession();
   const [refetchData, setRefetchData] = useState(false);
   const [userData, setUserData] = useState();
+  const [userDataWithCourses, setUserDataCourses] = useState();
   const [deptData, setDeptData] = useState();
   const [userRole, setUserRole] = useState("");
   const [userDept, setUserDept] = useState("");
@@ -100,9 +101,12 @@ const Courses = () => {
         const response2 = await axios.get(`/api/Dept/${data.department}`);
         if (response2) {
           const data2 = await response2.data;
-          console.log(data2);
           setDeptData(data2);
         }
+      }
+      const response4 = await axios.get(`/api/User`);
+      if (response4) {
+        setUserDataCourses(response4.data);
       }
     };
     fetchData();
@@ -202,7 +206,23 @@ const Courses = () => {
       return;
     }
 
-    
+    try {
+      const result = await axios.put(`/api/User/${email}`, {
+        courses: coursesWithCheckboxTrue,
+      });
+      if (result) {
+        setRefetchData((prevValue) => !prevValue);
+        toast({
+          title: "Successfully added Courses",
+          description: "",
+          status: "success",
+          duration: 4000,
+          isClosable: true,
+        });
+      }
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (
@@ -358,12 +378,47 @@ const Courses = () => {
             </Box>
           ) : (
             <Box p={4} w="full" bg="white">
-              <Text>Contact your Lecturers to Update the courses</Text>
+              <Text>Contact your Lecturers to Update the Courses</Text>
             </Box>
           )
         ) : userRole === "Lecturer" ? (
-          <span>List of students that have added the courses.</span>
-        ) : (
+          <VStack mt={4} p={4} w="full" bg="white">
+            <HStack w="full" gap="10">
+              <Heading fontSize="lg">STUDENTS WHO REGISTERED </Heading>
+              <Text>
+                {" "}
+                <b>DEPARTMENT :</b> {deptData?.name}
+              </Text>
+              <Text>
+                {" "}
+                <b>MAX UNITS :</b> {deptData?.maxUnits}
+              </Text>
+            </HStack>
+
+            <Table variant="striped" colorScheme="blue" w="full">
+              <Thead>
+                <Tr>
+                  <Th>#</Th>
+                  <Th>Student Name</Th>
+                  <Th>Email</Th>
+                  <Th>Matric No</Th>
+                  <Th>Course Count</Th>
+                </Tr>
+              </Thead>
+              <Tbody>
+                {userDataWithCourses?.map((student, index) => (
+                  <Tr key={index}>
+                    <Td>{index + 1}</Td>
+                    <Td>{student.name}</Td>
+                    <Td>{student.email}</Td>
+                    <Td>{student.matricno}</Td>
+                    <Td>{student.courses.length}</Td>
+                  </Tr>
+                ))}
+              </Tbody>
+            </Table>
+          </VStack>
+        ) : userDept.courses === 0 ? (
           <VStack mt={4} p={4} w="full" bg="white">
             <HStack w="full" gap="10">
               <Heading fontSize="lg">CHOOSE COURSES</Heading>
@@ -413,6 +468,39 @@ const Courses = () => {
                 Submit
               </Button>
             </HStack>
+          </VStack>
+        ) : (
+          <VStack mt={4} p={4} w="full" bg="white">
+            <HStack w="full" gap="10">
+              <Heading fontSize="lg">CHOOSEN COURSES</Heading>
+              <Text>
+                {" "}
+                <b>DEPARTMENT :</b> {deptData?.name}
+              </Text>
+              <Text>
+                {" "}
+                <b>MAX UNITS :</b> {deptData?.maxUnits}
+              </Text>
+            </HStack>
+
+            <Table variant="striped" colorScheme="blue" w="full">
+              <Thead>
+                <Tr>
+                  <Th>#</Th>
+                  <Th>Course Name</Th>
+                  <Th>Units</Th>
+                </Tr>
+              </Thead>
+              <Tbody>
+                {userData?.courses?.map((course, index) => (
+                  <Tr key={index}>
+                    <Td>{index + 1}</Td>
+                    <Td>{course.name}</Td>
+                    <Td>{course.units}</Td>
+                  </Tr>
+                ))}
+              </Tbody>
+            </Table>
           </VStack>
         )}
       </Flex>

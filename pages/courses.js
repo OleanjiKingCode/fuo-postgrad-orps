@@ -332,6 +332,18 @@ const Courses = () => {
           <span>List of students that have added the courses.</span>
         ) : (
           <VStack mt={4} p={4} w="full" bg="white">
+            <HStack w="full" gap="10">
+              <Heading fontSize="lg">CHOOSE COURSES</Heading>
+              <Text>
+                {" "}
+                <b>DEPARTMENT :</b> {deptData?.name}
+              </Text>
+              <Text>
+                {" "}
+                <b>MAX UNITS :</b> {deptData?.maxUnits}
+              </Text>
+            </HStack>
+
             <Table variant="striped" colorScheme="blue" w="full">
               <Thead>
                 <Tr>
@@ -342,7 +354,7 @@ const Courses = () => {
                 </Tr>
               </Thead>
               <Tbody>
-                {deptData.courses.map((course, index) => (
+                {deptData?.courses?.map((course, index) => (
                   <Tr key={index}>
                     <Td>{index + 1}</Td>
                     <Td>{course.name}</Td>
@@ -357,9 +369,14 @@ const Courses = () => {
                 ))}
               </Tbody>
             </Table>
-            <Button my={4} colorScheme="blue" onClick={checkAllBoxes}>
-              Check All
-            </Button>
+            <HStack w="full" gap="10">
+              <Button my={4} colorScheme="blue" onClick={checkAllBoxes}>
+                Check All
+              </Button>
+              <Button my={4} colorScheme="green" onClick={checkAllBoxes}>
+                Submit
+              </Button>
+            </HStack>
           </VStack>
         )}
       </Flex>

@@ -16,11 +16,14 @@ import {
   Heading,
   Tr,
   Input,
+  useToast,
 } from "@chakra-ui/react";
 import axios from "axios";
 
 const HomePage = () => {
   const { data: session } = useSession();
+  const toast = useToast();
+  const [refetchData, setRefetchData] = useState(false);
   const [userData, setUserData] = useState();
 
   const email = session?.user?.email;
@@ -33,7 +36,7 @@ const HomePage = () => {
       }
     };
     fetchData();
-  }, [email, session]);
+  }, [email, session, refetchData]);
 
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [attendance, setAttendance] = useState("");
@@ -61,14 +64,29 @@ const HomePage = () => {
     );
   };
 
-  const handleSaveChanges = () => {
+  const handleSaveChanges = async () => {
     const updatedStudent = {
       ...selectedStudent,
       courses: courseData,
     };
-    console.log(updatedStudent); // Do something with the updated student object
-
-    
+    console.log(updatedStudent, courseData); // Do something with the updated student object
+    try {
+      const result = await axios.put(`/api/User/${email}`, {
+        courses: courseData,
+      });
+      if (result) {
+        setRefetchData((prevValue) => !prevValue);
+        toast({
+          title: "Successfully added Courses",
+          description: "",
+          status: "success",
+          duration: 4000,
+          isClosable: true,
+        });
+      }
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (
@@ -88,14 +106,14 @@ const HomePage = () => {
                 </Tr>
               </Thead>
               <Tbody>
-                {userData?.map((student, index) => (
+                {userData?.map((student, i) => (
                   <Tr
                     key={student.id}
                     cursor="pointer"
                     onClick={() => handleStudentClick(student)}
                     _hover={{ bg: "gray.200" }}
                   >
-                    <Td>{(index += 1)}</Td>
+                    <Td>{(i += 1)}</Td>
                     <Td>{student.name}</Td>
                     <Td fontWeight="bold">{student.matricno}</Td>
                   </Tr>
@@ -124,6 +142,8 @@ const HomePage = () => {
                             <Input
                               type="text"
                               value={course.attendance}
+                              min={0}
+                              max={10}
                               onChange={(e) =>
                                 handleInputChange(
                                   index,
@@ -136,6 +156,8 @@ const HomePage = () => {
                           <Td>
                             <Input
                               type="text"
+                              min={0}
+                              max={30}
                               value={course.ca}
                               onChange={(e) =>
                                 handleInputChange(index, "ca", e.target.value)
@@ -145,6 +167,8 @@ const HomePage = () => {
                           <Td>
                             <Input
                               type="text"
+                              min={0}
+                              max={60}
                               value={course.exams}
                               onChange={(e) =>
                                 handleInputChange(

@@ -23,8 +23,8 @@ userSchema.add({
       name: String,
       units: String,
       attendance: Number,
-      CA: Number,
-      Exam: Number,
+      ca: Number,
+      exams: Number,
     },
   ],
 });

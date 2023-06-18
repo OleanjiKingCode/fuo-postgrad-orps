@@ -208,7 +208,7 @@ const Courses = () => {
 
     try {
       const result = await axios.put(`/api/User/${email}`, {
-        courses: coursesWithCheckboxTrue,
+        Courses: coursesWithCheckboxTrue,
       });
       if (result) {
         setRefetchData((prevValue) => !prevValue);
@@ -288,27 +288,27 @@ const Courses = () => {
                   ))}
                 </HStack>
                 <HStack spacing={4}>
-                  {[...Array(4)].map((_, index) => (
-                    <VStack key={index} spacing={2} align="center">
+                  {[...Array(4)].map((_, ind) => (
+                    <VStack key={ind} spacing={2} align="center">
                       <Flex gap="1" alignItems="center" justifyContent="center">
-                        <span>{(index += 5)}</span>
+                        <span>{(ind += 5)}</span>
                         <Input
-                          id={`course-${index + 5}`}
+                          id={`course-${ind + 5}`}
                           placeholder="Course"
                           flex="8"
                           mr={2}
-                          value={courseData[index].name}
+                          value={courseData[ind].name}
                           onChange={(e) =>
-                            handleCourseChange(index, e.target.value)
+                            handleCourseChange(ind, e.target.value)
                           }
                         />
                         <Input
-                          id={`course-${index + 5}`}
+                          id={`course-${ind + 5}`}
                           placeholder="Number"
                           flex="2"
-                          value={courseData[index].units}
+                          value={courseData[ind].units}
                           onChange={(e) =>
-                            handleUnitsChange(index, e.target.value)
+                            handleUnitsChange(ind, e.target.value)
                           }
                         />
                       </Flex>
@@ -316,55 +316,53 @@ const Courses = () => {
                   ))}
                 </HStack>
                 <HStack spacing={4}>
-                  {[...Array(4)].map((_, index) => (
-                    <VStack key={index} spacing={2} align="center">
+                  {[...Array(4)].map((_, i) => (
+                    <VStack key={i} spacing={2} align="center">
                       <Flex gap="1" alignItems="center" justifyContent="center">
-                        <span>{(index += 9)}</span>
+                        <span>{(i += 9)}</span>
                         <Input
-                          id={`course-${index + 9}`}
+                          id={`course-${i + 9}`}
                           placeholder="Course"
                           flex="8"
                           mr={2}
-                          value={courseData[index].name}
+                          value={courseData[i].name}
                           onChange={(e) =>
-                            handleCourseChange(index, e.target.value)
+                            handleCourseChange(i, e.target.value)
                           }
                         />
                         <Input
-                          id={`course-${index + 9}`}
+                          id={`course-${i + 9}`}
                           placeholder="Number"
                           flex="2"
-                          value={courseData[index].units}
-                          onChange={(e) =>
-                            handleUnitsChange(index, e.target.value)
-                          }
+                          value={courseData[i].units}
+                          onChange={(e) => handleUnitsChange(i, e.target.value)}
                         />
                       </Flex>
                     </VStack>
                   ))}
                 </HStack>
                 <HStack spacing={4}>
-                  {[...Array(4)].map((_, index) => (
-                    <VStack key={index} spacing={2} align="center">
+                  {[...Array(4)].map((_, inde) => (
+                    <VStack key={inde} spacing={2} align="center">
                       <Flex gap="1" alignItems="center" justifyContent="center">
-                        <span>{(index += 13)}</span>
+                        <span>{(inde += 13)}</span>
                         <Input
-                          id={`course-${index + 13}`}
+                          id={`course-${inde + 13}`}
                           placeholder="Course"
                           flex="8"
                           mr={2}
-                          value={courseData[index].name}
+                          value={courseData[inde].name}
                           onChange={(e) =>
-                            handleCourseChange(index, e.target.value)
+                            handleCourseChange(inde, e.target.value)
                           }
                         />
                         <Input
-                          id={`course-${index + 13}`}
+                          id={`course-${inde + 13}`}
                           placeholder="Number"
                           flex="2"
-                          value={courseData[index].units}
+                          value={courseData[inde].units}
                           onChange={(e) =>
-                            handleUnitsChange(index, e.target.value)
+                            handleUnitsChange(inde, e.target.value)
                           }
                         />
                       </Flex>

@@ -18,16 +18,17 @@ const userSchema = new mongoose.Schema(
 );
 
 userSchema.add({
-  courses: [
+  coursesAdded: [
     {
       name: String,
       units: String,
-      attendance: Number,
-      ca: Number,
-      exams: Number,
+      attendance: String,
+      ca: String,
+      exams: String,
     },
   ],
 });
+
 
 const Users = mongoose.models.Users || mongoose.model("Users", userSchema);
 export default Users;

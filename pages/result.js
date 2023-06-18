@@ -108,7 +108,7 @@ const HomePage = () => {
               <Tbody>
                 {userData?.map((student, i) => (
                   <Tr
-                    key={student.id}
+                    key={i}
                     cursor="pointer"
                     onClick={() => handleStudentClick(student)}
                     _hover={{ bg: "gray.200" }}
@@ -136,7 +136,7 @@ const HomePage = () => {
                   {selectedStudent.courses.length > 0 ? (
                     <>
                       {selectedStudent?.courses.map((course, index) => (
-                        <Tr key={course.units} cursor="pointer">
+                        <Tr key={index} cursor="pointer">
                           <Td>{course.name}</Td>
                           <Td>
                             <Input

@@ -18,7 +18,15 @@ const userSchema = new mongoose.Schema(
 );
 
 userSchema.add({
-  courses: [{ name: String, units: String }],
+  courses: [
+    {
+      name: String,
+      units: String,
+      attendance: Number,
+      CA: Number,
+      Exam: Number,
+    },
+  ],
 });
 
 const Users = mongoose.models.Users || mongoose.model("Users", userSchema);

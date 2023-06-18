@@ -17,6 +17,9 @@ const userSchema = new mongoose.Schema(
   }
 );
 
-const Users =
-  mongoose.models.Users || mongoose.model("Users", userSchema);
+userSchema.add({
+  courses: [{ name: String, units: String }],
+});
+
+const Users = mongoose.models.Users || mongoose.model("Users", userSchema);
 export default Users;

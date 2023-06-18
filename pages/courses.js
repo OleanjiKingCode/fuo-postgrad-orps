@@ -79,6 +79,14 @@ const Courses = () => {
     setDeptData({ ...deptData, courses: updatedCourseData });
   };
 
+  const unCheckAllBoxes = () => {
+    const updatedCourseData = deptData.courses.map((course) => ({
+      ...course,
+      checked: false,
+    }));
+    setDeptData({ ...deptData, courses: updatedCourseData });
+  };
+
   const email = session?.user?.email;
 
   useEffect(() => {
@@ -170,6 +178,31 @@ const Courses = () => {
       });
       return;
     }
+  };
+
+  const chosenCourses = async () => {
+    let coursesWithCheckboxTrue = [];
+    let amountOfUnits = 0;
+
+    for (const course of deptData.courses) {
+      if (course.checked === true) {
+        coursesWithCheckboxTrue.push(course);
+        amountOfUnits += course.units;
+      }
+    }
+
+    if (amountOfUnits < deptData?.maxUnits) {
+      toast({
+        title: "Maximum number of units added is low",
+        description: "",
+        status: "warning",
+        duration: 4000,
+        isClosable: true,
+      });
+      return;
+    }
+
+    
   };
 
   return (
@@ -373,7 +406,10 @@ const Courses = () => {
               <Button my={4} colorScheme="blue" onClick={checkAllBoxes}>
                 Check All
               </Button>
-              <Button my={4} colorScheme="green" onClick={checkAllBoxes}>
+              <Button my={4} colorScheme="blue" onClick={unCheckAllBoxes}>
+                Un-Check All
+              </Button>
+              <Button my={4} colorScheme="green" onClick={chosenCourses}>
                 Submit
               </Button>
             </HStack>

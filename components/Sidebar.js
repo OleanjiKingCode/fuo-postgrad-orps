@@ -230,11 +230,12 @@ const MobileNav = ({ onOpen }) => {
 
       <Text
         display={{ base: "flex", md: "none" }}
-        fontSize="2xl"
+        fontSize="xl"
         fontFamily="monospace"
-        fontWeight="bold"
+        fontWeight="semibold"
+        textAlign="center"
       >
-        Logo
+        Fountain University Postgraduate
       </Text>
 
       <HStack spacing={{ base: "0", md: "6" }}>

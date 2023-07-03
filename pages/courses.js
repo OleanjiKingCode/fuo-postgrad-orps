@@ -110,7 +110,7 @@ const Courses = () => {
       }
     };
     fetchData();
-  }, [email, session, refetchData]);
+  }, [session, refetchData]);
 
   const submitCourses = async () => {
     if (maxCourseNo <= 8 || maxCourseNo > 16) {
@@ -225,6 +225,7 @@ const Courses = () => {
     }
   };
 
+  console.log(deptData, userData, userDept);
   return (
     <SidebarWithHeader>
       <Flex>
@@ -375,9 +376,18 @@ const Courses = () => {
               </Button>
             </Box>
           ) : (
-            <Box p={4} w="full" bg="white">
-              <Text>Contact your Lecturers to Update the Courses</Text>
-            </Box>
+            <Flex
+              p={4}
+              w="full"
+              minH="80vh"
+              bg="white"
+              fontWeight="semibold"
+              fontSize="lg"
+              justifyContent="center"
+              alignItems="center"
+            >
+              Contact your lecturers to update the courses
+            </Flex>
           )
         ) : userRole === "Lecturer" ? (
           <VStack mt={4} p={4} w="full" bg="white">
@@ -416,7 +426,7 @@ const Courses = () => {
               </Tbody>
             </Table>
           </VStack>
-        ) : userDept.courses === 0 ? (
+        ) : userData?.courses === 0 ? (
           <VStack mt={4} p={4} w="full" bg="white">
             <HStack w="full" gap="10">
               <Heading fontSize="lg">CHOOSE COURSES</Heading>

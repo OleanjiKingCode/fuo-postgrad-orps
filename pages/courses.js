@@ -18,6 +18,7 @@ import {
   Tr,
   Th,
   Td,
+  Spinner,
 } from "@chakra-ui/react";
 import axios from "axios";
 
@@ -426,90 +427,96 @@ const Courses = () => {
               </Tbody>
             </Table>
           </VStack>
-        ) : userData?.courses === 0 ? (
-          <VStack mt={4} p={4} w="full" bg="white">
-            <HStack w="full" gap="10">
-              <Heading fontSize="lg">CHOOSE COURSES</Heading>
-              <Text>
-                {" "}
-                <b>DEPARTMENT :</b> {deptData?.name}
-              </Text>
-              <Text>
-                {" "}
-                <b>MAX UNITS :</b> {deptData?.maxUnits}
-              </Text>
-            </HStack>
+        ) : userData?.coursesAdded ? (
+          <>
+            {userData?.coursesAdded.length === 0 ? (
+              <VStack mt={4} p={4} w="full" bg="white">
+                <HStack w="full" gap="10">
+                  <Heading fontSize="lg">CHOOSE COURSES</Heading>
+                  <Text>
+                    {" "}
+                    <b>DEPARTMENT :</b> {deptData?.name}
+                  </Text>
+                  <Text>
+                    {" "}
+                    <b>MAX UNITS :</b> {deptData?.maxUnits}
+                  </Text>
+                </HStack>
 
-            <Table variant="striped" colorScheme="blue" w="full">
-              <Thead>
-                <Tr>
-                  <Th>#</Th>
-                  <Th>Course Name</Th>
-                  <Th>Units</Th>
-                  <Th>Check</Th>
-                </Tr>
-              </Thead>
-              <Tbody>
-                {deptData?.courses?.map((course, index) => (
-                  <Tr key={index}>
-                    <Td>{index + 1}</Td>
-                    <Td>{course.name}</Td>
-                    <Td>{course.units}</Td>
-                    <Td>
-                      <Checkbox
-                        isChecked={course.checked}
-                        onChange={() => handleCheckboxChange(index)}
-                      />
-                    </Td>
-                  </Tr>
-                ))}
-              </Tbody>
-            </Table>
-            <HStack w="full" gap="10">
-              <Button my={4} colorScheme="blue" onClick={checkAllBoxes}>
-                Check All
-              </Button>
-              <Button my={4} colorScheme="blue" onClick={unCheckAllBoxes}>
-                Un-Check All
-              </Button>
-              <Button my={4} colorScheme="green" onClick={chosenCourses}>
-                Submit
-              </Button>
-            </HStack>
-          </VStack>
+                <Table variant="striped" colorScheme="blue" w="full">
+                  <Thead>
+                    <Tr>
+                      <Th>#</Th>
+                      <Th>Course Name</Th>
+                      <Th>Units</Th>
+                      <Th>Check</Th>
+                    </Tr>
+                  </Thead>
+                  <Tbody>
+                    {deptData?.courses?.map((course, index) => (
+                      <Tr key={index}>
+                        <Td>{index + 1}</Td>
+                        <Td>{course.name}</Td>
+                        <Td>{course.units}</Td>
+                        <Td>
+                          <Checkbox
+                            isChecked={course.checked}
+                            onChange={() => handleCheckboxChange(index)}
+                          />
+                        </Td>
+                      </Tr>
+                    ))}
+                  </Tbody>
+                </Table>
+                <HStack w="full" gap="10">
+                  <Button my={4} colorScheme="blue" onClick={checkAllBoxes}>
+                    Check All
+                  </Button>
+                  <Button my={4} colorScheme="blue" onClick={unCheckAllBoxes}>
+                    Un-Check All
+                  </Button>
+                  <Button my={4} colorScheme="green" onClick={chosenCourses}>
+                    Submit
+                  </Button>
+                </HStack>
+              </VStack>
+            ) : (
+              <VStack mt={4} p={4} w="full" bg="white">
+                <HStack w="full" gap="10">
+                  <Heading fontSize="lg">CHOOSEN COURSES</Heading>
+                  <Text>
+                    {" "}
+                    <b>DEPARTMENT :</b> {deptData?.name}
+                  </Text>
+                  <Text>
+                    {" "}
+                    <b>MAX UNITS :</b> {deptData?.maxUnits}
+                  </Text>
+                </HStack>
+
+                <Table variant="striped" colorScheme="blue" w="full">
+                  <Thead>
+                    <Tr>
+                      <Th>#</Th>
+                      <Th>Course Name</Th>
+                      <Th>Units</Th>
+                    </Tr>
+                  </Thead>
+                  <Tbody>
+                    {userData?.courses?.map((course, index) => (
+                      <Tr key={index}>
+                        <Td>{index + 1}</Td>
+                        <Td>{course.name}</Td>
+                        <Td>{course.units}</Td>
+                      </Tr>
+                    ))}
+                  </Tbody>
+                </Table>
+              </VStack>
+            )}
+          </>
         ) : (
-          <VStack mt={4} p={4} w="full" bg="white">
-            <HStack w="full" gap="10">
-              <Heading fontSize="lg">CHOOSEN COURSES</Heading>
-              <Text>
-                {" "}
-                <b>DEPARTMENT :</b> {deptData?.name}
-              </Text>
-              <Text>
-                {" "}
-                <b>MAX UNITS :</b> {deptData?.maxUnits}
-              </Text>
-            </HStack>
-
-            <Table variant="striped" colorScheme="blue" w="full">
-              <Thead>
-                <Tr>
-                  <Th>#</Th>
-                  <Th>Course Name</Th>
-                  <Th>Units</Th>
-                </Tr>
-              </Thead>
-              <Tbody>
-                {userData?.courses?.map((course, index) => (
-                  <Tr key={index}>
-                    <Td>{index + 1}</Td>
-                    <Td>{course.name}</Td>
-                    <Td>{course.units}</Td>
-                  </Tr>
-                ))}
-              </Tbody>
-            </Table>
-          </VStack>
+          <Spinner />
         )}
       </Flex>
     </SidebarWithHeader>

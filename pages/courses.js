@@ -104,10 +104,14 @@ const Courses = () => {
           const data2 = await response2.data;
           setDeptData(data2);
         }
-      }
-      const response4 = await axios.get(`/api/User`);
-      if (response4) {
-        setUserDataCourses(response4.data);
+
+        const response4 = await axios.get(`/api/User`);
+        if (response4) {
+          const dptUsers = response4.data.filter(
+            (obj) => obj.department === data.department
+          );
+          setUserDataCourses(dptUsers);
+        }
       }
     };
     fetchData();
@@ -162,6 +166,7 @@ const Courses = () => {
         });
         if (result) {
           setRefetchData((prevValue) => !prevValue);
+          setRefetchData(true);
           toast({
             title: "Successfully added Courses",
             description: "",
@@ -209,7 +214,7 @@ const Courses = () => {
 
     try {
       const result = await axios.put(`/api/User/${email}`, {
-        Courses: coursesWithCheckboxTrue,
+        coursesAdded: coursesWithCheckboxTrue,
       });
       if (result) {
         setRefetchData((prevValue) => !prevValue);
@@ -392,26 +397,27 @@ const Courses = () => {
           )
         ) : userRole === "Lecturer" ? (
           <VStack mt={4} p={4} w="full" bg="white">
-            <HStack w="full" gap="10">
+            <VStack w="full" gap="3" py="4">
               <Heading fontSize="lg">STUDENTS WHO REGISTERED </Heading>
-              <Text>
-                {" "}
-                <b>DEPARTMENT :</b> {deptData?.name}
-              </Text>
-              <Text>
-                {" "}
-                <b>MAX UNITS :</b> {deptData?.maxUnits}
-              </Text>
-            </HStack>
-
-            <Table variant="striped" colorScheme="blue" w="full">
+              <HStack w="full" px="10" justifyContent="space-between">
+                <Text>
+                  {" "}
+                  <b>DEPARTMENT :</b> {deptData?.name}
+                </Text>
+                <Text>
+                  {" "}
+                  <b>MAX UNITS :</b> {deptData?.maxUnits}
+                </Text>
+              </HStack>
+            </VStack>
+            <Table variant="striped" colorScheme="blue" w="full" py="20">
               <Thead>
                 <Tr>
                   <Th>#</Th>
                   <Th>Student Name</Th>
                   <Th>Email</Th>
                   <Th>Matric No</Th>
-                  <Th>Course Count</Th>
+                  <Th>Course Registered</Th>
                 </Tr>
               </Thead>
               <Tbody>
@@ -421,7 +427,7 @@ const Courses = () => {
                     <Td>{student.name}</Td>
                     <Td>{student.email}</Td>
                     <Td>{student.matricno}</Td>
-                    <Td>{student.courses.length}</Td>
+                    <Td>{student.coursesAdded.length}</Td>
                   </Tr>
                 ))}
               </Tbody>
@@ -482,17 +488,19 @@ const Courses = () => {
               </VStack>
             ) : (
               <VStack mt={4} p={4} w="full" bg="white">
-                <HStack w="full" gap="10">
+                <VStack w="full" gap="4">
                   <Heading fontSize="lg">CHOOSEN COURSES</Heading>
-                  <Text>
-                    {" "}
-                    <b>DEPARTMENT :</b> {deptData?.name}
-                  </Text>
-                  <Text>
-                    {" "}
-                    <b>MAX UNITS :</b> {deptData?.maxUnits}
-                  </Text>
-                </HStack>
+                  <HStack w="full" justifyContent="space-between" px="10">
+                    <Text>
+                      {" "}
+                      <b>DEPARTMENT :</b> {deptData?.name}
+                    </Text>
+                    <Text>
+                      {" "}
+                      <b>MAX UNITS :</b> {deptData?.maxUnits}
+                    </Text>
+                  </HStack>
+                </VStack>
 
                 <Table variant="striped" colorScheme="blue" w="full">
                   <Thead>
@@ -503,7 +511,7 @@ const Courses = () => {
                     </Tr>
                   </Thead>
                   <Tbody>
-                    {userData?.courses?.map((course, index) => (
+                    {userData?.coursesAdded?.map((course, index) => (
                       <Tr key={index}>
                         <Td>{index + 1}</Td>
                         <Td>{course.name}</Td>
@@ -516,7 +524,18 @@ const Courses = () => {
             )}
           </>
         ) : (
-          <Spinner />
+          <Flex
+            p={4}
+            w="full"
+            minH="80vh"
+            bg="white"
+            fontWeight="semibold"
+            fontSize="lg"
+            justifyContent="center"
+            alignItems="center"
+          >
+            <Spinner />
+          </Flex>
         )}
       </Flex>
     </SidebarWithHeader>

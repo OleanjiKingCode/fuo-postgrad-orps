@@ -2,15 +2,7 @@ import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { signIn, useSession } from "next-auth/react";
 import SidebarWithHeader from "@/components/Sidebar";
-import {
-  Flex,
-  Container,
-  Box,
-  Image,
-  Stack,
-  HStack,
-  chakra,
-} from "@chakra-ui/react";
+import { Flex, Container, Box, Image, VStack, chakra } from "@chakra-ui/react";
 import axios from "axios";
 
 const HomePage = () => {
@@ -55,61 +47,28 @@ const HomePage = () => {
                 borderRadius="full"
                 mb={4}
               />
-              <Stack spacing={4} w="full">
-                <HStack w="full">
-                  <chakra.span w="40%">Name:</chakra.span>{" "}
-                  <chakra.div
-                    py={3}
-                    px={5}
-                    borderRadius="2xl"
-                    borderWidth="2px"
-                    w="full"
-                  >
-                    {" "}
-                    {userData?.name}
-                  </chakra.div>
-                </HStack>
-                <HStack w="full">
-                  <chakra.span w="40%">Sex:</chakra.span>{" "}
-                  <chakra.div
-                    py={3}
-                    px={5}
-                    borderRadius="2xl"
-                    borderWidth="2px"
-                    w="full"
-                  >
-                    {" "}
-                    {userData?.sex}
-                  </chakra.div>
-                </HStack>
-                <HStack w="full">
-                  <chakra.span w="40%">Matric Number:</chakra.span>{" "}
-                  <chakra.div
-                    py={3}
-                    px={5}
-                    borderRadius="2xl"
-                    borderWidth="2px"
-                    w="full"
-                  >
-                    {" "}
-                    {userData?.matricno}
-                  </chakra.div>
-                </HStack>
-                
-                <HStack w="full">
-                  <chakra.span w="40%">Phone Number:</chakra.span>{" "}
-                  <chakra.div
-                    py={3}
-                    px={5}
-                    borderRadius="2xl"
-                    borderWidth="2px"
-                    w="full"
-                  >
-                    {" "}
-                    {userData?.phoneNumber}
-                  </chakra.div>
-                </HStack>
-              </Stack>
+              <VStack
+                spacing={4}
+                w="full"
+                textAlign="center"
+                justifyContent="center"
+              >
+                <chakra.div py={3} px={5} w="full" fontWeight="bold">
+                  {userData?.name}
+                </chakra.div>
+
+                <chakra.div py={3} px={5} w="full">
+                  {userData?.matricno}
+                </chakra.div>
+
+                <chakra.div py={3} px={5} w="full">
+                  {userData?.department}
+                </chakra.div>
+
+                <chakra.div py={3} px={5} w="full">
+                  {userData?.phoneNumber}
+                </chakra.div>
+              </VStack>
             </Flex>
           </Box>
         </Container>

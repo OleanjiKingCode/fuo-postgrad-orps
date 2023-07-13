@@ -47,7 +47,7 @@ const HomePage = () => {
       }
     };
     fetchData();
-  }, [email, session, refetchData]);
+  }, [session, refetchData]);
 
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [attendance, setAttendance] = useState("");
@@ -57,33 +57,36 @@ const HomePage = () => {
 
   const handleStudentClick = (student) => {
     setSelectedStudent(student);
-    setCourseData(
-      student?.courses?.map((course) => ({
-        ...course,
-        attendance: course.attendance || "",
-        ca: course.ca || "",
-        exams: course.exams || "",
-      }))
-    );
+    const updatedData = student?.coursesAdded?.map((course) => ({
+      ...course,
+      attendance: course.attendance || "",
+      ca: course.ca || "",
+      exams: course.exams || "",
+    }));
+    console.log(student?.coursesAdded, updatedData);
+    setCourseData(updatedData);
   };
 
   const handleInputChange = (index, field, value) => {
+    console.log(courseData);
     setCourseData((prevData) =>
-      prevData.map((course, i) =>
-        i === index ? { ...course, [field]: value } : course
-      )
+      prevData
+        ? prevData.map((course, i) =>
+            i === index ? { ...course, [field]: value } : course
+          )
+        : []
     );
   };
 
   const handleSaveChanges = async () => {
     const updatedStudent = {
       ...selectedStudent,
-      courses: courseData,
+      coursesAdded: courseData,
     };
     console.log(updatedStudent, courseData); // Do something with the updated student object
     try {
-      const result = await axios.put(`/api/User/${email}`, {
-        courses: courseData,
+      const result = await axios.put(`/api/User/${updatedStudent.email}`, {
+        coursesAdded: courseData,
       });
       if (result) {
         setRefetchData((prevValue) => !prevValue);
@@ -143,7 +146,7 @@ const HomePage = () => {
               >
                 {selectedStudent ? (
                   <>
-                    {selectedStudent?.courses?.length > 0 ? (
+                    {selectedStudent?.coursesAdded?.length > 0 ? (
                       <>
                         <Table variant="striped" colorScheme="gray">
                           <Thead>
@@ -155,58 +158,63 @@ const HomePage = () => {
                             </Tr>
                           </Thead>
                           <Tbody>
-                            {selectedStudent?.courses?.map((course, index) => (
-                              <>
-                                <Tr key={index} cursor="pointer">
-                                  <Td>{course.name}</Td>
-                                  <Td>
-                                    <Input
-                                      type="text"
-                                      value={course.attendance}
-                                      min={0}
-                                      max={10}
-                                      onChange={(e) =>
-                                        handleInputChange(
-                                          index,
-                                          "attendance",
-                                          e.target.value
-                                        )
-                                      }
-                                    />
-                                  </Td>
-                                  <Td>
-                                    <Input
-                                      type="text"
-                                      min={0}
-                                      max={30}
-                                      value={course.ca}
-                                      onChange={(e) =>
-                                        handleInputChange(
-                                          index,
-                                          "ca",
-                                          e.target.value
-                                        )
-                                      }
-                                    />
-                                  </Td>
-                                  <Td>
-                                    <Input
-                                      type="text"
-                                      min={0}
-                                      max={60}
-                                      value={course.exams}
-                                      onChange={(e) =>
-                                        handleInputChange(
-                                          index,
-                                          "exams",
-                                          e.target.value
-                                        )
-                                      }
-                                    />
-                                  </Td>
-                                </Tr>
-                              </>
-                            ))}
+                            {selectedStudent?.coursesAdded?.map(
+                              (course, index) => (
+                                <>
+                                  <Tr key={index} cursor="pointer">
+                                    <Td>{course.name}</Td>
+                                    <Td>
+                                      <Input
+                                        type="text"
+                                        value={course.attendance}
+                                        min={0}
+                                        max={10}
+                                        border="1px"
+                                        onChange={(e) =>
+                                          handleInputChange(
+                                            index,
+                                            "attendance",
+                                            e.target.value
+                                          )
+                                        }
+                                      />
+                                    </Td>
+                                    <Td>
+                                      <Input
+                                        type="text"
+                                        min={0}
+                                        max={30}
+                                        value={course.ca}
+                                        border="1px"
+                                        onChange={(e) =>
+                                          handleInputChange(
+                                            index,
+                                            "ca",
+                                            e.target.value
+                                          )
+                                        }
+                                      />
+                                    </Td>
+                                    <Td>
+                                      <Input
+                                        type="text"
+                                        min={0}
+                                        max={60}
+                                        value={course.exams}
+                                        border="1px"
+                                        onChange={(e) =>
+                                          handleInputChange(
+                                            index,
+                                            "exams",
+                                            e.target.value
+                                          )
+                                        }
+                                      />
+                                    </Td>
+                                  </Tr>
+                                </>
+                              )
+                            )}
                           </Tbody>
                         </Table>
                         <HStack w="full" gap="10">

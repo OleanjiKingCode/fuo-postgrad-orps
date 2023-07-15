@@ -212,14 +212,15 @@ const register = () => {
             <Box w={{ sm: "full", md: "50%" }}>
               <FormControl isRequired>
                 <FormLabel htmlFor="sex">Sex</FormLabel>
-                <Input
-                  id="sex"
-                  type="text"
-                  placeholder="Enter your Sex"
+                <Select
+                  placeholder="Select Sex"
                   {...register("sex", {
-                    required: "Please enter your Sex",
+                    required: "Please select a valid option",
                   })}
-                />
+                >
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                </Select>
                 {errors.sex && (
                   <Text color="red.500" py="1">
                     {errors.sex.message}

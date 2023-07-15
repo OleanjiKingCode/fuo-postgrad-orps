@@ -50,9 +50,8 @@ const HomePage = () => {
   }, [session, refetchData]);
 
   const [selectedStudent, setSelectedStudent] = useState(null);
-  const [attendance, setAttendance] = useState("");
-  const [ca, setCA] = useState("");
-  const [exams, setExams] = useState("");
+  const [isDisplay, setIsDisplay] = useState(false);
+
   const [courseData, setCourseData] = useState([]);
 
   const handleStudentClick = (student) => {
@@ -64,11 +63,12 @@ const HomePage = () => {
       exams: course.exams || "",
     }));
     console.log(student?.coursesAdded, updatedData);
+    isAllCoursesFilled();
     setCourseData(updatedData);
   };
 
   const handleInputChange = (index, field, value) => {
-    console.log(courseData);
+    isAllCoursesFilled();
     setCourseData((prevData) =>
       prevData
         ? prevData.map((course, i) =>
@@ -101,6 +101,19 @@ const HomePage = () => {
     } catch (err) {
       console.log(err);
     }
+  };
+
+  const isAllCoursesFilled = () => {
+    let data = selectedStudent.coursesAdded.map((item) => {
+      if (item.ca === "" || item.attendance === "" || item.exams === "") {
+        console.log(item);
+        return false;
+      }
+      return true;
+    });
+    data = data.every((value) => value === true);
+    console.log(data);
+    setIsDisplay(data);
   };
 
   return (
@@ -152,7 +165,8 @@ const HomePage = () => {
                           <Thead>
                             <Tr>
                               <Th>Courses</Th>
-                              <Th>Attendance</Th>
+                              <Th>Units</Th>
+                              <Th>Attend</Th>
                               <Th>CA</Th>
                               <Th>Exams</Th>
                             </Tr>
@@ -161,13 +175,24 @@ const HomePage = () => {
                             {selectedStudent?.coursesAdded?.map(
                               (course, index) => (
                                 <>
-                                  <Tr key={index} cursor="pointer">
+                                  <Tr
+                                    key={index}
+                                    cursor="pointer"
+                                    w="full"
+                                    justifyContent="space-between"
+                                  >
                                     <Td>{course.name}</Td>
+                                    <Td>{course.units}</Td>
                                     <Td>
                                       <Input
                                         type="text"
-                                        value={course.attendance}
+                                        value={
+                                          courseData[index].attendance > 0
+                                            ? courseData[index].attendance
+                                            : course.attendance
+                                        }
                                         min={0}
+                                        px="1"
                                         max={10}
                                         border="1px"
                                         onChange={(e) =>
@@ -184,7 +209,12 @@ const HomePage = () => {
                                         type="text"
                                         min={0}
                                         max={30}
-                                        value={course.ca}
+                                        px="1"
+                                        value={
+                                          courseData[index].ca > 0
+                                            ? courseData[index].ca
+                                            : course.ca
+                                        }
                                         border="1px"
                                         onChange={(e) =>
                                           handleInputChange(
@@ -200,7 +230,12 @@ const HomePage = () => {
                                         type="text"
                                         min={0}
                                         max={60}
-                                        value={course.exams}
+                                        px="1"
+                                        value={
+                                          courseData[index].exams > 0
+                                            ? courseData[index].exams
+                                            : course.exams
+                                        }
                                         border="1px"
                                         onChange={(e) =>
                                           handleInputChange(
@@ -217,13 +252,21 @@ const HomePage = () => {
                             )}
                           </Tbody>
                         </Table>
-                        <HStack w="full" gap="10">
+                        <HStack w="full" py="5" justifyContent="space-between">
                           <Button
                             my={4}
                             colorScheme="green"
                             onClick={handleSaveChanges}
                           >
                             Save Changes
+                          </Button>
+                          <Button
+                            my={4}
+                            display={isDisplay === true ? "unset" : "none"}
+                            colorScheme="green"
+                            // onClick={handleSaveChanges}
+                          >
+                            View/Print Result
                           </Button>
                         </HStack>
                       </>

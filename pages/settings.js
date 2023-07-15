@@ -9,6 +9,7 @@ import {
   Image,
   Button,
   Input,
+  Spinner,
 } from "@chakra-ui/react";
 import axios from "axios";
 
@@ -17,9 +18,10 @@ const Settings = () => {
   const toast = useToast();
   const [refetchData, setRefetchData] = useState(false);
   const [userData, setUserData] = useState();
-  const [userRole, setUserRole] = useState("");
+  const [, setUserRole] = useState("");
   const [newName, setNewName] = useState("");
   const email = session?.user?.email;
+  const [loadingBtn, setloadingBtn] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -35,6 +37,7 @@ const Settings = () => {
 
   const handleSaveChanges = async () => {
     try {
+      setloadingBtn(true);
       const result = await axios.put(`/api/User/${userData?.email}`, {
         name: newName,
       });
@@ -48,12 +51,12 @@ const Settings = () => {
           isClosable: true,
         });
       }
+      setloadingBtn(false);
     } catch (err) {
       console.log(err);
     }
   };
 
-  
   return (
     <SidebarWithHeader>
       <Flex
@@ -66,68 +69,81 @@ const Settings = () => {
         direction="column"
         gap="8"
       >
-        <Image
-          src="https://images.unsplash.com/photo-1619946794135-5bc917a27793?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&s=b616b2c5b373a80ffc9636ba24f7a4a9"
-          alt="Student Image"
-          boxSize="200px"
-          borderRadius="full"
-          mb={4}
-        />
-        <HStack w="full" px="3" justifyContent="space-between">
-          <Text fontWeight="bold" w="50%">
-            Name:
-          </Text>
+        {userData ? (
+          <>
+            <Image
+              src="https://images.unsplash.com/photo-1619946794135-5bc917a27793?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&s=b616b2c5b373a80ffc9636ba24f7a4a9"
+              alt="Student Image"
+              boxSize="200px"
+              borderRadius="full"
+              mb={4}
+            />
+            <HStack w="full" px="3" justifyContent="space-between">
+              <Text fontWeight="bold" w="50%">
+                Name:
+              </Text>
 
-          <Input
-            type="text"
-            value={newName === "" ? userData?.name : newName}
-            min={0}
-            px="1"
-            max={10}
-            border="1px"
-            onChange={(e) => setNewName(e.target.value)}
-          />
-        </HStack>
-        <HStack w="full" px="3" justifyContent="space-between">
-          <Text fontWeight="bold" w="50%">
-            Matric Number:
-          </Text>
-          <Text w="50%">{userData?.matricno}</Text>
-        </HStack>
-        <HStack w="full" px="3" justifyContent="space-between">
-          <Text fontWeight="bold" w="50%">
-            Role:
-          </Text>
-          <Text w="50%">{userData?.role}</Text>
-        </HStack>
-        <HStack w="full" px="3" justifyContent="space-between">
-          <Text fontWeight="bold" w="50%">
-            Department:
-          </Text>
-          <Text w="50%">{userData?.department}</Text>
-        </HStack>
-        <HStack w="full" px="3" justifyContent="space-between">
-          <Text fontWeight="bold" w="50%">
-            Sex:
-          </Text>
-          <Text w="50%">{userData?.sex}</Text>
-        </HStack>
-        <HStack w="full" px="3" justifyContent="space-between">
-          <Text fontWeight="bold" w="50%">
-            Email:
-          </Text>
-          <Text w="50%">{userData?.email}</Text>
-        </HStack>
-        <HStack w="full" px="3" justifyContent="space-between">
-          <Text fontWeight="bold" w="50%">
-            DOB:
-          </Text>
-          <Text w="50%">{Date(userData?.dob)}</Text>
-        </HStack>
-
-        <Button my={4} colorScheme="green" w="full" onClick={handleSaveChanges}>
-          Save Changes
-        </Button>
+              <Input
+                type="text"
+                value={newName === "" ? userData?.name : newName}
+                min={0}
+                px="1"
+                max={10}
+                border="1px"
+                onChange={(e) => setNewName(e.target.value)}
+              />
+            </HStack>
+            <HStack w="full" px="3" justifyContent="space-between">
+              <Text fontWeight="bold" w="50%">
+                Matric Number:
+              </Text>
+              <Text w="100%">{userData?.matricno}</Text>
+            </HStack>
+            <HStack w="full" px="3" justifyContent="space-between">
+              <Text fontWeight="bold" w="50%">
+                Role:
+              </Text>
+              <Text w="100%">{userData?.role}</Text>
+            </HStack>
+            <HStack w="full" px="3" justifyContent="space-between">
+              <Text fontWeight="bold" w="50%">
+                Department:
+              </Text>
+              <Text w="100%">{userData?.department}</Text>
+            </HStack>
+            <HStack w="full" px="3" justifyContent="space-between">
+              <Text fontWeight="bold" w="50%">
+                Sex:
+              </Text>
+              <Text w="100%">{userData?.sex}</Text>
+            </HStack>
+            <HStack w="full" px="3" justifyContent="space-between">
+              <Text fontWeight="bold" w="50%">
+                Email:
+              </Text>
+              <Text w="100%">{userData?.email}</Text>
+            </HStack>
+            <HStack w="full" px="3" justifyContent="space-between">
+              <Text fontWeight="bold" w="50%">
+                DOB:
+              </Text>
+              <Text w="100%">{Date(userData?.dob)}</Text>
+            </HStack>
+            <Button
+              my={4}
+              colorScheme="green"
+              isLoading={loadingBtn}
+              w="full"
+              onClick={handleSaveChanges}
+            >
+              Save Changes
+            </Button>
+          </>
+        ) : (
+          <Flex bg="white" w="full">
+            <Spinner />
+          </Flex>
+        )}
       </Flex>
     </SidebarWithHeader>
   );

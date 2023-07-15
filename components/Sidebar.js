@@ -253,7 +253,7 @@ const MobileNav = ({ onOpen }) => {
               spacing="1px"
             >
               <Text fontSize="sm" fontWeight="semibold">
-                {username}
+                {session?.user?.email}
               </Text>
               <Text fontSize="xs" fontWeight="normal" color="gray.600">
                 {userRole}

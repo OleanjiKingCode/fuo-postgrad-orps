@@ -12,7 +12,7 @@ export default async (req, res) => {
   if (req.method === "GET") {
     try {
       await db.connect();
-      const users = await Users.find({ role: "Student" }).exec();
+      const users = await Users.find().exec();
       return res.status(200).json(users);
     } catch (error) {
       console.log("error", error);

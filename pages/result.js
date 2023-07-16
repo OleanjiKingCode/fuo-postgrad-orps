@@ -39,7 +39,8 @@ const HomePage = () => {
         const response4 = await axios.get(`/api/User`);
         if (response4) {
           const dptUsers = response4.data.filter(
-            (obj) => obj.department === data.department
+            (obj) =>
+              obj.department === data.department && obj.role === "Student"
           );
           setAllUsersData(dptUsers);
         }
@@ -62,7 +63,6 @@ const HomePage = () => {
       exams: course.exams || "",
     }));
     console.log(student?.coursesAdded, updatedData);
-    isAllCoursesFilled();
     setCourseData(updatedData);
   };
 
@@ -103,7 +103,7 @@ const HomePage = () => {
   };
 
   const isAllCoursesFilled = () => {
-    let data = selectedStudent.coursesAdded.map((item) => {
+    let data = selectedStudent?.coursesAdded?.map((item) => {
       if (item.ca === "" || item.attendance === "" || item.exams === "") {
         console.log(item);
         return false;

@@ -27,6 +27,7 @@ userSchema.add({
       exams: { type: String, default: "" },
     },
   ],
+  resultReady: { type: Boolean, required: true, default: false },
 });
 
 const Users = mongoose.models.Users || mongoose.model("Users", userSchema);

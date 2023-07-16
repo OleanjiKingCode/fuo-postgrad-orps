@@ -108,7 +108,8 @@ const Courses = () => {
         const response4 = await axios.get(`/api/User`);
         if (response4) {
           const dptUsers = response4.data.filter(
-            (obj) => obj.department === data.department
+            (obj) =>
+              obj.department === data.department && obj.role === "Student"
           );
           setUserDataCourses(dptUsers);
         }
@@ -231,7 +232,6 @@ const Courses = () => {
     }
   };
 
-  console.log(deptData, userData, userDept);
   return (
     <SidebarWithHeader>
       <Flex>

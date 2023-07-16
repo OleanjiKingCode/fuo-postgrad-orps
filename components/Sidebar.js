@@ -33,15 +33,37 @@ import { dataAttr } from "@chakra-ui/utils";
 import { usePathname } from "next/navigation";
 
 const LinkItems = [
-  { name: "Home", icon: FiHome, route: "/dashboard", role: "all" },
-  { name: "Courses", icon: FiCompass, route: "/courses", role: "all" },
-  { name: "Results", icon: FiStar, route: "/result", role: "all" },
-  { name: "Result Calc", icon: FiStar, route: "/calc", role: "Lecturers" },
+  {
+    name: "Home",
+    icon: FiHome,
+    route: "/dashboard",
+    role: ["Student, Lecturer"],
+  },
+  {
+    name: "Courses",
+    icon: FiCompass,
+    route: "/courses",
+    role: ["Student, Lecturer"],
+  },
+  {
+    name: "Results",
+    icon: FiStar,
+    route: "/result",
+    role: ["Student, Lecturer"],
+  },
+  { name: "Students", icon: FiStar, route: "/students", role: ["Admin"] },
+  { name: "Lecturers", icon: FiStar, route: "/lecturers", role: ["Admin"] },
+  {
+    name: "Departments",
+    icon: FiStar,
+    route: "/departments",
+    role: ["Admin"],
+  },
   {
     name: "Profile Settings",
     icon: FiSettings,
     route: "/settings",
-    role: "all",
+    role: ["Student, Lecturer"],
   },
 ];
 
@@ -86,6 +108,7 @@ const SidebarContent = ({ onClose }) => {
     const response = await axios.get(`./api/User/${email}`);
     if (response) {
       const data = await response.data;
+      console.log(data);
       setUserRole(data.role);
     }
   };
@@ -122,12 +145,13 @@ const SidebarContent = ({ onClose }) => {
       </Flex>
       {LinkItems.map((link) => {
         return (
-          userRole === link.role ||
-          (link.role === "all" && (
-            <NavItem key={link.name} icon={link.icon} route={link.route}>
-              {link.name}
-            </NavItem>
-          ))
+          <>
+            {link.role.includes(userRole) && (
+              <NavItem key={link.name} icon={link.icon} route={link.route}>
+                {link.name}
+              </NavItem>
+            )}
+          </>
         );
       })}
     </Box>

@@ -18,6 +18,15 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import axios from "axios";
+import { PDFDownloadLink } from "@react-pdf/renderer";
+import {
+  Document,
+  Page,
+  View,
+  Text as Texxt,
+  StyleSheet,
+  Image,
+} from "@react-pdf/renderer";
 
 const HomePage = () => {
   const { data: session } = useSession();
@@ -25,9 +34,16 @@ const HomePage = () => {
   const [refetchData, setRefetchData] = useState(false);
   const [allUsersData, setAllUsersData] = useState();
   const [userData, setUserData] = useState();
+  const [resultData, setResultData] = useState();
   const [userRole, setUserRole] = useState("");
 
   const email = session?.user?.email;
+
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -56,18 +72,18 @@ const HomePage = () => {
 
   const handleStudentClick = (student) => {
     setSelectedStudent(student);
+
     const updatedData = student?.coursesAdded?.map((course) => ({
       ...course,
       attendance: course.attendance || "",
       ca: course.ca || "",
       exams: course.exams || "",
     }));
-    console.log(student?.coursesAdded, updatedData);
+    isAllCoursesFilled(updatedData);
     setCourseData(updatedData);
   };
 
   const handleInputChange = (index, field, value) => {
-    isAllCoursesFilled();
     setCourseData((prevData) =>
       prevData
         ? prevData.map((course, i) =>
@@ -82,10 +98,11 @@ const HomePage = () => {
       ...selectedStudent,
       coursesAdded: courseData,
     };
-    console.log(updatedStudent, courseData); // Do something with the updated student object
+    isAllCoursesFilled(courseData);
     try {
       const result = await axios.put(`/api/User/${updatedStudent.email}`, {
         coursesAdded: courseData,
+        resultReady: isDisplay,
       });
       if (result) {
         setRefetchData((prevValue) => !prevValue);
@@ -102,18 +119,239 @@ const HomePage = () => {
     }
   };
 
-  const isAllCoursesFilled = () => {
-    let data = selectedStudent?.coursesAdded?.map((item) => {
-      if (item.ca === "" || item.attendance === "" || item.exams === "") {
-        console.log(item);
-        return false;
-      }
-      return true;
-    });
+  const isAllCoursesFilled = (courses) => {
+    let data =
+      courses !== null
+        ? courses?.map((item) => {
+            if (item.ca === "" || item.attendance === "" || item.exams === "") {
+              return false;
+            }
+            return true;
+          })
+        : selectedStudent.coursesAdded?.map((item) => {
+            if (item.ca === "" || item.attendance === "" || item.exams === "") {
+              return false;
+            }
+            return true;
+          });
     data = data.every((value) => value === true);
-    console.log(data);
     setIsDisplay(data);
+    if (data === true) {
+      calculateGrades(courses ?? selectedStudent?.coursesAdded);
+    }
   };
+
+  const calculateGrades = (courses) => {
+    let totalScore = 0;
+
+    const gradedCourses = courses?.map((course) => {
+      const { name, exams, attendance, ca, units } = course;
+
+      const totalScoreCourse = Number(ca) + Number(attendance) + Number(exams);
+      totalScore += totalScoreCourse;
+
+      let grade;
+
+      if (totalScoreCourse >= 70) {
+        grade = "A";
+      } else if (totalScoreCourse >= 60) {
+        grade = "B";
+      } else if (totalScoreCourse >= 50) {
+        grade = "C";
+      } else if (totalScoreCourse >= 45) {
+        grade = "D";
+      } else if (totalScoreCourse >= 40) {
+        grade = "E";
+      } else {
+        grade = "F";
+      }
+
+      return { courses: name, score: totalScoreCourse, grade, units };
+    });
+
+    const averageScore = ((totalScore / (courses?.length * 100)) * 100).toFixed(
+      2
+    );
+    let status;
+
+    if (averageScore > 60) {
+      status = "Eligible to start PHD";
+    } else if (averageScore >= 55 && averageScore <= 59.9) {
+      status = "MPhil PHD";
+    } else if (averageScore >= 50 && averageScore <= 54.9) {
+      status = "MPhil";
+    } else {
+      status = "Certificate of Attendance";
+    }
+
+    setResultData({ gradedCourses, averageScore, status });
+    return { gradedCourses, averageScore, status };
+  };
+
+  const styles = StyleSheet.create({
+    page: {
+      fontFamily: "Helvetica",
+      fontSize: 16,
+      padding: "20px",
+    },
+    heading: {
+      fontSize: 20,
+      marginBottom: "10px",
+      fontWeight: "bold",
+    },
+    content: {
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+    },
+    rowsection: {
+      display: "flex",
+      flexDirection: "row",
+      paddingTop: 10,
+      width: "100%",
+      alignItems: "center",
+      justifyContent: "center",
+      gap: "60px",
+    },
+    section: {
+      display: "flex",
+      flexDirection: "column",
+      marginBottom: "20px",
+    },
+    newsection: {
+      paddingTop: "20px",
+    },
+    table: {
+      display: "flex",
+      flexDirection: "column",
+      width: "70%",
+      borderStyle: "solid",
+      borderWidth: 1,
+      borderRightWidth: 0,
+      borderBottomWidth: 0,
+    },
+    tableRow: {
+      display: "flex",
+      flexDirection: "row",
+      width: "100%",
+    },
+    tableCellHeader: {
+      width: "100%",
+      borderStyle: "solid",
+      borderWidth: 1,
+      borderLeftWidth: 0,
+      borderTopWidth: 0,
+      padding: "5px",
+      fontWeight: "bold",
+    },
+    tableCell: {
+      width: "100%",
+      borderStyle: "solid",
+      borderWidth: 1,
+      borderLeftWidth: 0,
+      borderTopWidth: 0,
+      padding: "3px",
+    },
+    signSection: {
+      display: "flex",
+      flexDirection: "row",
+      marginTop: "90px",
+      width: "100%",
+      alignItems: "center",
+      justifyContent: "center",
+      gap: "50px",
+      textAlign: "center",
+    },
+    signContainer: {
+      width: "20%",
+      paddingTop: "5px",
+      borderTop: "1px solid black",
+    },
+    signLabel: {
+      marginTop: "10px",
+    },
+    logoImage: {
+      marginBottom: "10px",
+      width: "100%",
+    },
+    image: {
+      width: 70,
+      height: 70,
+    },
+  });
+
+  const SchoolResultDocument = () => (
+    <Document>
+      <Page size="A4" style={styles.page}>
+        <View style={styles.content}>
+          <Image style={styles.image} src="./logo.png" />
+          <Texxt style={styles.heading}>Fountain University Postgraduate</Texxt>
+          <View style={styles.rowsection}>
+            <View style={styles.section}>
+              <Texxt>Lecturer: {userData.name}</Texxt>
+              <Texxt>Name: {selectedStudent.name}</Texxt>
+              <Texxt>Matric No: {selectedStudent.matricno}</Texxt>
+            </View>
+            <View style={styles.section}>
+              <Texxt>Sex: {selectedStudent.sex}</Texxt>
+              <Texxt>Email: {selectedStudent.email}</Texxt>
+              <Texxt>Department: {selectedStudent.department}</Texxt>
+            </View>
+          </View>
+
+          <View style={styles.section}>
+            <Texxt>Result Score: {resultData?.averageScore}</Texxt>
+          </View>
+          <View style={styles.table}>
+            <View style={styles.tableRow}>
+              <View style={styles.tableCellHeader}>
+                <Texxt>Subject</Texxt>
+              </View>
+              <View style={styles.tableCellHeader}>
+                <Texxt>Score</Texxt>
+              </View>
+              <View style={styles.tableCellHeader}>
+                <Texxt>Units</Texxt>
+              </View>
+              <View style={styles.tableCellHeader}>
+                <Texxt>Grade</Texxt>
+              </View>
+            </View>
+            {resultData?.gradedCourses?.map((course, index) => (
+              <View key={index} style={styles.tableRow}>
+                <View style={styles.tableCell}>
+                  <Texxt>{course.courses}</Texxt>
+                </View>
+                <View style={styles.tableCell}>
+                  <Texxt>{course.score}</Texxt>
+                </View>
+                <View style={styles.tableCell}>
+                  <Texxt>{course.units}</Texxt>
+                </View>
+                <View style={styles.tableCell}>
+                  <Texxt>{course.grade}</Texxt>
+                </View>
+              </View>
+            ))}
+          </View>
+          <View style={styles.newsection}>
+            <Texxt>Result Status: {resultData?.status}</Texxt>
+          </View>
+          <View style={styles.signSection}>
+            <View style={styles.signContainer}>
+              <Texxt style={styles.signLabel}>HOD Signature and Date</Texxt>
+            </View>
+            <View style={styles.signContainer}>
+              <Texxt style={styles.signLabel}>Dean Signature and Date</Texxt>
+            </View>
+            <View style={styles.signContainer}>
+              <Texxt style={styles.signLabel}>VC Signature and Date</Texxt>
+            </View>
+          </View>
+        </View>
+      </Page>
+    </Document>
+  );
 
   return (
     <SidebarWithHeader>
@@ -123,7 +361,7 @@ const HomePage = () => {
             <Heading fontSize="lg" p="2" textAlign="center">
               STUDENTS RESULTS{" "}
             </Heading>
-            <HStack w="full" alignItems="start">
+            <HStack w="full" alignItems="start" overflowX="scroll">
               <Box p={4} w="50%">
                 <Table>
                   <Thead>
@@ -259,13 +497,20 @@ const HomePage = () => {
                           >
                             Save Changes
                           </Button>
+
                           <Button
                             my={4}
                             display={isDisplay === true ? "unset" : "none"}
                             colorScheme="green"
-                            // onClick={handleSaveChanges}
                           >
-                            View/Print Result
+                            {isClient && (
+                              <PDFDownloadLink
+                                document={<SchoolResultDocument />}
+                                fileName={`${selectedStudent.matricno}'s Result.pdf`}
+                              >
+                                Download Reuslt
+                              </PDFDownloadLink>
+                            )}
                           </Button>
                         </HStack>
                       </>

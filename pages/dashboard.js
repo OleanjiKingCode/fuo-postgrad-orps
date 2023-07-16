@@ -2,14 +2,30 @@ import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { signIn, useSession } from "next-auth/react";
 import SidebarWithHeader from "@/components/Sidebar";
-import { Flex, Container, Box, Image, VStack, chakra } from "@chakra-ui/react";
+import {
+  Flex,
+  Container,
+  Box,
+  Image,
+  VStack,
+  chakra,
+  Button,
+} from "@chakra-ui/react";
 import axios from "axios";
+import SchoolResultDocument from "./pdfResult";
+import { PDFDownloadLink } from "@react-pdf/renderer";
 
 const HomePage = () => {
   const { data: session } = useSession();
   const [userData, setUserData] = useState();
 
   const email = session?.user?.email;
+
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -72,6 +88,7 @@ const HomePage = () => {
             </Flex>
           </Box>
         </Container>
+        
       </Flex>
     </SidebarWithHeader>
   );

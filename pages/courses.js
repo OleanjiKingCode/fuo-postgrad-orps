@@ -104,7 +104,6 @@ const Courses = () => {
           const data2 = await response2.data;
           setDeptData(data2);
         }
-
         const response4 = await axios.get(`/api/User`);
         if (response4) {
           const dptUsers = response4.data.filter(

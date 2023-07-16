@@ -37,19 +37,19 @@ const LinkItems = [
     name: "Home",
     icon: FiHome,
     route: "/dashboard",
-    role: ["Student, Lecturer"],
+    role: ["Student", "Lecturer"],
   },
   {
     name: "Courses",
     icon: FiCompass,
     route: "/courses",
-    role: ["Student, Lecturer"],
+    role: ["Student", "Lecturer"],
   },
   {
     name: "Results",
     icon: FiStar,
     route: "/result",
-    role: ["Student, Lecturer"],
+    role: ["Student", "Lecturer"],
   },
   { name: "Students", icon: FiStar, route: "/students", role: ["Admin"] },
   { name: "Lecturers", icon: FiStar, route: "/lecturers", role: ["Admin"] },
@@ -63,7 +63,7 @@ const LinkItems = [
     name: "Profile Settings",
     icon: FiSettings,
     route: "/settings",
-    role: ["Student, Lecturer"],
+    role: ["Student", "Lecturer"],
   },
 ];
 

@@ -90,7 +90,7 @@ const Login = () => {
       direction="column"
       py="10"
     >
-      <Heading color="white" fontSize="2xl" textAlign="center">
+      <Heading color="black" fontSize="2xl" textAlign="center">
         Fountain University Postrgraduate Result System
       </Heading>
       <Flex
@@ -101,7 +101,7 @@ const Login = () => {
         w="full"
       >
         <VStack w="full">
-          <Heading fontSize="xl" color="white">
+          <Heading fontSize="xl" color="black">
             LOGIN
           </Heading>
           <form
@@ -181,7 +181,7 @@ const Login = () => {
           </form>
         </VStack>
         <Flex w={{ sm: "full", md: "50%" }}>
-          <Text color="white">Not yet registered? &nbsp; </Text>
+          <Text color="black">Not yet registered? &nbsp; </Text>
           <Link href="/register">
             <Text color="#4ed879" fontWeight="semibold">
               Register

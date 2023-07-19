@@ -55,7 +55,7 @@ const HomePage = () => {
               minHeight="100vh"
             >
               <Image
-                src="pfp.png"
+                src="./pfp.png"
                 alt="Student Image"
                 boxSize="200px"
                 borderRadius="full"

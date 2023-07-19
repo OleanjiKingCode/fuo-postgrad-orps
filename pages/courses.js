@@ -496,7 +496,7 @@ const Courses = () => {
                     </Text>
                     <Text>
                       {" "}
-                      <b>MAX UNITS :</b> {deptData?.maxUnits}
+                      <b>MAX UNITS :</b> 23
                     </Text>
                   </HStack>
                 </VStack>

@@ -105,7 +105,7 @@ const register = () => {
       bgPos="center"
       bgSize="cover !important"
       bgBlendMode="overlay"
-      bgColor="#5b5b5b"
+      bgColor="#1d1e1f  "
       py="10"
     >
       <Heading color="white">Register</Heading>
@@ -123,8 +123,11 @@ const register = () => {
           >
             <Box w={{ sm: "full", md: "50%" }}>
               <FormControl isRequired>
-                <FormLabel htmlFor="name">Full Name</FormLabel>
+                <FormLabel htmlFor="name" color="white">
+                  Full Name
+                </FormLabel>
                 <Input
+                  color="white"
                   id="name"
                   type="text"
                   placeholder="Enter your Full name"
@@ -146,9 +149,12 @@ const register = () => {
             </Box>
             <Box w={{ sm: "full", md: "50%" }}>
               <FormControl isRequired>
-                <FormLabel htmlFor="matric">Matric Number</FormLabel>
+                <FormLabel htmlFor="matric" color="white">
+                  Matric Number
+                </FormLabel>
                 <Input
                   id="matric"
+                  color="white"
                   type="text"
                   placeholder="Enter your Matric no"
                   {...register("matric", {
@@ -169,10 +175,13 @@ const register = () => {
 
             <Box w={{ sm: "full", md: "50%" }}>
               <FormControl isRequired>
-                <FormLabel htmlFor="dob">Date Of Birth</FormLabel>
+                <FormLabel htmlFor="dob" color="white">
+                  Date Of Birth
+                </FormLabel>
                 <Input
                   id="dob"
                   type="date"
+                  color="white"
                   placeholder="choose your Date Of Birth"
                   {...register("dob", {
                     required: "Please choose your Date Of Birth",
@@ -188,9 +197,12 @@ const register = () => {
 
             <Box w={{ sm: "full", md: "50%" }}>
               <FormControl isRequired>
-                <FormLabel htmlFor="phoneNumber">Phone Number</FormLabel>
+                <FormLabel htmlFor="phoneNumber" color="white">
+                  Phone Number
+                </FormLabel>
                 <Input
                   id="phoneNumber"
+                  color="white"
                   type="text"
                   placeholder="Enter your Phone Number"
                   {...register("phoneNumber", {
@@ -211,7 +223,9 @@ const register = () => {
 
             <Box w={{ sm: "full", md: "50%" }}>
               <FormControl isRequired>
-                <FormLabel htmlFor="sex">Sex</FormLabel>
+                <FormLabel htmlFor="sex" color="white">
+                  Sex
+                </FormLabel>
                 <Select
                   placeholder="Select Sex"
                   {...register("sex", {
@@ -231,7 +245,9 @@ const register = () => {
 
             <Box w={{ sm: "full", md: "50%" }}>
               <FormControl isRequired>
-                <FormLabel htmlFor="dept">Department</FormLabel>
+                <FormLabel htmlFor="dept" color="white">
+                  Department
+                </FormLabel>
                 <Select
                   placeholder="Select Department"
                   {...register("dept", {
@@ -252,10 +268,13 @@ const register = () => {
 
             <Box w={{ sm: "full", md: "50%" }}>
               <FormControl isRequired>
-                <FormLabel htmlFor="email">Email</FormLabel>
+                <FormLabel htmlFor="email" color="white">
+                  Email
+                </FormLabel>
                 <Input
                   id="email"
                   type="email"
+                  color="white"
                   placeholder="Enter your email address"
                   {...register("email", {
                     required: "Please enter email",
@@ -274,9 +293,12 @@ const register = () => {
             </Box>
             <Box w={{ sm: "full", md: "50%" }}>
               <FormControl>
-                <FormLabel htmlFor="password">Password</FormLabel>
+                <FormLabel htmlFor="password" color="white">
+                  Password
+                </FormLabel>
                 <InputGroup size="md">
                   <Input
+                    color="white"
                     type={show ? "text" : "password"}
                     id="password"
                     placeholder="Enter your password"
@@ -304,13 +326,14 @@ const register = () => {
             </Box>
             <Box w={{ sm: "full", md: "50%" }}>
               <FormControl>
-                <FormLabel htmlFor="confirmPassword">
+                <FormLabel htmlFor="confirmPassword" color="white">
                   Confirm Password
                 </FormLabel>
                 <InputGroup size="md">
                   <Input
                     type={showConfirm ? "text" : "password"}
                     id="confirmPassword"
+                    color="white"
                     placeholder="Enter Confirm password"
                     {...register("confirmPassword", {
                       required: "Please enter confirm password",

@@ -358,7 +358,7 @@ const HomePage = () => {
       <Flex bg="white" w="full" p="2" direction="column">
         {userRole === "Lecturer" ? (
           <>
-            <Heading fontSize="lg" p="2" textAlign="center">
+            <Heading fontSize="lg" px="2" py="6" textAlign="center">
               STUDENTS RESULTS{" "}
             </Heading>
             <HStack w="full" alignItems="start" overflowX="scroll">
@@ -403,7 +403,7 @@ const HomePage = () => {
                             <Tr>
                               <Th>Courses</Th>
                               <Th>Units</Th>
-                              <Th>Attend</Th>
+                              <Th>ATT</Th>
                               <Th>CA</Th>
                               <Th>Exams</Th>
                             </Tr>

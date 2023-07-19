@@ -86,12 +86,12 @@ const Login = () => {
       bgPos="center"
       bgSize="cover !important"
       bgBlendMode="overlay"
-      bgColor="#5b5b5b"
+      bgColor="#1d1e1f  "
       direction="column"
       py="10"
     >
-      <Heading color="black" fontSize="2xl" textAlign="center">
-        Fountain University Postrgraduate Result System
+      <Heading color="white" fontSize="2xl" textAlign="center">
+        Fountain University Postrgraduate
       </Heading>
       <Flex
         pt="8%"
@@ -101,7 +101,7 @@ const Login = () => {
         w="full"
       >
         <VStack w="full">
-          <Heading fontSize="xl" color="black">
+          <Heading fontSize="xl" color="white">
             LOGIN
           </Heading>
           <form
@@ -116,11 +116,14 @@ const Login = () => {
             >
               <Box w={{ sm: "full", md: "50%" }}>
                 <FormControl>
-                  <FormLabel htmlFor="matricno">Matric Number</FormLabel>
+                  <FormLabel htmlFor="matricno" color="white">
+                    User Id
+                  </FormLabel>
                   <Input
                     id="matricno"
                     type="text"
                     placeholder="Enter your Matric no"
+                    color="white"
                     {...register("matricno", {
                       required: "Please enter your Matric no",
                       minLength: {
@@ -139,12 +142,15 @@ const Login = () => {
               </Box>
               <Box w={{ sm: "full", md: "50%" }}>
                 <FormControl>
-                  <FormLabel htmlFor="password">Password</FormLabel>
+                  <FormLabel htmlFor="password" color="white">
+                    Password
+                  </FormLabel>
                   <InputGroup size="md">
                     <Input
                       type={show ? "text" : "password"}
                       id="password"
                       placeholder="Enter your password"
+                      color="white"
                       {...register("password", {
                         required: "Please enter password",
                         minLength: {
@@ -181,7 +187,7 @@ const Login = () => {
           </form>
         </VStack>
         <Flex w={{ sm: "full", md: "50%" }}>
-          <Text color="black">Not yet registered? &nbsp; </Text>
+          <Text color="white">Not yet registered? &nbsp; </Text>
           <Link href="/register">
             <Text color="#4ed879" fontWeight="semibold">
               Register

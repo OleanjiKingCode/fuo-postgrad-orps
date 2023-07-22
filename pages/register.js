@@ -231,6 +231,7 @@ const register = () => {
                   {...register("sex", {
                     required: "Please select a valid option",
                   })}
+                  color="white"
                 >
                   <option value="Male">Male</option>
                   <option value="Female">Female</option>
@@ -253,6 +254,7 @@ const register = () => {
                   {...register("dept", {
                     required: "Please select a valid option",
                   })}
+                  color="white"
                 >
                   <option value="CPS">Computer Science</option>
                   <option value="MLS">Medical Laboratory Science</option>

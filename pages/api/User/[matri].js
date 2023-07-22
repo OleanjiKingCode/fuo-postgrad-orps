@@ -34,11 +34,13 @@ export default async (req, res) => {
 
       if (!student) {
         await db.disConnect();
-        return res.status(404).json({ msg: "User doesnt exist" });
+        console.log("zcnjkds");
+        return "User doesnt exist";
       }
       return res.status(200).json(student);
     } catch (error) {
       console.log("error", error);
+      return res.status(404).json({ msg: "User doesnt exist" });
     }
   } else if (method === "PUT") {
     try {

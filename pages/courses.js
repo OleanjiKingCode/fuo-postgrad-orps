@@ -397,7 +397,7 @@ const Courses = () => {
         ) : userRole === "Lecturer" ? (
           <VStack mt={4} p={4} w="full" bg="white">
             <VStack w="full" gap="3" py="4">
-              <Heading fontSize="lg">STUDENTS WHO REGISTERED </Heading>
+              <Heading fontSize="lg">List Of Students</Heading>
               <HStack w="full" px="10" justifyContent="space-between">
                 <Text>
                   {" "}

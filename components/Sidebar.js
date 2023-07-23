@@ -43,7 +43,7 @@ const LinkItems = [
     name: "Courses",
     icon: FiCompass,
     route: "/courses",
-    role: ["Student"],
+    role: ["Student", "Lecturer"],
   },
   {
     name: "Results",

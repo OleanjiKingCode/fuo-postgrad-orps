@@ -4,7 +4,7 @@ import db from "@/utils/db";
 export const config = {
   api: {
     bodyParser: {
-      sizeLimit: "4mb", // Set desired value here
+      sizeLimit: "4mb",
     },
   },
 };
@@ -31,7 +31,6 @@ export default async (req, res) => {
     }
   } else if (method === "PUT") {
     try {
-      console.log(dept, "sdlvkmasodvniuas", body);
       const department = await Department.findOne({ name: dept });
       const id = department._id;
       const updatedDepartment = await Department.findByIdAndUpdate(id, body, {

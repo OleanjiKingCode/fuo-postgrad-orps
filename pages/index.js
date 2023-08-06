@@ -34,10 +34,8 @@ const Login = () => {
 
   const submitHandler = async ({ matricno, password }) => {
     try {
-      console.log(matricno);
       let matri = matricno.replace(/\//g, "");
       const response = await axios.get(`./api/User/${matri}`);
-      console.log(":sdcnjbsdhcbj", response);
       if (response) {
         const data = await response.data;
         if (data.password !== password) {
@@ -50,7 +48,6 @@ const Login = () => {
           });
           return;
         }
-        console.log(response);
         const result = await signIn("credentials", {
           redirect: false,
           email: data.email,

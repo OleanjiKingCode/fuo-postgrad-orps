@@ -29,6 +29,7 @@ import {
   useToast,
   Select,
   HStack,
+  Spinner,
 } from "@chakra-ui/react";
 import axios from "axios";
 import { useForm } from "react-hook-form";
@@ -48,6 +49,7 @@ const Students = () => {
     handleSubmit,
     register,
     getValues,
+    resetField,
     formState: { errors, isSubmitting },
   } = useForm();
 
@@ -60,21 +62,8 @@ const Students = () => {
         dept,
       });
 
-      // const result = await signIn("credentials", {
-      //   redirect: false,
-      //   email: data?.data?.email,
-      //   password: data?.data?.password,
-      // });
-
-      if (result.error) {
-        toast({
-          title: `${result.error}`,
-          description: "",
-          status: "error",
-          duration: 4000,
-          isClosable: true,
-        });
-      } else {
+      if (data.data) {
+        setRefetchData(!refetchData);
         toast({
           title: "Lecturer Created Successfully",
           description: "",
@@ -83,7 +72,8 @@ const Students = () => {
           isClosable: true,
         });
       }
-      //router.push("/dashboard");
+      resetField();
+      onClose();
     } catch (error) {
       console.log(error);
       toast({
@@ -114,7 +104,7 @@ const Students = () => {
         <VStack w="full" gap="3" py="4">
           <Heading fontSize="lg">LECTURERS </Heading>
         </VStack>
-        <Box w="full" pb="5">
+        <Box w="full" pb="5" overflowX="scroll">
           <Flex py="3" w="full" justifyContent="flex-end">
             <Button
               bg="green.500"
@@ -178,7 +168,6 @@ const Students = () => {
                             message: "Full name should be more than 6 chars",
                           },
                         })}
-                        autoFocus
                       />
                       {errors.name && (
                         <Text color="red.500" py="1">

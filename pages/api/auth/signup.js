@@ -14,10 +14,6 @@ async function handler(req, res) {
     !email.includes("@") ||
     !password ||
     password.trim().length < 5 ||
-    !phoneNumber ||
-    !sex ||
-    !dob ||
-    !matricno ||
     !dept
   ) {
     res.status(422).json({
@@ -31,21 +27,32 @@ async function handler(req, res) {
   const alreadyAUserOne = await Users.findOne({ matricno: matricno });
   const alreadyAUserTwo = await Users.findOne({ email: email });
 
-  if (alreadyAUserOne || alreadyAUserTwo) {
-    res.status(422).json({
-      message: "This User already exists",
-    });
-    await db.disConnect();
-    return;
-  }
+  let role = matricno?.includes("FUO") ? "Student" : "Lecturer";
 
+  if (role === "Lecturer") {
+    if (alreadyAUserTwo) {
+      res.status(422).json({
+        message: "This User already exists",
+      });
+      await db.disConnect();
+      return;
+    }
+  } else {
+    if (alreadyAUserOne || alreadyAUserTwo) {
+      res.status(422).json({
+        message: "This User already exists",
+      });
+      await db.disConnect();
+      return;
+    }
+  }
 
   const newUser = new Users({
     name,
     email,
     password,
-    phoneNumber,
-    sex,
+    phoneNumber: role === "Lecturer" ? "081010101010" : phoneNumber,
+    sex: role === "Lecturer" ? "Male" : sex,
     dob,
     matricno,
     role,

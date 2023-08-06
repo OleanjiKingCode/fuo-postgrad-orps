@@ -39,10 +39,10 @@ export default async (req, res) => {
       await db.disConnect();
       return;
     }
-
+    console.log(abbr);
     const newDepts = new Department({
-      name: name,
-      abbr: abbr,
+      name,
+      abbr,
       createdBy: email,
       courses: [],
       maxCourses: 0,

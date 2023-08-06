@@ -28,6 +28,7 @@ userSchema.add({
     },
   ],
   resultReady: { type: Boolean, required: true, default: false },
+  canEditResult: { type: Boolean, required: true, default: false },
 });
 
 const Users = mongoose.models.Users || mongoose.model("Users", userSchema);

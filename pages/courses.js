@@ -391,7 +391,7 @@ const Courses = () => {
               justifyContent="center"
               alignItems="center"
             >
-              Contact your lecturers to update the courses
+              Contact your Lecturers / Admin to update the courses
             </Flex>
           )
         ) : userRole === "Lecturer" ? (

@@ -34,12 +34,92 @@ import axios from "axios";
 import { FaEdit } from "react-icons/fa";
 import { useForm } from "react-hook-form";
 
-const Students = () => {
+export const DepartmentEditModal = (user) => {
+  return (
+    <form onSubmit={handleSubmit(submitHandler)} style={{ width: "inherit" }}>
+      <VStack gap="3" w="full">
+        <Box w="full">
+          <FormControl isRequired>
+            <FormLabel htmlFor="name" color="black">
+              Department Name
+            </FormLabel>
+            <Input
+              color="black"
+              id="name"
+              type="text"
+              placeholder="Enter department name"
+              {...register("name", {
+                required: "Please enter the department name",
+                minLength: {
+                  value: 6,
+                  message: "Department name should be more than 6 chars",
+                },
+              })}
+            />
+            {errors.name && (
+              <Text color="red.500" py="1">
+                {errors.name.message}
+              </Text>
+            )}
+          </FormControl>
+        </Box>
+        <Box w="full">
+          <FormControl isRequired>
+            <FormLabel htmlFor="alias" color="black">
+              Department Alias
+            </FormLabel>
+            <Input
+              color="black"
+              id="alias"
+              type="text"
+              placeholder="Enter an alias for the department"
+              {...register("alias", {
+                required: "Please enter an alias",
+                minLength: {
+                  value: 2,
+                  message: "Department alias should be more than 2 chars",
+                },
+              })}
+            />
+            {errors.alias && (
+              <Text color="red.500" py="1">
+                {errors.alias.message}
+              </Text>
+            )}
+          </FormControl>
+        </Box>
+
+        <HStack py="3" w="full" justifyContent="space-between">
+          <Button colorScheme="red" mr={3} onClick={onCloseEdit}>
+            Close
+          </Button>
+          <Button colorScheme="green" type="submit">
+            <Text color="white">
+              {isSubmitting ? (
+                <Spinner size="sm" color="white" />
+              ) : (
+                "Create Department"
+              )}
+            </Text>
+          </Button>
+        </HStack>
+      </VStack>
+    </form>
+  );
+};
+
+const Department = () => {
   const { data: session } = useSession();
   const [refetchData, setRefetchData] = useState(false);
   const [users, setUsers] = useState([]);
+  const [chosenUser, setChosenUser] = useState();
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const {
+    isOpen: isOpenEdit,
+    onOpen: onOpenEdit,
+    onClose: onCloseEdit,
+  } = useDisclosure();
   const email = session?.user?.email;
   const {
     handleSubmit,
@@ -92,6 +172,11 @@ const Students = () => {
     fetchData();
   }, [session, refetchData]);
 
+  const getStudent = (index) => {
+    setChosenUser(users[index]);
+    onOpenEdit();
+  };
+
   return (
     <SidebarWithHeader>
       <VStack mt={4} p={4} w="full" bg="white">
@@ -133,7 +218,7 @@ const Students = () => {
                   <Td>{student.maxUnits}</Td>
                   <Td>{student.maxCourses}</Td>
                   <Td>
-                    <Button p="0" bg="none">
+                    <Button p="0" bg="none" onClick={() => getStudent(index)}>
                       <Icon as={FaEdit} />
                     </Button>
                   </Td>
@@ -225,9 +310,90 @@ const Students = () => {
             </ModalBody>
           </ModalContent>
         </Modal>
+
+        <Modal isOpen={isOpenEdit} onClose={onCloseEdit} size="lg" isCentered>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>Edit {chosenUser?.name} Department</ModalHeader>
+            <ModalCloseButton />
+            <ModalBody py="3">
+              <VStack gap="3" w="full">
+                <Box w="full">
+                  <FormControl isRequired>
+                    <FormLabel htmlFor="name" color="black">
+                      Department Name
+                    </FormLabel>
+                    <Input
+                      color="black"
+                      id="name"
+                      type="text"
+                      value={chosenUser?.name}
+                      placeholder="Enter department name"
+                      {...register("name", {
+                        required: "Please enter the department name",
+                        minLength: {
+                          value: 6,
+                          message:
+                            "Department name should be more than 6 chars",
+                        },
+                      })}
+                    />
+                    {errors.name && (
+                      <Text color="red.500" py="1">
+                        {errors.name.message}
+                      </Text>
+                    )}
+                  </FormControl>
+                </Box>
+                <Box w="full">
+                  <FormControl isRequired>
+                    <FormLabel htmlFor="alias" color="black">
+                      Department Alias
+                    </FormLabel>
+                    <Input
+                      color="black"
+                      id="alias"
+                      type="text"
+                      value={chosenUser?.abbr}
+                      placeholder="Enter an alias for the department"
+                      {...register("alias", {
+                        required: "Please enter an alias",
+                        minLength: {
+                          value: 2,
+                          message:
+                            "Department alias should be more than 2 chars",
+                        },
+                      })}
+                    />
+                    {errors.alias && (
+                      <Text color="red.500" py="1">
+                        {errors.alias.message}
+                      </Text>
+                    )}
+                  </FormControl>
+                </Box>
+
+                <HStack py="3" w="full" justifyContent="space-between">
+                  <Button colorScheme="red" mr={3} onClick={onCloseEdit}>
+                    Close
+                  </Button>
+                  <Button colorScheme="green" type="submit">
+                    <Text color="white">
+                      {isSubmitting ? (
+                        <Spinner size="sm" color="white" />
+                      ) : (
+                        "Save Changes"
+                      )}
+                    </Text>
+                  </Button>
+                </HStack>
+              </VStack>
+            </ModalBody>
+          </ModalContent>
+        </Modal>
       </VStack>
     </SidebarWithHeader>
   );
 };
 
-export default Students;
+export default Department;

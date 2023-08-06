@@ -4,7 +4,7 @@ import db from "@/utils/db";
 export const config = {
   api: {
     bodyParser: {
-      sizeLimit: "4mb", // Set desired value here
+      sizeLimit: "4mb",
     },
   },
 };
@@ -20,9 +20,9 @@ export default async (req, res) => {
     }
   }
   if (req.method === "POST") {
-    const { name, email, alias } = req.body;
+    const { name, email, abbr } = req.body;
 
-    if (!name || !email || !alias) {
+    if (!name || !email || !abbr) {
       res.status(422).json({
         message: "Validation Error",
       });
@@ -42,7 +42,7 @@ export default async (req, res) => {
 
     const newDepts = new Department({
       name: name,
-      alias: alias,
+      abbr: abbr,
       createdBy: email,
       courses: [],
       maxCourses: 0,

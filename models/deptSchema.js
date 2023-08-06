@@ -15,9 +15,8 @@ const departmentSchema = new mongoose.Schema(
 );
 
 departmentSchema.add({
-  alias: { type: String, required: true },
+  abbr: { type: String, required: true, default: "DEPT" },
 });
-
 
 const Department =
   mongoose.models.Department || mongoose.model("Department", departmentSchema);

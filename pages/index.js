@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import {
   Box,
   FormControl,
@@ -13,6 +13,7 @@ import {
   useToast,
   Heading,
   VStack,
+  chakra,
 } from "@chakra-ui/react";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
@@ -196,13 +197,22 @@ const Login = () => {
             </Flex>
           </form>
         </VStack>
-        <Flex w={{ sm: "full", md: "50%" }}>
-          <Text color="white">Not yet registered? &nbsp; </Text>
-          <Link href="/register">
-            <Text color="#4ed879" fontWeight="semibold">
-              Register
-            </Text>
-          </Link>
+        <Flex justifyContent="space-between" w={{ sm: "full", md: "50%" }}>
+          <Flex>
+            <Text color="white">Not yet registered? &nbsp; </Text>
+            <Link href="/register">
+              <Text color="#4ed879" fontWeight="semibold">
+                Register
+              </Text>
+            </Link>
+          </Flex>
+          <Flex>
+            <Link href="/register">
+              <Text color="#4ed879" fontWeight="semibold">
+                Forgot password?
+              </Text>
+            </Link>
+          </Flex>
         </Flex>
       </Flex>
     </Flex>

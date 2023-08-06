@@ -1,3 +1,6 @@
+/// NOT IN USE JUST FOR REFERENCE
+
+
 import React from "react";
 import {
   Document,
@@ -118,85 +121,8 @@ const courses = [
   { subject: "Science", score: 85, grade: "B" },
   { subject: "English", score: 80, grade: "B" },
 ];
-// const SchoolResultDocument = () => {
-//     return(
-//   <Document>
-//     <Page size="A4" style={styles.page}>
-//       <View style={styles.content}>
-//         <Image style={styles.image} src="./logo.png" />
-//         <Text style={styles.heading}>{schoolName}</Text>
-//         <View style={styles.rowsection}>
-//           <View style={styles.section}>
-//             <Text> Lecturer: {lecturerName}</Text>
-//             <Text> Name: {studentName}</Text>
-//             <Text>Matric No: {matricno}</Text>
-//           </View>
-//           <View style={styles.section}>
-//             <Text>Sex: {sex}</Text>
-//             <Text>Email: {email}</Text>
-//             <Text>Department: {dept}</Text>
-//           </View>
-//         </View>
 
-//         <View style={styles.section}>
-//           <Text>Total Result: {totalResult}</Text>
-//         </View>
-//         <View style={styles.table}>
-//           <View style={styles.tableRow}>
-//             <View style={styles.tableCellHeader}>
-//               <Text>Subject</Text>
-//             </View>
-//             <View style={styles.tableCellHeader}>
-//               <Text>Score</Text>
-//             </View>
-//             <View style={styles.tableCellHeader}>
-//               <Text>Grade</Text>
-//             </View>
-//           </View>
-//           {courses.map((course, index) => (
-//             <View key={index} style={styles.tableRow}>
-//               <View style={styles.tableCell}>
-//                 <Text>{course.courses}</Text>
-//               </View>
-//               <View style={styles.tableCell}>
-//                 <Text>{course.score}</Text>
-//               </View>
-//               <View style={styles.tableCell}>
-//                 <Text>{course.units}</Text>
-//               </View>
-//               <View style={styles.tableCell}>
-//                 <Text>{course.grade}</Text>
-//               </View>
-//             </View>
-//           ))}
-//         </View>
-//         <View style={styles.signSection}>
-//           <View style={styles.signContainer}>
-//             <Text style={styles.signLabel}>HOD Signature and Date</Text>
-//           </View>
-//           <View style={styles.signContainer}>
-//             <Text style={styles.signLabel}>Dean Signature and Date</Text>
-//           </View>
-//           <View style={styles.signContainer}>
-//             <Text style={styles.signLabel}>VC Signature and Date</Text>
-//           </View>
-//         </View>
-//       </View>
-//     </Page>
-//   </Document>
-// );
-
-const SchoolResultDocument = (
-//   schoolName,
-//   studentName,
-//   email,
-//   lecturerName,
-//   matricno,
-//   sex,
-//   dept,
-//   totalResult,
-//   courses
-) => {
+const SchoolResultDocument = () => {
   return (
     <Document>
       <Page size="A4" style={styles.page}>

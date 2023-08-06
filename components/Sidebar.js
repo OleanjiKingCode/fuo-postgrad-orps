@@ -17,14 +17,7 @@ import {
   chakra,
   useToast,
 } from "@chakra-ui/react";
-import {
-  FiHome,
-  FiCompass,
-  FiStar,
-  FiSettings,
-  FiMenu,
-  FiBell,
-} from "react-icons/fi";
+import { FiHome, FiCompass, FiStar, FiSettings, FiMenu } from "react-icons/fi";
 import { MdExitToApp } from "react-icons/md";
 import axios from "axios";
 import { useRouter } from "next/router";
@@ -37,7 +30,7 @@ const LinkItems = [
     name: "Home",
     icon: FiHome,
     route: "/dashboard",
-    role: ["Student", "Lecturer"],
+    role: ["Student", "Lecturer", "Admin"],
   },
   {
     name: "Courses",
@@ -100,7 +93,6 @@ export default SidebarWithHeader;
 
 const SidebarContent = ({ onClose }) => {
   const { data: session } = useSession();
-  const router = useRouter();
   const [username, setUsername] = useState("");
   const [userRole, setUserRole] = useState("");
 
@@ -108,7 +100,6 @@ const SidebarContent = ({ onClose }) => {
     const response = await axios.get(`./api/User/${email}`);
     if (response) {
       const data = await response.data;
-      console.log(data);
       setUserRole(data.role);
     }
   };

@@ -34,7 +34,6 @@ export default async (req, res) => {
 
       if (!student) {
         await db.disConnect();
-        console.log("zcnjkds");
         return "User doesnt exist";
       }
       return res.status(200).json(student);

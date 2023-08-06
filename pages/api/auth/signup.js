@@ -1,5 +1,4 @@
 import Users from "@/models/userSchema";
-import Department from "@/models/deptSchema";
 import db from "@/utils/db";
 
 async function handler(req, res) {
@@ -40,20 +39,6 @@ async function handler(req, res) {
     return;
   }
 
-  let role = matricno.includes("LEC") ? "Lecturer" : "Student";
-  const alreadyADept = await Department.findOne({ name: dept });
-
-  if (role === "Lecturer" && !alreadyADept) {
-    const newDepts = new Department({
-      name: dept,
-      createdBy: email,
-      courses: [],
-      maxCourses: 0,
-      maxUnits: 0,
-    });
-
-    await newDepts.save();
-  }
 
   const newUser = new Users({
     name,

@@ -18,7 +18,7 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/router";
 import axios from "axios";
-import { signIn, useSession } from "next-auth/react";
+import { signIn } from "next-auth/react";
 
 const register = () => {
   const router = useRouter();
@@ -90,7 +90,6 @@ const register = () => {
 
   const [show, setShow] = React.useState(false);
   const handleClick = () => setShow(!show);
-
   const [showConfirm, setShowConfirm] = React.useState(false);
   const handleClickConfirm = () => setShowConfirm(!showConfirm);
 

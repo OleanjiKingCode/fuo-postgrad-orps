@@ -89,7 +89,7 @@ const register = () => {
     }
   };
 
-  useEffect(() => {
+  React.useEffect(() => {
     const fetchData = async () => {
       const response = await axios.get(`/api/Dept`);
       if (response) {

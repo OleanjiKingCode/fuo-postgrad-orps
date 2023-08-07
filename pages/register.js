@@ -29,7 +29,7 @@ const register = () => {
     getValues,
     formState: { errors, isSubmitting },
   } = useForm();
-  const [dept, setDept] = useState([]);
+  const [dept, setDept] = React.useState([]);
 
   const submitHandler = async ({
     name,

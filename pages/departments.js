@@ -225,8 +225,7 @@ const Department = () => {
             maxUnits: maxUnitsNo,
           });
           if (result) {
-            setRefetchData((prevValue) => !prevValue);
-            setRefetchData(true);
+            setRefetchData(!refetchData);
             toast({
               title: "Successfully added Courses",
               description: "",

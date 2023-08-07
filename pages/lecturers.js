@@ -38,6 +38,7 @@ const Students = () => {
   const { data: session } = useSession();
   const [refetchData, setRefetchData] = useState(false);
   const [users, setUsers] = useState([]);
+  const [dept, setDept] = useState([]);
   const [show, setShow] = React.useState(false);
   const handleClick = () => setShow(!show);
   const toast = useToast();
@@ -92,6 +93,10 @@ const Students = () => {
       if (response4) {
         const Users = response4.data.filter((obj) => obj.role === "Lecturer");
         setUsers(Users);
+      }
+      const response = await axios.get(`/api/Dept`);
+      if (response) {
+        setDept(response.data);
       }
     };
     fetchData();
@@ -188,9 +193,11 @@ const Students = () => {
                         })}
                         color="black"
                       >
-                        <option value="CPS">Computer Science</option>
-                        <option value="MLS">Medical Laboratory Science</option>
-                        <option value="MIB">Microbiology</option>
+                        {dept.map((dpt, i) => (
+                          <option value={dpt.abbr} key={i}>
+                            {dpt.name}
+                          </option>
+                        ))}
                       </Select>
                       {errors.dept && (
                         <Text color="red.500" py="1">

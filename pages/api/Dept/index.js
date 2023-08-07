@@ -45,8 +45,7 @@ export default async (req, res) => {
       abbr,
       createdBy: email,
       courses: [],
-      maxCourses: 0,
-      maxUnits: 0,
+      maxUnits: [0, 0, 0],
     });
 
     await newDepts.save();

@@ -93,7 +93,7 @@ const Students = () => {
       const response4 = await axios.get(`/api/User`);
       if (response4) {
         const Users = response4.data.filter((obj) => obj.role === "Lecturer");
-        console.log(Users);
+
         setUsers(Users);
       }
       const response = await axios.get(`/api/Dept`);
@@ -108,7 +108,6 @@ const Students = () => {
 
   const changeEditResultState = async (email, newVal) => {
     try {
-      console.log("zdkcjbjsd", typeof newVal, newVal);
       const result = await axios.put(`/api/User/${email}`, {
         canEditResult: newVal,
       });
@@ -171,8 +170,7 @@ const Students = () => {
                       id="canEditResult"
                       isChecked={lecturer.canEditResult}
                       onChange={(e) => {
-                        console.log(e);
-                        changeEditResultState(lecturer.email, e.target.value);
+                        changeEditResultState(lecturer.email, e.target.checked);
                       }}
                     />
                   </Td>

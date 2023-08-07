@@ -29,6 +29,7 @@ const register = () => {
     getValues,
     formState: { errors, isSubmitting },
   } = useForm();
+  const [dept, setDept] = useState([]);
 
   const submitHandler = async ({
     name,
@@ -88,6 +89,15 @@ const register = () => {
     }
   };
 
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await axios.get(`/api/Dept`);
+      if (response) {
+        setDept(response.data);
+      }
+    };
+    fetchData();
+  }, []);
   const [show, setShow] = React.useState(false);
   const handleClick = () => setShow(!show);
   const [showConfirm, setShowConfirm] = React.useState(false);
@@ -255,9 +265,11 @@ const register = () => {
                   })}
                   color="white"
                 >
-                  <option value="CPS">Computer Science</option>
-                  <option value="MLS">Medical Laboratory Science</option>
-                  <option value="MIB">Microbiology</option>
+                  {dept.map((dpt, i) => (
+                    <option value={dpt.abbr} key={i}>
+                      {dpt.name}
+                    </option>
+                  ))}
                 </Select>
                 {errors.dept && (
                   <Text color="red.500" py="1">

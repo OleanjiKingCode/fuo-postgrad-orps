@@ -217,7 +217,7 @@ const Department = () => {
 
       if (isValid) {
         try {
-          console.log(chosenDeptName);
+         
           const result = await axios.put(`/api/Dept/${chosenDeptName}`, {
             name: chosenDeptName,
             abbr: chosenDeptAbbr,

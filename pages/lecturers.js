@@ -30,6 +30,7 @@ import {
   Select,
   HStack,
   Spinner,
+  Switch,
 } from "@chakra-ui/react";
 import axios from "axios";
 import { useForm } from "react-hook-form";
@@ -92,6 +93,7 @@ const Students = () => {
       const response4 = await axios.get(`/api/User`);
       if (response4) {
         const Users = response4.data.filter((obj) => obj.role === "Lecturer");
+        console.log(Users);
         setUsers(Users);
       }
       const response = await axios.get(`/api/Dept`);
@@ -101,7 +103,29 @@ const Students = () => {
     };
     fetchData();
   }, [session, refetchData]);
+
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const changeEditResultState = async (email, newVal) => {
+    try {
+      console.log("zdkcjbjsd", typeof newVal, newVal);
+      const result = await axios.put(`/api/User/${email}`, {
+        canEditResult: newVal,
+      });
+      if (result) {
+        setRefetchData(!refetchData);
+        toast({
+          title: "Successfully updated the ability of a lecturer ",
+          description: "",
+          status: "success",
+          duration: 4000,
+          isClosable: true,
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <SidebarWithHeader>
@@ -129,6 +153,7 @@ const Students = () => {
                 <Th>Department</Th>
                 <Th>Sex</Th>
                 <Th>Phone Number</Th>
+                <Th>Can Edit Result</Th>
               </Tr>
             </Thead>
             <Tbody>
@@ -140,6 +165,17 @@ const Students = () => {
                   <Td>{lecturer.department}</Td>
                   <Td>{lecturer.sex}</Td>
                   <Td>{lecturer.phoneNumber}</Td>
+                  <Td>
+                    {" "}
+                    <Switch
+                      id="canEditResult"
+                      isChecked={lecturer.canEditResult}
+                      onChange={(e) => {
+                        console.log(e);
+                        changeEditResultState(lecturer.email, e.target.value);
+                      }}
+                    />
+                  </Td>
                 </Tr>
               ))}
             </Tbody>

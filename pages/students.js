@@ -11,8 +11,10 @@ import {
   Tr,
   Th,
   Td,
+  Icon,
 } from "@chakra-ui/react";
 import axios from "axios";
+import { FcCancel, FcCheckmark } from "react-icons/fc";
 
 const Students = () => {
   const { data: session } = useSession();
@@ -24,6 +26,7 @@ const Students = () => {
       const response4 = await axios.get(`/api/User`);
       if (response4) {
         const Users = response4.data.filter((obj) => obj.role === "Student");
+        console.log(Users);
         setUsers(Users);
       }
     };
@@ -52,19 +55,27 @@ const Students = () => {
               </Tr>
             </Thead>
             <Tbody>
-              {users?.map((student, index) => (
-                <Tr key={index}>
-                  <Td>{index + 1}</Td>
-                  <Td>{student.name}</Td>
-                  <Td>{student.email}</Td>
-                  <Td>{student.matricno}</Td>
-                  <Td>{student.department}</Td>
-                  <Td>{student.coursesAdded.length}</Td>
-                  <Td>{student.sex}</Td>
-                  <Td>{student.resultReady}</Td>
-                  <Td>{student.phoneNumber}</Td>
-                </Tr>
-              ))}
+              {users?.map((student, index) => {
+                return (
+                  <Tr key={index}>
+                    <Td>{index + 1}</Td>
+                    <Td>{student.name}</Td>
+                    <Td>{student.email}</Td>
+                    <Td>{student.matricno}</Td>
+                    <Td>{student.department}</Td>
+                    <Td>{student.coursesAdded.length}</Td>
+                    <Td>{student.sex}</Td>
+                    <Td>
+                      {student.resultReady ? (
+                        <Icon as={FcCheckmark} />
+                      ) : (
+                        <Icon as={FcCancel} />
+                      )}
+                    </Td>
+                    <Td>{student.phoneNumber}</Td>
+                  </Tr>
+                );
+              })}
             </Tbody>
           </Table>
         </Box>

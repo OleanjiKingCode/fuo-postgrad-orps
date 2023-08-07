@@ -22,7 +22,6 @@ import {
   useDisclosure,
   FormControl,
   FormLabel,
-  InputGroup,
   Input,
   Text,
   useToast,
@@ -188,7 +187,7 @@ const Department = () => {
       for (let i = 0; i < 16; i++) {
         const { name, units } = courseData[i];
         if (name.trim() !== "" && units.trim() !== "") {
-          totalUnitsInCourses += units;
+          totalUnitsInCourses += Number(units);
           validCourseData.push(courseData[i]);
         }
       }
@@ -196,10 +195,11 @@ const Department = () => {
       let semesterSum = 0;
 
       for (let i = 0; i < maxUnitsNo.length; i++) {
-        semesterSum += maxUnitsNo[i];
+        semesterSum += Number(maxUnitsNo[i]);
       }
 
       if (totalUnitsInCourses > semesterSum) {
+        console.log(totalUnitsInCourses, semesterSum);
         toast({
           title: "Total Units in courses is greater than in all semesters",
           description: "",
@@ -217,7 +217,8 @@ const Department = () => {
 
       if (isValid) {
         try {
-          const result = await axios.put(`/api/Dept/${deptData?.name}`, {
+          console.log(chosenDeptName);
+          const result = await axios.put(`/api/Dept/${chosenDeptName}`, {
             name: chosenDeptName,
             abbr: chosenDeptAbbr,
             courses: validCourseData,
@@ -235,6 +236,7 @@ const Department = () => {
             });
           }
           setLoading(false);
+          onCloseEdit();
         } catch (err) {
           console.log(err);
           setLoading(false);
@@ -281,8 +283,8 @@ const Department = () => {
                 <Th>Department Alias</Th>
                 <Th>Created By</Th>
                 <Th>Courses</Th>
-                <Th>Maximum Units</Th>
-                <Th>Maximum Courses</Th>
+                <Th>Maximum Units [1st,2nd,3rd]</Th>
+
                 <Th>Actions</Th>
               </Tr>
             </Thead>
@@ -294,8 +296,10 @@ const Department = () => {
                   <Td>{student.abbr}</Td>
                   <Td>{student.createdBy}</Td>
                   <Td>{student.courses.length}</Td>
-                  <Td>{student.maxUnits}</Td>
-                  <Td>{student.maxCourses}</Td>
+                  <Td>
+                    [ {student.maxUnits[0]},{student.maxUnits[1]},{" "}
+                    {student.maxUnits[2]} ]
+                  </Td>
                   <Td>
                     <Button p="0" bg="none" onClick={() => getStudent(index)}>
                       <Icon as={FaEdit} />

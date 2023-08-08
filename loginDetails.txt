@@ -1,0 +1,38 @@
+Admin Login Details:
+User ID : olumide.adebayo@example.com
+Password : qJjhdkjKgb8Barf
+
+
+Lecturers Login Details:
+
+MLS
+User ID: adeola.ogunbiyi@example.com
+Password : qJjKgb8Barf
+
+MIB
+User ID: folashade.adebisi@example.com
+Password : newpassword
+
+CPS
+User ID: olawale.akinwale@example.com
+Password : newnewnnewnnenw
+
+
+
+
+Student Login Details:
+
+CPS
+Matric No: FUO/19/0122
+User ID : holamilean56@gmail.com
+Password : banjis
+
+MLS
+Matric No: FUO/19/0121
+User ID : olabisi.ogunleye@example.com
+Password : holamilean56@gmail.com
+
+MIB
+Matric No: FUO/19/0021
+User ID : ifeoluwa.akintola@example.com
+Password : holamilean56@gmail.com

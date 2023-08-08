@@ -16,6 +16,7 @@ import {
   Tr,
   Input,
   useToast,
+  VStack,
 } from "@chakra-ui/react";
 import axios from "axios";
 import { PDFDownloadLink } from "@react-pdf/renderer";
@@ -198,6 +199,9 @@ const HomePage = () => {
     return { gradedCourses, averageScore, status };
   };
 
+  const showResult = () => {
+    calculateGrades(userData?.coursesAdded);
+  };
   const styles = StyleSheet.create({
     page: {
       fontFamily: "Helvetica",
@@ -245,7 +249,7 @@ const HomePage = () => {
       flexDirection: "row",
       width: "100%",
     },
-    tableCellHeader: {
+    tableCellHeaderFirst: {
       width: "100%",
       borderStyle: "solid",
       borderWidth: 1,
@@ -254,8 +258,25 @@ const HomePage = () => {
       padding: "5px",
       fontWeight: "bold",
     },
-    tableCell: {
+    tableCellHeader: {
+      width: "20%",
+      borderStyle: "solid",
+      borderWidth: 1,
+      borderLeftWidth: 0,
+      borderTopWidth: 0,
+      padding: "5px",
+      fontWeight: "bold",
+    },
+    tableCellFirst: {
       width: "100%",
+      borderStyle: "solid",
+      borderWidth: 1,
+      borderLeftWidth: 0,
+      borderTopWidth: 0,
+      padding: "3px",
+    },
+    tableCell: {
+      width: "20%",
       borderStyle: "solid",
       borderWidth: 1,
       borderLeftWidth: 0,
@@ -288,6 +309,12 @@ const HomePage = () => {
       width: 70,
       height: 70,
     },
+    boldText: {
+      display: "flex",
+      flexDirection: "column",
+      marginBottom: "20px",
+      fontWeight: "bold",
+    },
   });
 
   const SchoolResultDocument = () => (
@@ -299,22 +326,43 @@ const HomePage = () => {
           <View style={styles.rowsection}>
             <View style={styles.section}>
               <Texxt>Lecturer: {userData.name}</Texxt>
-              <Texxt>Name: {selectedStudent.name}</Texxt>
-              <Texxt>Matric No: {selectedStudent.matricno}</Texxt>
+              <Texxt>
+                Name:{" "}
+                {userRole === "Lecturer" ? selectedStudent.name : userData.name}
+              </Texxt>
+              <Texxt>
+                Matric No:{" "}
+                {userRole === "Lecturer"
+                  ? selectedStudent.matricno
+                  : userData.matricno}
+              </Texxt>
             </View>
             <View style={styles.section}>
-              <Texxt>Sex: {selectedStudent.sex}</Texxt>
-              <Texxt>Email: {selectedStudent.email}</Texxt>
-              <Texxt>Department: {selectedStudent.department}</Texxt>
+              <Texxt>
+                Sex:{" "}
+                {userRole === "Lecturer" ? selectedStudent.sex : userData.sex}
+              </Texxt>
+              <Texxt>
+                Email:{" "}
+                {userRole === "Lecturer"
+                  ? selectedStudent.email
+                  : userData.email}
+              </Texxt>
+              <Texxt>
+                Department:{" "}
+                {userRole === "Lecturer"
+                  ? selectedStudent.department
+                  : userData.department}
+              </Texxt>
             </View>
           </View>
 
-          <View style={styles.section}>
+          <View style={styles.boldText}>
             <Texxt>Result Score: {resultData?.averageScore}</Texxt>
           </View>
           <View style={styles.table}>
             <View style={styles.tableRow}>
-              <View style={styles.tableCellHeader}>
+              <View style={styles.tableCellHeaderFirst}>
                 <Texxt>Subject</Texxt>
               </View>
               <View style={styles.tableCellHeader}>
@@ -329,7 +377,7 @@ const HomePage = () => {
             </View>
             {resultData?.gradedCourses?.map((course, index) => (
               <View key={index} style={styles.tableRow}>
-                <View style={styles.tableCell}>
+                <View style={styles.tableCellFirst}>
                   <Texxt>{course.courses}</Texxt>
                 </View>
                 <View style={styles.tableCell}>
@@ -347,17 +395,19 @@ const HomePage = () => {
           <View style={styles.newsection}>
             <Texxt>Result Status: {resultData?.status}</Texxt>
           </View>
-          <View style={styles.signSection}>
-            <View style={styles.signContainer}>
-              <Texxt style={styles.signLabel}>HOD Signature and Date</Texxt>
+          {userRole === "Lecturer" && (
+            <View style={styles.signSection}>
+              <View style={styles.signContainer}>
+                <Texxt style={styles.signLabel}>HOD Signature and Date</Texxt>
+              </View>
+              <View style={styles.signContainer}>
+                <Texxt style={styles.signLabel}>Dean Signature and Date</Texxt>
+              </View>
+              <View style={styles.signContainer}>
+                <Texxt style={styles.signLabel}>VC Signature and Date</Texxt>
+              </View>
             </View>
-            <View style={styles.signContainer}>
-              <Texxt style={styles.signLabel}>Dean Signature and Date</Texxt>
-            </View>
-            <View style={styles.signContainer}>
-              <Texxt style={styles.signLabel}>VC Signature and Date</Texxt>
-            </View>
-          </View>
+          )}
         </View>
       </Page>
     </Document>
@@ -555,18 +605,41 @@ const HomePage = () => {
             </HStack>
           </>
         ) : (
-          <Flex
-            p={4}
-            w="full"
-            minH="80vh"
-            bg="white"
-            fontWeight="semibold"
-            fontSize="lg"
-            justifyContent="center"
-            alignItems="center"
-          >
-            Results are currently unavailable
-          </Flex>
+          <>
+            {userRole === "Student" && userData.resultReady ? (
+              <>
+                <Button onClick={showResult}>First Semester</Button>
+                {resultData && <SchoolResultDocument />}
+                {resultData && (
+                  <Button my={4} colorScheme="green">
+                    {isClient && (
+                      <PDFDownloadLink
+                        document={<SchoolResultDocument />}
+                        fileName={`${userData.matricno}'s Result.pdf`}
+                      >
+                        Download Reuslt
+                      </PDFDownloadLink>
+                    )}
+                  </Button>
+                )}
+              </>
+            ) : (
+              <>
+                <Flex
+                  p={4}
+                  w="full"
+                  minH="80vh"
+                  bg="white"
+                  fontWeight="semibold"
+                  fontSize="lg"
+                  justifyContent="center"
+                  alignItems="center"
+                >
+                  Results are currently unavailable
+                </Flex>
+              </>
+            )}
+          </>
         )}
       </Flex>
     </SidebarWithHeader>

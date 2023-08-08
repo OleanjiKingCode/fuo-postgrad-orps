@@ -102,15 +102,15 @@ const Login = () => {
         Fountain University Postrgraduate
       </Heading>
       <Flex
-        pt="8%"
+        pt="20"
         flexDirection="column"
         gap="10"
         alignItems={{ md: "center" }}
         w="full"
       >
-        <VStack w="full">
+        <VStack w="full" py={{ base: "10px" }}>
           <Heading fontSize="xl" color="white">
-            LOGIN
+            LOGIN PAGE
           </Heading>
           <form
             onSubmit={handleSubmit(submitHandler)}
@@ -121,8 +121,9 @@ const Login = () => {
               gap="10"
               alignItems={{ md: "center" }}
               w="full"
+              px={{ base: "10" }}
             >
-              <Box w={{ sm: "full", md: "50%" }}>
+              <Box w={{ sm: "full", md: "70%", lg: "50%" }}>
                 <FormControl>
                   <FormLabel htmlFor="matricno" color="white">
                     User Id
@@ -148,7 +149,7 @@ const Login = () => {
                   )}
                 </FormControl>
               </Box>
-              <Box w={{ sm: "full", md: "50%" }}>
+              <Box w={{ sm: "full", md: "70%", lg: "50%" }}>
                 <FormControl>
                   <FormLabel htmlFor="password" color="white">
                     Password
@@ -182,7 +183,7 @@ const Login = () => {
               </Box>
               <Button
                 type="submit"
-                w={{ sm: "full", md: "50%" }}
+                w={{ sm: "full", md: "70%", lg: "50%" }}
                 bg="#4ed879"
                 _hover={{ bg: "gray", color: "black" }}
                 color="white"
@@ -194,18 +195,40 @@ const Login = () => {
             </Flex>
           </form>
         </VStack>
-        <Flex justifyContent="space-between" w={{ sm: "full", md: "50%" }}>
-          <Flex>
-            <Text color="white">Not yet registered? &nbsp; </Text>
+        <Flex
+          justifyContent="space-between"
+          w={{ sm: "full", md: "70%", lg: "50%" }}
+          px={{ base: "10", md: "5" }}
+          alignItems={{ md: "center" }}
+          direction={{ base: "column", sm: "row", md: "row" }}
+        >
+          <Flex w={{ base: "full", md: "fit-content" }}>
+            <Text
+              color="white"
+              fontSize={{ base: "12px", md: "16px", lg: "18px" }}
+            >
+              Not yet registered? &nbsp;{" "}
+            </Text>
             <Link href="/register">
-              <Text color="#4ed879" fontWeight="semibold">
+              <Text
+                color="#4ed879"
+                fontWeight="semibold"
+                fontSize={{ base: "12px", md: "16px", lg: "18px" }}
+              >
                 Register
               </Text>
             </Link>
           </Flex>
-          <Flex>
+          <Flex
+            w={{ base: "full", md: "fit-content" }}
+            py={{ base: "4", sm: "0" }}
+          >
             <Link href="/register">
-              <Text color="#4ed879" fontWeight="semibold">
+              <Text
+                color="#4ed879"
+                fontWeight="semibold"
+                fontSize={{ base: "12px", md: "16px", lg: "18px" }}
+              >
                 Forgot password?
               </Text>
             </Link>

@@ -266,7 +266,7 @@ const register = () => {
                   color="white"
                 >
                   {dept.map((dpt, i) => (
-                    <option value={dpt.abbr} key={i}>
+                    <option value={dpt.name} key={i}>
                       {dpt.name}
                     </option>
                   ))}

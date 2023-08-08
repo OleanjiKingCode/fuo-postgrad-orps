@@ -130,7 +130,7 @@ const SidebarContent = ({ onClose }) => {
         justifyContent="space-between"
       >
         <Text fontSize="xl" w="full" fontFamily="monospace" fontWeight="bold">
-          Fountain University Postrgraduate
+          Fountain University Postgraduate
         </Text>
         <CloseButton display={{ base: "flex", md: "none" }} onClick={onClose} />
       </Flex>
@@ -245,12 +245,12 @@ const MobileNav = ({ onOpen }) => {
 
       <Text
         display={{ base: "flex", md: "none" }}
-        fontSize="xl"
+        fontSize="18px"
         fontFamily="monospace"
         fontWeight="semibold"
         textAlign="center"
       >
-        Fountain University Postgraduate
+        FUO POSTGRADUATE
       </Text>
 
       <HStack spacing={{ base: "0", md: "6" }}>

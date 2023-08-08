@@ -71,16 +71,26 @@ const HomePage = () => {
   const [courseData, setCourseData] = useState([]);
 
   const handleStudentClick = (student) => {
-    setSelectedStudent(student);
+    if (userData.canEditResult) {
+      setSelectedStudent(student);
 
-    const updatedData = student?.coursesAdded?.map((course) => ({
-      ...course,
-      attendance: course.attendance || "",
-      ca: course.ca || "",
-      exams: course.exams || "",
-    }));
-    isAllCoursesFilled(updatedData);
-    setCourseData(updatedData);
+      const updatedData = student?.coursesAdded?.map((course) => ({
+        ...course,
+        attendance: course.attendance || "",
+        ca: course.ca || "",
+        exams: course.exams || "",
+      }));
+      isAllCoursesFilled(updatedData);
+      setCourseData(updatedData);
+    } else {
+      toast({
+        title: "You cant edit students results",
+        description: "",
+        status: "error",
+        duration: 4000,
+        isClosable: true,
+      });
+    }
   };
 
   const handleInputChange = (index, field, value) => {

@@ -228,7 +228,7 @@ const Students = () => {
                         color="black"
                       >
                         {dept.map((dpt, i) => (
-                          <option value={dpt.abbr} key={i}>
+                          <option value={dpt.name} key={i}>
                             {dpt.name}
                           </option>
                         ))}

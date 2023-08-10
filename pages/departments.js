@@ -179,11 +179,9 @@ const Department = () => {
       let isValid = true;
 
       const minRequiredItems = 9;
-      let totalUnitsInCourses = 0;
       let firstSemesterUnits = 0;
       let secondSemesterUnits = 0;
       let thirdSemesterUnits = 0;
-
       let validCourseData = [];
 
       for (let i = 0; i < courseData.length; i++) {
@@ -207,9 +205,9 @@ const Department = () => {
         }
       }
 
-      if (firstSemesterUnits > maxUnitsNo[0]) {
+      if (firstSemesterUnits < maxUnitsNo[0]) {
         toast({
-          title: `Total Units in First semester is greater than the max set`,
+          title: `Total Units in First semester is less than the max set`,
           description: "",
           status: "warning",
           duration: 4000,
@@ -218,9 +216,9 @@ const Department = () => {
 
         setLoading(false);
         return;
-      } else if (secondSemesterUnits > maxUnitsNo[1]) {
+      } else if (secondSemesterUnits < maxUnitsNo[1]) {
         toast({
-          title: `Total Units in Second semester is greater than the max set`,
+          title: `Total Units in Second semester is less than the max set`,
           description: "",
           status: "warning",
           duration: 4000,
@@ -229,9 +227,9 @@ const Department = () => {
 
         setLoading(false);
         return;
-      } else if (thirdSemesterUnits > maxUnitsNo[1]) {
+      } else if (thirdSemesterUnits < maxUnitsNo[1]) {
         toast({
-          title: `Total Units in Third semester is greater than the max set`,
+          title: `Total Units in Third semester is less than the max set`,
           description: "",
           status: "warning",
           duration: 4000,

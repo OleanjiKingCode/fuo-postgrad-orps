@@ -17,6 +17,7 @@ import {
   Th,
   Td,
   Spinner,
+  chakra,
 } from "@chakra-ui/react";
 import axios from "axios";
 
@@ -30,25 +31,7 @@ const Courses = () => {
   const [userDept, setUserDept] = useState("");
   const toast = useToast();
 
-  const [courseData, setCourseData] = useState([
-    { name: "", units: "" },
-    { name: "", units: "" },
-    { name: "", units: "" },
-    { name: "", units: "" },
-    { name: "", units: "" },
-    { name: "", units: "" },
-    { name: "", units: "" },
-    { name: "", units: "" },
-    { name: "", units: "" },
-    { name: "", units: "" },
-    { name: "", units: "" },
-    { name: "", units: "" },
-    { name: "", units: "" },
-    { name: "", units: "" },
-    { name: "", units: "" },
-    { name: "", units: "" },
-    { name: "", units: "" },
-  ]);
+  const [courseData, setCourseData] = useState([]);
 
   const handleCheckboxChange = (index) => {
     const updatedCourseData = [...deptData.courses];
@@ -85,6 +68,7 @@ const Courses = () => {
         const response2 = await axios.get(`/api/Dept/${data.department}`);
         if (response2) {
           const data2 = await response2.data;
+          console.log(data2);
           setDeptData(data2);
         }
         const response4 = await axios.get(`/api/User`);
@@ -103,17 +87,72 @@ const Courses = () => {
   const chosenCourses = async () => {
     let coursesWithCheckboxTrue = [];
     let amountOfUnits = 0;
+    let firstSemesterUnits = 0;
+    let secondSemestertUnits = 0;
+    let thirdSemesterUnits = 0;
+
+    let firstSemesterCourses = [];
+    let secondSemestertCourses = [];
+    let thirdSemesterCourses = [];
 
     for (const course of deptData.courses) {
       if (course.checked === true) {
         coursesWithCheckboxTrue.push(course);
         amountOfUnits += course.units;
+      } else {
+        if (course.compulsory) {
+          toast({
+            title: "Select all compulsory courses",
+            description: "",
+            status: "warning",
+            duration: 4000,
+            isClosable: true,
+          });
+          return;
+        }
       }
     }
 
-    if (amountOfUnits < deptData?.maxUnits) {
+    for (const course of coursesWithCheckboxTrue) {
+      if (course.semester === "First") {
+        firstSemesterUnits += course.units;
+        firstSemesterCourses.push(course);
+      } else if (course.semester === "Second") {
+        secondSemestertUnits += course.units;
+        secondSemestertCourses.push(course);
+      } else if (course.semester === "Third") {
+        thirdSemesterUnits += course.units;
+        thirdSemesterCourses.push(course);
+      }
+    }
+
+    if (firstSemesterUnits < deptData?.maxUnits[0]) {
       toast({
-        title: "Maximum number of units added is low",
+        title:
+          "Chosen courses units doesnt meet the required number for first semester",
+        description: "",
+        status: "warning",
+        duration: 4000,
+        isClosable: true,
+      });
+      return;
+    }
+    if (secondSemestertUnits < deptData?.maxUnits[0]) {
+      toast({
+        title:
+          "Chosen courses units doesnt meet the required number for second semester",
+        description: "",
+        status: "warning",
+        duration: 4000,
+        isClosable: true,
+      });
+      return;
+    }
+
+    if (thirdSemesterUnits < deptData?.maxUnits[0]) {
+      toast({
+        title:
+          "Chosen courses units doesnt meet the required number for third semester",
         description: "",
         status: "warning",
         duration: 4000,
@@ -124,7 +163,11 @@ const Courses = () => {
 
     try {
       const result = await axios.put(`/api/User/${email}`, {
-        coursesAdded: coursesWithCheckboxTrue,
+        coursesAdded: {
+          firstSemester: firstSemesterCourses,
+          secondSemester: secondSemestertCourses,
+          thirdSemester: thirdSemesterCourses,
+        },
       });
       if (result) {
         setRefetchData((prevValue) => !prevValue);
@@ -194,7 +237,7 @@ const Courses = () => {
                   <Th>Student Name</Th>
                   <Th>Email</Th>
                   <Th>Matric No</Th>
-                  <Th>Course Registered</Th>
+                  <Th>Course Registered [1st, 2nd,3rd]</Th>
                 </Tr>
               </Thead>
               <Tbody>
@@ -204,15 +247,170 @@ const Courses = () => {
                     <Td>{student.name}</Td>
                     <Td>{student.email}</Td>
                     <Td>{student.matricno}</Td>
-                    <Td>{student.coursesAdded.length}</Td>
+                    <Td>
+                      <chakra.span px="3">
+                        {" "}
+                        {student.coursesAdded?.firstSemester?.length ?? 0},
+                      </chakra.span>
+                      <chakra.span px="3">
+                        {" "}
+                        {student.coursesAdded?.secondSemester?.length ?? 0},
+                      </chakra.span>
+                      <chakra.span px="3">
+                        {student.coursesAdded?.thirdSemester?.length ?? 0}
+                      </chakra.span>
+                    </Td>
                   </Tr>
                 ))}
               </Tbody>
             </Table>
           </VStack>
-        ) : userData?.coursesAdded ? (
+        ) : userRole === "Student" ? (
           <>
-            {userData?.coursesAdded.length === 0 ? (
+            {userData?.coursesAdded?.firstSemester?.length > 0 ? (
+              <VStack mt={4} p={4} w="full" bg="white">
+                <VStack w="full" gap="4">
+                  <Heading fontSize="lg">CHOOSEN COURSES</Heading>
+                  <HStack
+                    w="full"
+                    justifyContent="space-between"
+                    px="10"
+                    pb="4"
+                  >
+                    <Text>
+                      {" "}
+                      <b>DEPARTMENT :</b> {deptData?.name}
+                    </Text>
+                    <Text>
+                      {" "}
+                      <b>MAX UNITS :</b>
+                    </Text>
+                    <Text>
+                      {" "}
+                      <b>First :</b> {deptData?.maxUnits[0]} Units
+                    </Text>
+                    <Text>
+                      <b>Second:</b> {deptData?.maxUnits[1]} Units
+                    </Text>{" "}
+                    <Text>
+                      <b>Third:</b> {deptData?.maxUnits[2]} Units
+                    </Text>
+                  </HStack>
+                </VStack>
+                <Text
+                  py="3"
+                  color="white"
+                  bg="green.500"
+                  w="full"
+                  px="2"
+                  fontWeight="700"
+                  mt="2"
+                >
+                  FIRST SEMESTER
+                </Text>
+                <Table variant="striped" colorScheme="blue" w="full">
+                  <Thead>
+                    <Tr>
+                      <Th>#</Th>
+                      <Th>Course Name</Th>
+                      <Th>Units</Th>
+                      <Th>Semester</Th>
+                      <Th>Status</Th>
+                    </Tr>
+                  </Thead>
+                  <Tbody>
+                    {userData?.coursesAdded?.firstSemester?.map(
+                      (course, index) => (
+                        <Tr key={index}>
+                          <Td>{index + 1}</Td>
+                          <Td>{course.name}</Td>
+                          <Td>{course.units}</Td>
+                          <Td>{course.semester}</Td>
+                          <Td>
+                            {course.compulsory ? "Compulsory" : "Selective"}
+                          </Td>
+                        </Tr>
+                      )
+                    )}
+                  </Tbody>
+                </Table>
+                <Text
+                  py="3"
+                  color="white"
+                  bg="green.500"
+                  w="full"
+                  px="2"
+                  fontWeight="700"
+                  mt="2"
+                >
+                  SECOND SEMESTER
+                </Text>
+                <Table variant="striped" colorScheme="blue" w="full">
+                  <Thead>
+                    <Tr>
+                      <Th>#</Th>
+                      <Th>Course Name</Th>
+                      <Th>Units</Th>
+                      <Th>Semester</Th>
+                      <Th>Status</Th>
+                    </Tr>
+                  </Thead>
+                  <Tbody>
+                    {userData?.coursesAdded?.secondSemester?.map(
+                      (course, index) => (
+                        <Tr key={index}>
+                          <Td>{index + 1}</Td>
+                          <Td>{course.name}</Td>
+                          <Td>{course.units}</Td>
+                          <Td>{course.semester}</Td>
+                          <Td>
+                            {course.compulsory ? "Compulsory" : "Selective"}
+                          </Td>
+                        </Tr>
+                      )
+                    )}
+                  </Tbody>
+                </Table>
+
+                <Text
+                  py="3"
+                  color="white"
+                  bg="green.500"
+                  w="full"
+                  px="2"
+                  fontWeight="700"
+                  mt="2"
+                >
+                  THIRD SEMESTER
+                </Text>
+                <Table variant="striped" colorScheme="blue" w="full">
+                  <Thead>
+                    <Tr>
+                      <Th>#</Th>
+                      <Th>Course Name</Th>
+                      <Th>Units</Th>
+                      <Th>Semester</Th>
+                      <Th>Status</Th>
+                    </Tr>
+                  </Thead>
+                  <Tbody>
+                    {userData?.coursesAdded?.thirdSemester?.map(
+                      (course, index) => (
+                        <Tr key={index}>
+                          <Td>{index + 1}</Td>
+                          <Td>{course.name}</Td>
+                          <Td>{course.units}</Td>
+                          <Td>{course.semester}</Td>
+                          <Td>
+                            {course.compulsory ? "Compulsory" : "Selective"}
+                          </Td>
+                        </Tr>
+                      )
+                    )}
+                  </Tbody>
+                </Table>
+              </VStack>
+            ) : (
               <VStack mt={4} p={4} w="full" bg="white">
                 <HStack w="full" gap="10">
                   <Heading fontSize="lg">CHOOSE COURSES</Heading>
@@ -222,7 +420,17 @@ const Courses = () => {
                   </Text>
                   <Text>
                     {" "}
-                    <b>MAX UNITS :</b> {deptData?.maxUnits}
+                    <b>MAX UNITS :</b>
+                  </Text>
+                  <Text>
+                    {" "}
+                    <b>First :</b> {deptData?.maxUnits[0]} Units
+                  </Text>
+                  <Text>
+                    <b>Second:</b> {deptData?.maxUnits[1]}Units
+                  </Text>{" "}
+                  <Text>
+                    <b>Third:</b> {deptData?.maxUnits[2]} Units
                   </Text>
                 </HStack>
 
@@ -232,6 +440,8 @@ const Courses = () => {
                       <Th>#</Th>
                       <Th>Course Name</Th>
                       <Th>Units</Th>
+                      <Th>Semester</Th>
+                      <Th>Status</Th>
                       <Th>Check</Th>
                     </Tr>
                   </Thead>
@@ -241,6 +451,10 @@ const Courses = () => {
                         <Td>{index + 1}</Td>
                         <Td>{course.name}</Td>
                         <Td>{course.units}</Td>
+                        <Td>{course.semester}</Td>
+                        <Td>
+                          {course.compulsory ? "Compulsory" : "Selective"}
+                        </Td>
                         <Td>
                           <Checkbox
                             isChecked={course.checked}
@@ -262,41 +476,6 @@ const Courses = () => {
                     Submit
                   </Button>
                 </HStack>
-              </VStack>
-            ) : (
-              <VStack mt={4} p={4} w="full" bg="white">
-                <VStack w="full" gap="4">
-                  <Heading fontSize="lg">CHOOSEN COURSES</Heading>
-                  <HStack w="full" justifyContent="space-between" px="10">
-                    <Text>
-                      {" "}
-                      <b>DEPARTMENT :</b> {deptData?.name}
-                    </Text>
-                    <Text>
-                      {" "}
-                      <b>MAX UNITS :</b> 23
-                    </Text>
-                  </HStack>
-                </VStack>
-
-                <Table variant="striped" colorScheme="blue" w="full">
-                  <Thead>
-                    <Tr>
-                      <Th>#</Th>
-                      <Th>Course Name</Th>
-                      <Th>Units</Th>
-                    </Tr>
-                  </Thead>
-                  <Tbody>
-                    {userData?.coursesAdded?.map((course, index) => (
-                      <Tr key={index}>
-                        <Td>{index + 1}</Td>
-                        <Td>{course.name}</Td>
-                        <Td>{course.units}</Td>
-                      </Tr>
-                    ))}
-                  </Tbody>
-                </Table>
               </VStack>
             )}
           </>

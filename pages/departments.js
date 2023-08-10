@@ -51,7 +51,6 @@ const Department = () => {
   const {
     handleSubmit,
     register,
-    getValues,
     reset,
     resetField,
     formState: { errors, isSubmitting },
@@ -102,7 +101,6 @@ const Department = () => {
   const [loading, setLoading] = useState(false);
   const [chosenDeptName, setChosenDeptName] = useState("");
   const [chosenDeptAbbr, setChosenDeptAbbr] = useState("");
-
   const [maxUnitsNo, setMaxUnitsNo] = useState([0, 0, 0]);
   const [courseData, setCourseData] = useState([]);
 
@@ -120,14 +118,12 @@ const Department = () => {
 
   const handleSemesterChange = (index, value) => {
     const updatedCourseData = [...courseData];
-    console.log(index, value);
     updatedCourseData[index] = { ...updatedCourseData[index], semester: value };
     setCourseData(updatedCourseData);
   };
 
   const handleStatusChange = (index, value) => {
     const updatedCourseData = [...courseData];
-    console.log(index, value);
     updatedCourseData[index] = {
       ...updatedCourseData[index],
       compulsory: value,
@@ -184,26 +180,58 @@ const Department = () => {
 
       const minRequiredItems = 9;
       let totalUnitsInCourses = 0;
+      let firstSemesterUnits = 0;
+      let secondSemesterUnits = 0;
+      let thirdSemesterUnits = 0;
+
       let validCourseData = [];
 
       for (let i = 0; i < courseData.length; i++) {
         const { name, units } = courseData[i];
         if (name.trim() !== "" && units.trim() !== "") {
-          totalUnitsInCourses += Number(units);
+          courseData[i].compulsory = courseData[i].compulsory
+            ? courseData[i].compulsory
+            : true;
+          courseData[i].semester = courseData[i].semester
+            ? courseData[i].semester
+            : "First";
+
+          if (courseData[i].semester === "First") {
+            firstSemesterUnits += Number(units);
+          } else if (courseData[i].semester === "Second") {
+            secondSemesterUnits += Number(units);
+          } else if (courseData[i].semester === "Third") {
+            thirdSemesterUnits += Number(units);
+          }
           validCourseData.push(courseData[i]);
         }
       }
 
-      let semesterSum = 0;
-
-      for (let i = 0; i < maxUnitsNo.length; i++) {
-        semesterSum += Number(maxUnitsNo[i]);
-      }
-
-      if (totalUnitsInCourses > semesterSum) {
-        console.log(totalUnitsInCourses, semesterSum);
+      if (firstSemesterUnits > maxUnitsNo[0]) {
         toast({
-          title: "Total Units in courses is greater than in all semesters",
+          title: `Total Units in First semester is greater than the max set`,
+          description: "",
+          status: "warning",
+          duration: 4000,
+          isClosable: true,
+        });
+
+        setLoading(false);
+        return;
+      } else if (secondSemesterUnits > maxUnitsNo[1]) {
+        toast({
+          title: `Total Units in Second semester is greater than the max set`,
+          description: "",
+          status: "warning",
+          duration: 4000,
+          isClosable: true,
+        });
+
+        setLoading(false);
+        return;
+      } else if (thirdSemesterUnits > maxUnitsNo[1]) {
+        toast({
+          title: `Total Units in Third semester is greater than the max set`,
           description: "",
           status: "warning",
           duration: 4000,
@@ -213,6 +241,7 @@ const Department = () => {
         setLoading(false);
         return;
       }
+
       if (validCourseData.length < minRequiredItems) {
         isValid = false;
       }
@@ -541,63 +570,28 @@ const Department = () => {
                                     e.target.value
                                   )
                                 }
+                                defaultValue={courseData[index - 1]?.semester}
                               >
-                                <option
-                                  value=""
-                                  disabled
-                                  selected={
-                                    courseData[index - 1].semester === ""
-                                  }
-                                >
+                                <option value="" disabled>
                                   Semester
                                 </option>
-                                <option
-                                  value="First"
-                                  selected={
-                                    courseData[index - 1].semester === "First"
-                                  }
-                                >
-                                  First
-                                </option>
-                                <option
-                                  value="Second"
-                                  selected={
-                                    courseData[index - 1].semester === "Second"
-                                  }
-                                >
-                                  Second
-                                </option>
-                                <option
-                                  value="Third"
-                                  selected={
-                                    courseData[index - 1].semester === "Third"
-                                  }
-                                >
-                                  Third
-                                </option>
+                                <option value="First">First</option>
+                                <option value="Second">Second</option>
+                                <option value="Third">Third</option>
                               </Select>
                               <Select
                                 color="black"
-                                flex="6"
+                                flex="8"
                                 onChange={(e) =>
                                   handleStatusChange(index - 1, e.target.value)
                                 }
+                                defaultValue={courseData[index - 1]?.compulsory}
                               >
                                 <option value="" disabled>
                                   Status
                                 </option>
-                                <option
-                                  value="True"
-                                  selected={courseData[index - 1].compulsory}
-                                >
-                                  Compulsory
-                                </option>
-                                <option
-                                  value="False"
-                                  selected={!courseData[index - 1].compulsory}
-                                >
-                                  Selective
-                                </option>
+                                <option value={true}>Compulsory</option>
+                                <option value={false}>Selective</option>
                               </Select>
                             </Flex>
                           </VStack>
@@ -635,6 +629,35 @@ const Department = () => {
                                 }
                                 w="24"
                               />
+                              <Select
+                                color="black"
+                                flex="6"
+                                onChange={(e) =>
+                                  handleSemesterChange(ind - 1, e.target.value)
+                                }
+                                defaultValue={courseData[ind - 1]?.semester}
+                              >
+                                <option value="" disabled>
+                                  Semester
+                                </option>
+                                <option value="First">First</option>
+                                <option value="Second">Second</option>
+                                <option value="Third">Third</option>
+                              </Select>
+                              <Select
+                                color="black"
+                                flex="8"
+                                onChange={(e) =>
+                                  handleStatusChange(ind - 1, e.target.value)
+                                }
+                                defaultValue={courseData[ind - 1]?.compulsory}
+                              >
+                                <option value="" disabled>
+                                  Status
+                                </option>
+                                <option value={true}>Compulsory</option>
+                                <option value={false}>Selective</option>
+                              </Select>
                             </Flex>
                           </VStack>
                         ))}
@@ -671,6 +694,35 @@ const Department = () => {
                                 }
                                 w="24"
                               />
+                              <Select
+                                color="black"
+                                flex="6"
+                                onChange={(e) =>
+                                  handleSemesterChange(i - 1, e.target.value)
+                                }
+                                defaultValue={courseData[i - 1]?.semester}
+                              >
+                                <option value="" disabled>
+                                  Semester
+                                </option>
+                                <option value="First">First</option>
+                                <option value="Second">Second</option>
+                                <option value="Third">Third</option>
+                              </Select>
+                              <Select
+                                color="black"
+                                flex="8"
+                                onChange={(e) =>
+                                  handleStatusChange(i - 1, e.target.value)
+                                }
+                                defaultValue={courseData[i - 1]?.compulsory}
+                              >
+                                <option value="" disabled>
+                                  Status
+                                </option>
+                                <option value={true}>Compulsory</option>
+                                <option value={false}>Selective</option>
+                              </Select>
                             </Flex>
                           </VStack>
                         ))}
@@ -708,6 +760,35 @@ const Department = () => {
                                 }
                                 w="24"
                               />
+                              <Select
+                                color="black"
+                                flex="6"
+                                onChange={(e) =>
+                                  handleSemesterChange(inde - 1, e.target.value)
+                                }
+                                defaultValue={courseData[inde - 1]?.semester}
+                              >
+                                <option value="" disabled>
+                                  Semester
+                                </option>
+                                <option value="First">First</option>
+                                <option value="Second">Second</option>
+                                <option value="Third">Third</option>
+                              </Select>
+                              <Select
+                                color="black"
+                                flex="8"
+                                onChange={(e) =>
+                                  handleStatusChange(inde - 1, e.target.value)
+                                }
+                                defaultValue={courseData[inde - 1]?.compulsory}
+                              >
+                                <option value="" disabled>
+                                  Status
+                                </option>
+                                <option value={true}>Compulsory</option>
+                                <option value={false}>Selective</option>
+                              </Select>
                             </Flex>
                           </VStack>
                         ))}

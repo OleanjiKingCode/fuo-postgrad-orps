@@ -1,5 +1,21 @@
 import mongoose from "mongoose";
 
+const courseSchema = new mongoose.Schema({
+  name: { type: String, default: "" },
+  units: { type: String, default: "" },
+  attendance: { type: String, default: "" },
+  ca: { type: String, default: "" },
+  exams: { type: String, default: "" },
+  compulsory: { type: Boolean, default: false },
+  semester: { type: String, default: "" },
+});
+
+const semesterSchema = new mongoose.Schema({
+  firstSemester: [courseSchema],
+  secondSemester: [courseSchema],
+  thirdSemester: [courseSchema],
+});
+
 const userSchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
@@ -18,15 +34,7 @@ const userSchema = new mongoose.Schema(
 );
 
 userSchema.add({
-  coursesAdded: [
-    {
-      name: { type: String, default: "" },
-      units: { type: String, default: "" },
-      attendance: { type: String, default: "" },
-      ca: { type: String, default: "" },
-      exams: { type: String, default: "" },
-    },
-  ],
+  coursesAdded: semesterSchema,
   resultReady: { type: Boolean, required: true, default: false },
   canEditResult: { type: Boolean, required: true, default: false },
 });

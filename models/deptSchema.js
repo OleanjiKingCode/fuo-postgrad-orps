@@ -4,9 +4,15 @@ const departmentSchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
     createdBy: { type: String, required: true },
-    courses: [{ name: String, units: String }],
+    courses: [
+      {
+        name: String,
+        units: String,
+        compulsory: { type: Boolean, required: true },
+        semester: { type: String, required: true },
+      },
+    ],
     maxUnits: [{ type: Number, required: true }],
-    maxCourses: { type: Number, required: true },
     students: [{ name: String }],
   },
   {

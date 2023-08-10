@@ -29,6 +29,7 @@ import {
   Spinner,
   Icon,
   chakra,
+  Select,
 } from "@chakra-ui/react";
 import axios from "axios";
 import { FaEdit } from "react-icons/fa";
@@ -37,8 +38,8 @@ import { useForm } from "react-hook-form";
 const Department = () => {
   const { data: session } = useSession();
   const [refetchData, setRefetchData] = useState(false);
-  const [users, setUsers] = useState([]);
-  const [chosenUser, setChosenUser] = useState();
+  const [dept, setDept] = useState([]);
+  const [chosenDept, setChosenDept] = useState();
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const {
@@ -92,7 +93,7 @@ const Department = () => {
     const fetchData = async () => {
       const response4 = await axios.get(`/api/Dept`);
       if (response4) {
-        setUsers(response4.data);
+        setDept(response4.data);
       }
     };
     fetchData();
@@ -102,44 +103,45 @@ const Department = () => {
   const [chosenDeptName, setChosenDeptName] = useState("");
   const [chosenDeptAbbr, setChosenDeptAbbr] = useState("");
 
-  const getStudent = (index) => {
-    setChosenUser(users[index]);
-    setChosenDeptName(users[index].name);
-    setChosenDeptAbbr(users[index].abbr);
-    onOpenEdit();
-  };
-
   const [maxUnitsNo, setMaxUnitsNo] = useState([0, 0, 0]);
-  const [courseData, setCourseData] = useState([
-    { name: "", units: "" },
-    { name: "", units: "" },
-    { name: "", units: "" },
-    { name: "", units: "" },
-    { name: "", units: "" },
-    { name: "", units: "" },
-    { name: "", units: "" },
-    { name: "", units: "" },
-    { name: "", units: "" },
-    { name: "", units: "" },
-    { name: "", units: "" },
-    { name: "", units: "" },
-    { name: "", units: "" },
-    { name: "", units: "" },
-    { name: "", units: "" },
-    { name: "", units: "" },
-    { name: "", units: "" },
-  ]);
+  const [courseData, setCourseData] = useState([]);
 
   const handleCourseChange = (index, value) => {
     const updatedCourseData = [...courseData];
-    updatedCourseData[index].name = value;
+    updatedCourseData[index] = { ...updatedCourseData[index], name: value };
     setCourseData(updatedCourseData);
   };
 
   const handleUnitsChange = (index, value) => {
     const updatedCourseData = [...courseData];
-    updatedCourseData[index].units = value;
+    updatedCourseData[index] = { ...updatedCourseData[index], units: value };
     setCourseData(updatedCourseData);
+  };
+
+  const handleSemesterChange = (index, value) => {
+    const updatedCourseData = [...courseData];
+    console.log(index, value);
+    updatedCourseData[index] = { ...updatedCourseData[index], semester: value };
+    setCourseData(updatedCourseData);
+  };
+
+  const handleStatusChange = (index, value) => {
+    const updatedCourseData = [...courseData];
+    console.log(index, value);
+    updatedCourseData[index] = {
+      ...updatedCourseData[index],
+      compulsory: value,
+    };
+    setCourseData(updatedCourseData);
+  };
+
+  const getDepartment = (index) => {
+    setChosenDept(dept[index]);
+    setChosenDeptName(dept[index].name);
+    setChosenDeptAbbr(dept[index].abbr);
+    setCourseData(dept[index].courses);
+    setMaxUnitsNo(dept[index].maxUnits);
+    onOpenEdit();
   };
 
   const submitCourses = async () => {
@@ -184,7 +186,7 @@ const Department = () => {
       let totalUnitsInCourses = 0;
       let validCourseData = [];
 
-      for (let i = 0; i < 16; i++) {
+      for (let i = 0; i < courseData.length; i++) {
         const { name, units } = courseData[i];
         if (name.trim() !== "" && units.trim() !== "") {
           totalUnitsInCourses += Number(units);
@@ -217,7 +219,6 @@ const Department = () => {
 
       if (isValid) {
         try {
-         
           const result = await axios.put(`/api/Dept/${chosenDeptName}`, {
             name: chosenDeptName,
             abbr: chosenDeptAbbr,
@@ -283,12 +284,11 @@ const Department = () => {
                 <Th>Created By</Th>
                 <Th>Courses</Th>
                 <Th>Maximum Units [1st,2nd,3rd]</Th>
-
                 <Th>Actions</Th>
               </Tr>
             </Thead>
             <Tbody>
-              {users?.map((student, index) => (
+              {dept?.map((student, index) => (
                 <Tr key={index}>
                   <Td>{index + 1}</Td>
                   <Td>{student.name}</Td>
@@ -300,7 +300,11 @@ const Department = () => {
                     {student.maxUnits[2]} ]
                   </Td>
                   <Td>
-                    <Button p="0" bg="none" onClick={() => getStudent(index)}>
+                    <Button
+                      p="0"
+                      bg="none"
+                      onClick={() => getDepartment(index)}
+                    >
                       <Icon as={FaEdit} />
                     </Button>
                   </Td>
@@ -393,12 +397,12 @@ const Department = () => {
           </ModalContent>
         </Modal>
 
-        <Modal isOpen={isOpenEdit} onClose={onCloseEdit} size="2xl">
+        <Modal isOpen={isOpenEdit} onClose={onCloseEdit} size="3xl">
           <ModalOverlay />
           <ModalContent>
             <ModalHeader>
               Edit{" "}
-              <chakra.span color="green.500">{chosenUser?.name}</chakra.span>{" "}
+              <chakra.span color="green.500">{chosenDept?.name}</chakra.span>{" "}
               Department
             </ModalHeader>
             <ModalCloseButton />
@@ -490,7 +494,12 @@ const Department = () => {
                   </Flex>
 
                   <Box w="full" overflowX="scroll">
-                    <VStack mt={4} w="full" p="2" alignItems="start">
+                    <Text pt="4" pl="4">
+                      {" "}
+                      [COURSE NAME] [COURSE UNIT] [COURSE SEMESTER] [COURSE
+                      STATUS]
+                    </Text>
+                    <VStack mt={2} w="full" p="2" alignItems="start">
                       <HStack spacing={4}>
                         {[...Array(4)].map((_, index) => (
                           <VStack key={index} spacing={2} align="center">
@@ -499,28 +508,97 @@ const Department = () => {
                               alignItems="center"
                               justifyContent="center"
                             >
-                              <chakra.span px="2">{(index += 1)}</chakra.span>
+                              <chakra.span px="2" fontWeight="700">
+                                {(index += 1)}
+                              </chakra.span>
                               <Input
                                 id={`course-${index}`}
                                 placeholder="Course"
                                 flex="8"
                                 mr={2}
-                                value={courseData[index].name}
+                                value={courseData[index - 1]?.name}
                                 onChange={(e) =>
-                                  handleCourseChange(index, e.target.value)
+                                  handleCourseChange(index - 1, e.target.value)
                                 }
                                 w="48"
                               />
                               <Input
                                 id={`course-${index}`}
                                 placeholder="No"
-                                flex="2"
-                                value={courseData[index].units}
+                                flex="1"
+                                value={courseData[index - 1]?.units}
                                 onChange={(e) =>
-                                  handleUnitsChange(index, e.target.value)
+                                  handleUnitsChange(index - 1, e.target.value)
                                 }
                                 w="24"
                               />
+                              <Select
+                                color="black"
+                                flex="6"
+                                onChange={(e) =>
+                                  handleSemesterChange(
+                                    index - 1,
+                                    e.target.value
+                                  )
+                                }
+                              >
+                                <option
+                                  value=""
+                                  disabled
+                                  selected={
+                                    courseData[index - 1].semester === ""
+                                  }
+                                >
+                                  Semester
+                                </option>
+                                <option
+                                  value="First"
+                                  selected={
+                                    courseData[index - 1].semester === "First"
+                                  }
+                                >
+                                  First
+                                </option>
+                                <option
+                                  value="Second"
+                                  selected={
+                                    courseData[index - 1].semester === "Second"
+                                  }
+                                >
+                                  Second
+                                </option>
+                                <option
+                                  value="Third"
+                                  selected={
+                                    courseData[index - 1].semester === "Third"
+                                  }
+                                >
+                                  Third
+                                </option>
+                              </Select>
+                              <Select
+                                color="black"
+                                flex="6"
+                                onChange={(e) =>
+                                  handleStatusChange(index - 1, e.target.value)
+                                }
+                              >
+                                <option value="" disabled>
+                                  Status
+                                </option>
+                                <option
+                                  value="True"
+                                  selected={courseData[index - 1].compulsory}
+                                >
+                                  Compulsory
+                                </option>
+                                <option
+                                  value="False"
+                                  selected={!courseData[index - 1].compulsory}
+                                >
+                                  Selective
+                                </option>
+                              </Select>
                             </Flex>
                           </VStack>
                         ))}
@@ -533,15 +611,17 @@ const Department = () => {
                               alignItems="center"
                               justifyContent="center"
                             >
-                              <chakra.span px="2">{(ind += 5)}</chakra.span>
+                              <chakra.span px="2" fontWeight="700">
+                                {(ind += 5)}
+                              </chakra.span>
                               <Input
                                 id={`course-${ind + 5}`}
                                 placeholder="Course"
                                 flex="8"
                                 mr={2}
-                                value={courseData[ind].name}
+                                value={courseData[ind - 1]?.name}
                                 onChange={(e) =>
-                                  handleCourseChange(ind, e.target.value)
+                                  handleCourseChange(ind - 1, e.target.value)
                                 }
                                 w="48"
                               />
@@ -549,9 +629,9 @@ const Department = () => {
                                 id={`course-${ind + 5}`}
                                 placeholder="No"
                                 flex="2"
-                                value={courseData[ind].units}
+                                value={courseData[ind - 1]?.units}
                                 onChange={(e) =>
-                                  handleUnitsChange(ind, e.target.value)
+                                  handleUnitsChange(ind - 1, e.target.value)
                                 }
                                 w="24"
                               />
@@ -567,15 +647,17 @@ const Department = () => {
                               alignItems="center"
                               justifyContent="center"
                             >
-                              <chakra.span px="2">{(i += 9)}</chakra.span>
+                              <chakra.span px="2" fontWeight="700">
+                                {(i += 9)}
+                              </chakra.span>
                               <Input
                                 id={`course-${i + 9}`}
                                 placeholder="Course"
                                 flex="8"
                                 mr={2}
-                                value={courseData[i].name}
+                                value={courseData[i - 1]?.name}
                                 onChange={(e) =>
-                                  handleCourseChange(i, e.target.value)
+                                  handleCourseChange(i - 1, e.target.value)
                                 }
                                 w="48"
                               />
@@ -583,9 +665,9 @@ const Department = () => {
                                 id={`course-${i + 9}`}
                                 placeholder="No"
                                 flex="2"
-                                value={courseData[i].units}
+                                value={courseData[i - 1]?.units}
                                 onChange={(e) =>
-                                  handleUnitsChange(i, e.target.value)
+                                  handleUnitsChange(i - 1, e.target.value)
                                 }
                                 w="24"
                               />
@@ -593,6 +675,7 @@ const Department = () => {
                           </VStack>
                         ))}
                       </HStack>
+
                       <HStack spacing={4}>
                         {[...Array(4)].map((_, inde) => (
                           <VStack key={inde} spacing={2} align="center">
@@ -601,15 +684,17 @@ const Department = () => {
                               alignItems="center"
                               justifyContent="center"
                             >
-                              <chakra.span px="1">{(inde += 13)}</chakra.span>
+                              <chakra.span px="1" fontWeight="700">
+                                {(inde += 13)}
+                              </chakra.span>
                               <Input
                                 id={`course-${inde + 13}`}
                                 placeholder="Course"
                                 flex="8"
                                 mr={2}
-                                value={courseData[inde].name}
+                                value={courseData[inde - 1]?.name}
                                 onChange={(e) =>
-                                  handleCourseChange(inde, e.target.value)
+                                  handleCourseChange(inde - 1, e.target.value)
                                 }
                                 w="48"
                               />
@@ -617,9 +702,9 @@ const Department = () => {
                                 id={`course-${inde + 13}`}
                                 placeholder="No"
                                 flex="2"
-                                value={courseData[inde].units}
+                                value={courseData[inde - 1]?.units}
                                 onChange={(e) =>
-                                  handleUnitsChange(inde, e.target.value)
+                                  handleUnitsChange(inde - 1, e.target.value)
                                 }
                                 w="24"
                               />

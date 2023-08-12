@@ -421,7 +421,16 @@ const HomePage = () => {
             <Heading fontSize="lg" px="2" py="6" textAlign="center">
               STUDENTS RESULTS{" "}
             </Heading>
-            <HStack w="full" alignItems="start" overflowX="scroll">
+            <HStack
+              w="full"
+              alignItems="start"
+              overflowX="scroll"
+              sx={{
+                "&::-webkit-scrollbar": {
+                  display: "none",
+                },
+              }}
+            >
               <Box p={4} w="50%">
                 <Table>
                   <Thead>

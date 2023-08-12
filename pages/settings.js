@@ -20,6 +20,7 @@ const Settings = () => {
   const [userData, setUserData] = useState();
   const [, setUserRole] = useState("");
   const [newName, setNewName] = useState("");
+  const [newNum, setNewNum] = useState("");
   const email = session?.user?.email;
   const [loadingBtn, setloadingBtn] = useState(false);
 
@@ -40,6 +41,7 @@ const Settings = () => {
       setloadingBtn(true);
       const result = await axios.put(`/api/User/${userData?.email}`, {
         name: newName,
+        phoneNumber: newNum,
       });
       if (result) {
         setRefetchData((prevValue) => !prevValue);
@@ -113,6 +115,21 @@ const Settings = () => {
             </HStack>
             <HStack w="full" px="3" justifyContent="space-between">
               <Text fontWeight="bold" w="50%">
+                Phone Number:
+              </Text>
+
+              <Input
+                type="text"
+                value={newNum === "" ? userData?.phoneNumber : newNum}
+                min={0}
+                px="1"
+                max={10}
+                border="1px"
+                onChange={(e) => setNewNum(e.target.value)}
+              />
+            </HStack>
+            <HStack w="full" px="3" justifyContent="space-between">
+              <Text fontWeight="bold" w="50%">
                 Sex:
               </Text>
               <Text w="100%">{userData?.sex}</Text>
@@ -140,7 +157,13 @@ const Settings = () => {
             </Button>
           </>
         ) : (
-          <Flex bg="white" w="full">
+          <Flex
+            bg="white"
+            w="full"
+            px="32"
+            alignItems="center"
+            justifyContent="center"
+          >
             <Spinner />
           </Flex>
         )}

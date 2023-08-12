@@ -134,15 +134,15 @@ const SidebarContent = ({ onClose }) => {
         </Text>
         <CloseButton display={{ base: "flex", md: "none" }} onClick={onClose} />
       </Flex>
-      {LinkItems.map((link) => {
+      {LinkItems.map((link, i) => {
         return (
-          <>
+          <chakra.div key={i}>
             {link.role.includes(userRole) && (
-              <NavItem key={link.name} icon={link.icon} route={link.route}>
+              <NavItem icon={link.icon} route={link.route}>
                 {link.name}
               </NavItem>
             )}
-          </>
+          </chakra.div>
         );
       })}
     </Box>

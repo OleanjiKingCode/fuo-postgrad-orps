@@ -301,7 +301,16 @@ const Department = () => {
             Add New Department
           </Button>
         </Flex>
-        <Box w="full" overflowX="scroll" py="3">
+        <Box
+          w="full"
+          overflowX="scroll"
+          py="3"
+          sx={{
+            "&::-webkit-scrollbar": {
+              display: "none",
+            },
+          }}
+        >
           <Table variant="striped" pl="20" colorScheme="blue" w="full" py="20">
             <Thead>
               <Tr>
@@ -520,7 +529,15 @@ const Department = () => {
                     </HStack>
                   </Flex>
 
-                  <Box w="full" overflowX="scroll">
+                  <Box
+                    w="full"
+                    overflowX="scroll"
+                    sx={{
+                      "&::-webkit-scrollbar": {
+                        display: "none",
+                      },
+                    }}
+                  >
                     <Text pt="4" pl="4">
                       {" "}
                       [COURSE NAME] [COURSE UNIT] [COURSE SEMESTER] [COURSE

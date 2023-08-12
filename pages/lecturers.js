@@ -132,7 +132,16 @@ const Students = () => {
         <VStack w="full" gap="3" py="4">
           <Heading fontSize="lg">LECTURERS </Heading>
         </VStack>
-        <Box w="full" pb="5" overflowX="scroll">
+        <Box
+          w="full"
+          pb="5"
+          overflowX="scroll"
+          sx={{
+            "&::-webkit-scrollbar": {
+              display: "none",
+            },
+          }}
+        >
           <Flex py="3" w="full" justifyContent="flex-end">
             <Button
               bg="green.500"

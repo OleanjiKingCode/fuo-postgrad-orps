@@ -39,7 +39,15 @@ const Students = () => {
         <VStack w="full" gap="3" py="4">
           <Heading fontSize="lg">STUDENTS </Heading>
         </VStack>
-        <Box w="full" overflowX="scroll">
+        <Box
+          w="full"
+          overflowX="scroll"
+          sx={{
+            "&::-webkit-scrollbar": {
+              display: "none",
+            },
+          }}
+        >
           <Table variant="striped" pl="20" colorScheme="blue" w="full" py="20">
             <Thead>
               <Tr>

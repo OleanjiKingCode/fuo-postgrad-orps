@@ -8,8 +8,11 @@ import {
   Box,
   Image,
   VStack,
+  Spinner,
   chakra,
   Button,
+  HStack,
+  Text,
 } from "@chakra-ui/react";
 import axios from "axios";
 
@@ -36,6 +39,15 @@ const HomePage = () => {
     fetchData();
   }, [email, session]);
 
+  function formatDate(inputDate) {
+    const date = new Date(inputDate);
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    const year = date.getFullYear().toString().substr(-2);
+
+    return `${month}/${day}/${year}`;
+  }
+
   return (
     <SidebarWithHeader>
       <Flex>
@@ -50,7 +62,7 @@ const HomePage = () => {
           >
             <Flex
               direction="column"
-              align="center"
+              alignItems="center"
               // justify="center"
               minHeight="100vh"
             >
@@ -61,28 +73,104 @@ const HomePage = () => {
                 borderRadius="full"
                 mb={4}
               />
-              <VStack
-                spacing={4}
-                w="full"
-                textAlign="center"
-                justifyContent="center"
-              >
-                <chakra.div py={3} px={5} w="full" fontWeight="bold">
-                  {userData?.name}
-                </chakra.div>
-
-                <chakra.div py={3} px={5} w="full">
-                  {userData?.matricno}
-                </chakra.div>
-
-                <chakra.div py={3} px={5} w="full">
-                  {userData?.department}
-                </chakra.div>
-
-                <chakra.div py={3} px={5} w="full">
-                  {userData?.phoneNumber}
-                </chakra.div>
-              </VStack>
+              {userData ? (
+                <VStack
+                  spacing={4}
+                  w="full"
+                  alignItems="center"
+                  justifyContent="center"
+                  overflowX="scroll"
+                  sx={{
+                    "&::-webkit-scrollbar": {
+                      display: "none",
+                    },
+                  }}
+                >
+                  <HStack
+                    w={{ base: "full", md: "70%", lg: "50%" }}
+                    px="3"
+                    gap="5"
+                  >
+                    <Text fontWeight="bold" w="40">
+                      Name:
+                    </Text>
+                    <Text>{userData?.name}</Text>
+                  </HStack>
+                  {userData?.role === "Student" && (
+                    <HStack
+                      w={{ base: "full", md: "70%", lg: "50%" }}
+                      px="3"
+                      gap="5"
+                    >
+                      <Text fontWeight="bold" w="40">
+                        Matric Number:
+                      </Text>
+                      <Text>{userData?.matricno}</Text>
+                    </HStack>
+                  )}
+                  <HStack
+                    w={{ base: "full", md: "70%", lg: "50%" }}
+                    px="3"
+                    gap="5"
+                  >
+                    <Text fontWeight="bold" w="40">
+                      Role:
+                    </Text>
+                    <Text>{userData?.role}</Text>
+                  </HStack>
+                  <HStack
+                    w={{ base: "full", md: "70%", lg: "50%" }}
+                    px="3"
+                    gap="5"
+                  >
+                    <Text fontWeight="bold" w="40">
+                      Department:
+                    </Text>
+                    <Text>{userData?.department}</Text>
+                  </HStack>
+                  <HStack
+                    w={{ base: "full", md: "70%", lg: "50%" }}
+                    px="3"
+                    gap="5"
+                  >
+                    <Text fontWeight="bold" w="40">
+                      Sex:
+                    </Text>
+                    <Text>{userData?.sex}</Text>
+                  </HStack>
+                  <HStack
+                    w={{ base: "full", md: "70%", lg: "50%" }}
+                    px="3"
+                    gap="5"
+                  >
+                    <Text fontWeight="bold" w="40">
+                      Email:
+                    </Text>
+                    <Text>{userData?.email}</Text>
+                  </HStack>
+                  <HStack
+                    w={{ base: "full", md: "70%", lg: "50%" }}
+                    px="3"
+                    gap="5"
+                  >
+                    <Text fontWeight="bold" w="40">
+                      DOB:
+                    </Text>
+                    <Text>{formatDate(String(userData?.dob))}</Text>
+                  </HStack>
+                </VStack>
+              ) : (
+                <Flex
+                  bg="white"
+                  w="full"
+                  px="32"
+                  mt="28"
+                  alignItems="center"
+                  justifyContent="center"
+                >
+                  <Spinner />
+                </Flex>
+              )}
             </Flex>
           </Box>
         </Container>

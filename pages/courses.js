@@ -434,76 +434,86 @@ const Courses = () => {
                 </Box>
               </VStack>
             ) : (
-              <VStack mt={4} p={4} w="full" bg="white">
-                <HStack w="full" gap="10">
-                  <Heading fontSize="lg">CHOOSE COURSES</Heading>
-                  <Text>
-                    {" "}
-                    <b>DEPARTMENT :</b> {deptData?.name}
-                  </Text>
-                  <Text>
-                    {" "}
-                    <b>MAX UNITS :</b>
-                  </Text>
-                  <Text>
-                    {" "}
-                    <b>First :</b> {deptData?.maxUnits[0]} Units
-                  </Text>
-                  <Text>
-                    <b>Second:</b> {deptData?.maxUnits[1]}Units
-                  </Text>{" "}
-                  <Text>
-                    <b>Third:</b> {deptData?.maxUnits[2]} Units
-                  </Text>
-                </HStack>
+              <VStack p={1} w="full" bg="white" overflowX="scroll">
+                <Box
+                  w="full"
+                  overflowX="scroll"
+                  sx={{
+                    "&::-webkit-scrollbar": {
+                      display: "none",
+                    },
+                  }}
+                >
+                  <HStack w="full" gap="10">
+                    <Heading fontSize="lg">CHOOSE COURSES</Heading>
+                    <Text>
+                      {" "}
+                      <b>DEPARTMENT :</b> {deptData?.name}
+                    </Text>
+                    <Text>
+                      {" "}
+                      <b>MAX UNITS :</b>
+                    </Text>
+                    <Text>
+                      {" "}
+                      <b>First :</b> {deptData?.maxUnits[0]} Units
+                    </Text>
+                    <Text>
+                      <b>Second:</b> {deptData?.maxUnits[1]}Units
+                    </Text>{" "}
+                    <Text>
+                      <b>Third:</b> {deptData?.maxUnits[2]} Units
+                    </Text>
+                  </HStack>
 
-                <Table variant="striped" colorScheme="blue" w="full">
-                  <Thead>
-                    <Tr>
-                      <Th>#</Th>
-                      <Th>Course Name</Th>
-                      <Th>Units</Th>
-                      <Th>Semester</Th>
-                      <Th>Status</Th>
-                      <Th>Check</Th>
-                    </Tr>
-                  </Thead>
-                  <Tbody>
-                    {deptData?.courses?.map((course, index) => (
-                      <Tr key={index}>
-                        <Td>{index + 1}</Td>
-                        <Td>{course.name}</Td>
-                        <Td>{course.units}</Td>
-                        <Td>{course.semester}</Td>
-                        <Td>
-                          {course.compulsory ? "Compulsory" : "Selective"}
-                        </Td>
-                        <Td>
-                          <Checkbox
-                            isChecked={course.checked}
-                            onChange={() => handleCheckboxChange(index)}
-                          />
-                        </Td>
+                  <Table variant="striped" colorScheme="blue" w="full">
+                    <Thead>
+                      <Tr>
+                        <Th>#</Th>
+                        <Th>Course Name</Th>
+                        <Th>Units</Th>
+                        <Th>Semester</Th>
+                        <Th>Status</Th>
+                        <Th>Check</Th>
                       </Tr>
-                    ))}
-                  </Tbody>
-                </Table>
-                <HStack w="full" gap="10">
-                  <Button my={4} colorScheme="blue" onClick={checkAllBoxes}>
-                    Check All
-                  </Button>
-                  <Button my={4} colorScheme="blue" onClick={unCheckAllBoxes}>
-                    Un-Check All
-                  </Button>
-                  <Button
-                    my={4}
-                    colorScheme="green"
-                    onClick={chosenCourses}
-                    isLoading={isLoading}
-                  >
-                    Submit
-                  </Button>
-                </HStack>
+                    </Thead>
+                    <Tbody>
+                      {deptData?.courses?.map((course, index) => (
+                        <Tr key={index}>
+                          <Td>{index + 1}</Td>
+                          <Td>{course.name}</Td>
+                          <Td>{course.units}</Td>
+                          <Td>{course.semester}</Td>
+                          <Td>
+                            {course.compulsory ? "Compulsory" : "Selective"}
+                          </Td>
+                          <Td>
+                            <Checkbox
+                              isChecked={course.checked}
+                              onChange={() => handleCheckboxChange(index)}
+                            />
+                          </Td>
+                        </Tr>
+                      ))}
+                    </Tbody>
+                  </Table>
+                  <HStack w="full" gap="10">
+                    <Button my={4} colorScheme="blue" onClick={checkAllBoxes}>
+                      Check All
+                    </Button>
+                    <Button my={4} colorScheme="blue" onClick={unCheckAllBoxes}>
+                      Un-Check All
+                    </Button>
+                    <Button
+                      my={4}
+                      colorScheme="green"
+                      onClick={chosenCourses}
+                      isLoading={isLoading}
+                    >
+                      Submit
+                    </Button>
+                  </HStack>
+                </Box>
               </VStack>
             )}
           </>

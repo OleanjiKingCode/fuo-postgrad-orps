@@ -80,6 +80,7 @@ const HomePage = () => {
                   alignItems="center"
                   justifyContent="center"
                   overflowX="scroll"
+                  mt="10"
                   sx={{
                     "&::-webkit-scrollbar": {
                       display: "none",

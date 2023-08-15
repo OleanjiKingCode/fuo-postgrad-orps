@@ -35,7 +35,7 @@ const userSchema = new mongoose.Schema(
 
 userSchema.add({
   coursesAdded: semesterSchema,
-  resultReady: { type: Boolean, required: true, default: false },
+  resultReady: [{ type: Boolean, required: true, default: false }],
   canEditResult: { type: Boolean, required: true, default: false },
 });
 

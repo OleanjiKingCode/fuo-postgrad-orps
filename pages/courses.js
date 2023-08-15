@@ -185,6 +185,7 @@ const Courses = () => {
           duration: 4000,
           isClosable: true,
         });
+        setIsLoading(false);
       }
     } catch (err) {
       setIsLoading(false);
@@ -225,7 +226,7 @@ const Courses = () => {
           )
         ) : userRole === "Lecturer" ? (
           <VStack mt={4} p={4} w="full" bg="white">
-            <VStack w={{ base: "48", md: full }} gap="3" py="4">
+            <VStack w={{ base: "48", md: "full" }} gap="3" py="4">
               <Heading fontSize="lg">List Of Students</Heading>
               <HStack w="full" px="10" justifyContent="space-between">
                 <Text>

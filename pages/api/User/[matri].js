@@ -47,7 +47,7 @@ export default async (req, res) => {
         ? await Users.findOne({ email: matri })
         : await Users.findOne({ matricno: matric });
       const id = student._id;
-      console.log(body);
+      console.log("hgeerfef", body);
       const updatedUser = await Users.findByIdAndUpdate(id, body, {
         new: true,
         runValidators: true,

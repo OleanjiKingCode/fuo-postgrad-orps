@@ -27,7 +27,7 @@ async function handler(req, res) {
   const alreadyAUserOne = await Users.findOne({ matricno: matricno });
   const alreadyAUserTwo = await Users.findOne({ email: email });
 
-  let role = matricno?.includes("FUO") ? "Student" : "Lecturer";
+  let role = matricno !== "" ? "Student" : "Lecturer";
 
   if (role === "Lecturer") {
     if (alreadyAUserTwo) {

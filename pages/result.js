@@ -17,6 +17,7 @@ import {
   Input,
   useToast,
   Stack,
+  Spinner,
 } from "@chakra-ui/react";
 import axios from "axios";
 import { PDFDownloadLink } from "@react-pdf/renderer";
@@ -1105,62 +1106,76 @@ const HomePage = () => {
               </>
             )} */}
 
-            {userRole === "Student" && userData.resultReady.length > 0 ? (
-              userData.resultReady.map((isResultReady, index) => (
-                <div key={index}>
-                  {isResultReady ? (
-                    <>
-                      <Button
-                        onClick={() => showResult(index + 1)}
-                        mt="5"
-                        w="full"
-                      >
-                        {`Semester ${index + 1}`}
-                      </Button>
-                      {resultData && index === selectedIndex && (
-                        <SchoolResultDocument />
-                      )}
-                      {resultData && index === selectedIndex && isClient && (
-                        <Button my={4} colorScheme="green">
-                          <PDFDownloadLink
-                            document={<SchoolResultDocument />}
-                            fileName={`Semester ${index + 1} ${
-                              userData.matricno
-                            }'s Result.pdf`}
-                          >
-                            Download Result
-                          </PDFDownloadLink>
+            {userRole === "Student" ? (
+              userData.resultReady.length > 0 ? (
+                userData.resultReady.map((isResultReady, index) => (
+                  <div key={index}>
+                    {isResultReady ? (
+                      <>
+                        <Button
+                          onClick={() => showResult(index + 1)}
+                          mt="5"
+                          w="full"
+                        >
+                          {`Semester ${index + 1}`}
                         </Button>
-                      )}
-                    </>
-                  ) : (
-                    <Flex
-                      p={4}
-                      w="full"
-                      minH="80vh"
-                      bg="white"
-                      fontWeight="semibold"
-                      fontSize="lg"
-                      justifyContent="center"
-                      alignItems="center"
-                    >
-                      Results for Semester {index + 1} are currently unavailable
-                    </Flex>
-                  )}
-                </div>
-              ))
+                        {resultData && index === selectedIndex && (
+                          <SchoolResultDocument />
+                        )}
+                        {resultData && index === selectedIndex && isClient && (
+                          <Button my={4} colorScheme="green">
+                            <PDFDownloadLink
+                              document={<SchoolResultDocument />}
+                              fileName={`Semester ${index + 1} ${
+                                userData.matricno
+                              }'s Result.pdf`}
+                            >
+                              Download Result
+                            </PDFDownloadLink>
+                          </Button>
+                        )}
+                      </>
+                    ) : (
+                      <Flex
+                        p={4}
+                        w="full"
+                        minH="80vh"
+                        bg="white"
+                        fontWeight="semibold"
+                        fontSize="lg"
+                        justifyContent="center"
+                        alignItems="center"
+                      >
+                        Results for Semester {index + 1} are currently
+                        unavailable
+                      </Flex>
+                    )}
+                  </div>
+                ))
+              ) : (
+                <Flex
+                  p={4}
+                  w="full"
+                  minH="80vh"
+                  bg="white"
+                  fontWeight="semibold"
+                  fontSize="lg"
+                  justifyContent="center"
+                  alignItems="center"
+                >
+                  Results are currently unavailable
+                </Flex>
+              )
             ) : (
               <Flex
-                p={4}
-                w="full"
-                minH="80vh"
                 bg="white"
-                fontWeight="semibold"
-                fontSize="lg"
-                justifyContent="center"
+                w="full"
+                px="32"
+                mt="28"
                 alignItems="center"
+                justifyContent="center"
               >
-                Results are currently unavailable
+                <Spinner />
               </Flex>
             )}
           </>

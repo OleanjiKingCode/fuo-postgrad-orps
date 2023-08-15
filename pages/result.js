@@ -77,7 +77,6 @@ const HomePage = () => {
   const handleStudentClick = (student) => {
     if (userData.canEditResult) {
       setSelectedStudent(student);
-      console.log(student);
       const firstUpdatedData = student?.coursesAdded?.firstSemester?.map(
         (course) => ({
           ...course,
@@ -171,6 +170,7 @@ const HomePage = () => {
       isAllCoursesFilled(courseData.thirdUpdatedData, 3);
 
       let matri = updatedStudent.email;
+      console.log(isDisplay);
 
       const result = await axios.put(`/api/User/${matri}`, {
         coursesAdded: {
@@ -178,7 +178,7 @@ const HomePage = () => {
           secondSemester: courseData.secondUpdatedData,
           thirdSemester: courseData.thirdUpdatedData,
         },
-        //resultReady: isDisplay,
+        resultReady: isDisplay,
       });
       if (result) {
         setRefetchData((prevValue) => !prevValue);
@@ -213,11 +213,10 @@ const HomePage = () => {
             return true;
           });
     data = data?.every((value) => value === true);
-    console.log(data);
 
     setIsDisplay((prevArray) => {
       const newArray = [...prevArray];
-      newArray[num] = data;
+      newArray[num - 1] = data;
       return newArray;
     });
     if (data === true) {

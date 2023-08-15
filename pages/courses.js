@@ -119,16 +119,22 @@ const Courses = () => {
 
     for (const course of coursesWithCheckboxTrue) {
       if (course.semester === "First") {
-        firstSemesterUnits += course.units;
+        firstSemesterUnits += Number(course.units);
         firstSemesterCourses.push(course);
       } else if (course.semester === "Second") {
-        secondSemestertUnits += course.units;
+        secondSemestertUnits += Number(course.units);
         secondSemestertCourses.push(course);
       } else if (course.semester === "Third") {
-        thirdSemesterUnits += course.units;
+        thirdSemesterUnits += Number(course.units);
         thirdSemesterCourses.push(course);
       }
     }
+    console.log(
+      firstSemesterUnits,
+      deptData?.maxUnits,
+      secondSemestertUnits,
+      thirdSemesterUnits
+    );
 
     if (firstSemesterUnits < deptData?.maxUnits[0]) {
       toast({
@@ -142,7 +148,7 @@ const Courses = () => {
       setIsLoading(false);
       return;
     }
-    if (secondSemestertUnits < deptData?.maxUnits[0]) {
+    if (secondSemestertUnits < deptData?.maxUnits[1]) {
       toast({
         title:
           "Chosen courses units doesnt meet the required number for second semester",
@@ -155,7 +161,7 @@ const Courses = () => {
       return;
     }
 
-    if (thirdSemesterUnits < deptData?.maxUnits[0]) {
+    if (thirdSemesterUnits < deptData?.maxUnits[2]) {
       toast({
         title:
           "Chosen courses units doesnt meet the required number for third semester",

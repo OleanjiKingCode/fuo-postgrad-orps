@@ -41,6 +41,7 @@ const HomePage = () => {
   const [resultData, setResultData] = useState();
   const [userRole, setUserRole] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedIndex, setselectedIndex] = useState(0);
   const email = session?.user?.email;
 
   const [isClient, setIsClient] = useState(false);
@@ -121,14 +122,17 @@ const HomePage = () => {
       setfirstPage(true);
       setSecondPage(false);
       setThirdPage(false);
+      calculateGrades(selectedStudent?.coursesAdded.firstSemester);
     } else if (num === 2) {
       setfirstPage(false);
       setSecondPage(true);
       setThirdPage(false);
+      calculateGrades(selectedStudent?.coursesAdded.secondSemester);
     } else if (num === 3) {
       setfirstPage(false);
       setSecondPage(false);
       setThirdPage(true);
+      calculateGrades(selectedStudent?.coursesAdded.thirdSemester);
     }
   };
 
@@ -170,7 +174,6 @@ const HomePage = () => {
       isAllCoursesFilled(courseData.thirdUpdatedData, 3);
 
       let matri = updatedStudent.email;
-      console.log(isDisplay);
 
       const result = await axios.put(`/api/User/${matri}`, {
         coursesAdded: {
@@ -220,7 +223,15 @@ const HomePage = () => {
       return newArray;
     });
     if (data === true) {
-      calculateGrades(courses ?? selectedStudent?.coursesAdded);
+      calculateGrades(
+        courses ?? num === 1
+          ? selectedStudent?.coursesAdded.firstSemester
+          : num === 2
+          ? selectedStudent?.coursesAdded.secondSemester
+          : num === 3
+          ? selectedStudent?.coursesAdded.thirdSemester
+          : {}
+      );
     }
   };
 
@@ -271,8 +282,17 @@ const HomePage = () => {
     return { gradedCourses, averageScore, status };
   };
 
-  const showResult = () => {
-    calculateGrades(userData?.coursesAdded);
+  const showResult = (num) => {
+    if (num === 1) {
+      setselectedIndex(num - 1);
+      calculateGrades(userData?.coursesAdded.firstSemester);
+    } else if (num === 2) {
+      setselectedIndex(num - 1);
+      calculateGrades(userData?.coursesAdded.secondSemester);
+    } else if (num === 3) {
+      setselectedIndex(num - 1);
+      calculateGrades(userData?.coursesAdded.thirdSemester);
+    }
   };
   const styles = StyleSheet.create({
     page: {
@@ -564,6 +584,7 @@ const HomePage = () => {
                                 ? { bg: "gray.600" }
                                 : { bg: "gray.400" }
                             }
+                            fontSize={{ base: "14px", lg: "18px" }}
                           >
                             First Semester
                           </Button>
@@ -576,6 +597,7 @@ const HomePage = () => {
                                 ? { bg: "gray.600" }
                                 : { bg: "gray.400" }
                             }
+                            fontSize={{ base: "14px", lg: "18px" }}
                           >
                             Second Semester
                           </Button>
@@ -588,6 +610,7 @@ const HomePage = () => {
                                 ? { bg: "gray.600" }
                                 : { bg: "gray.400" }
                             }
+                            fontSize={{ base: "14px", lg: "18px" }}
                           >
                             Third Semester
                           </Button>
@@ -716,7 +739,9 @@ const HomePage = () => {
 
                               <Button
                                 my={4}
-                                display={isDisplay === true ? "unset" : "none"}
+                                display={
+                                  isDisplay[0] === true ? "unset" : "none"
+                                }
                                 colorScheme="green"
                               >
                                 {isClient && (
@@ -855,7 +880,9 @@ const HomePage = () => {
 
                               <Button
                                 my={4}
-                                display={isDisplay === true ? "unset" : "none"}
+                                display={
+                                  isDisplay[1] === true ? "unset" : "none"
+                                }
                                 colorScheme="green"
                               >
                                 {isClient && (
@@ -994,7 +1021,9 @@ const HomePage = () => {
 
                               <Button
                                 my={4}
-                                display={isDisplay === true ? "unset" : "none"}
+                                display={
+                                  isDisplay[2] === true ? "unset" : "none"
+                                }
                                 colorScheme="green"
                               >
                                 {isClient && (
@@ -1042,7 +1071,7 @@ const HomePage = () => {
           </>
         ) : (
           <>
-            {userRole === "Student" && userData.resultReady ? (
+            {/* {userRole === "Student" && userData.resultReady[0] ? (
               <>
                 <Button onClick={showResult}>First Semester</Button>
                 {resultData && <SchoolResultDocument />}
@@ -1074,6 +1103,65 @@ const HomePage = () => {
                   Results are currently unavailable
                 </Flex>
               </>
+            )} */}
+
+            {userRole === "Student" && userData.resultReady.length > 0 ? (
+              userData.resultReady.map((isResultReady, index) => (
+                <div key={index}>
+                  {isResultReady ? (
+                    <>
+                      <Button
+                        onClick={() => showResult(index + 1)}
+                        mt="5"
+                        w="full"
+                      >
+                        {`Semester ${index + 1}`}
+                      </Button>
+                      {resultData && index === selectedIndex && (
+                        <SchoolResultDocument />
+                      )}
+                      {resultData && index === selectedIndex && isClient && (
+                        <Button my={4} colorScheme="green">
+                          <PDFDownloadLink
+                            document={<SchoolResultDocument />}
+                            fileName={`Semester ${index + 1} ${
+                              userData.matricno
+                            }'s Result.pdf`}
+                          >
+                            Download Result
+                          </PDFDownloadLink>
+                        </Button>
+                      )}
+                    </>
+                  ) : (
+                    <Flex
+                      p={4}
+                      w="full"
+                      minH="80vh"
+                      bg="white"
+                      fontWeight="semibold"
+                      fontSize="lg"
+                      justifyContent="center"
+                      alignItems="center"
+                    >
+                      Results for Semester {index + 1} are currently unavailable
+                    </Flex>
+                  )}
+                </div>
+              ))
+            ) : (
+              <Flex
+                p={4}
+                w="full"
+                minH="80vh"
+                bg="white"
+                fontWeight="semibold"
+                fontSize="lg"
+                justifyContent="center"
+                alignItems="center"
+              >
+                Results are currently unavailable
+              </Flex>
             )}
           </>
         )}

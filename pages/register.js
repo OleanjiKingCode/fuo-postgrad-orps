@@ -240,7 +240,6 @@ const register = () => {
                   {...register("sex", {
                     required: "Please select a valid option",
                   })}
-                  color="white"
                 >
                   <option value="Male">Male</option>
                   <option value="Female">Female</option>
@@ -263,7 +262,6 @@ const register = () => {
                   {...register("dept", {
                     required: "Please select a valid option",
                   })}
-                  color="white"
                 >
                   {dept.map((dpt, i) => (
                     <option value={dpt.name} key={i}>

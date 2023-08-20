@@ -24,10 +24,11 @@ async function handler(req, res) {
 
   await db.connect();
 
-  const alreadyAUserOne = await Users.findOne({ matricno: matricno });
+  let matric = matricno.toUpperCase();
+  const alreadyAUserOne = await Users.findOne({ matricno: matric });
   const alreadyAUserTwo = await Users.findOne({ email: email });
 
-  let role = matricno !== "" ? "Student" : "Lecturer";
+  let role = matric !== "" ? "Student" : "Lecturer";
 
   if (role === "Lecturer") {
     if (alreadyAUserTwo) {
@@ -54,7 +55,7 @@ async function handler(req, res) {
     phoneNumber: role === "Lecturer" ? "081010101010" : phoneNumber,
     sex: role === "Lecturer" ? "Male" : sex,
     dob,
-    matricno,
+    matricno: matric,
     role,
     department: dept,
   });

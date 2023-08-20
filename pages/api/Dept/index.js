@@ -39,7 +39,6 @@ export default async (req, res) => {
       await db.disConnect();
       return;
     }
-    console.log(abbr);
     const newDepts = new Department({
       name,
       abbr,

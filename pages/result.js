@@ -44,7 +44,7 @@ const HomePage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedIndex, setselectedIndex] = useState(0);
   const email = session?.user?.email;
-
+  const [items, setItems] = useState([]);
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
@@ -123,17 +123,17 @@ const HomePage = () => {
       setfirstPage(true);
       setSecondPage(false);
       setThirdPage(false);
-      calculateGrades(selectedStudent?.coursesAdded.firstSemester);
+      calculateGrades(selectedStudent?.coursesAdded.firstSemester, num);
     } else if (num === 2) {
       setfirstPage(false);
       setSecondPage(true);
       setThirdPage(false);
-      calculateGrades(selectedStudent?.coursesAdded.secondSemester);
+      calculateGrades(selectedStudent?.coursesAdded.secondSemester, num);
     } else if (num === 3) {
       setfirstPage(false);
       setSecondPage(false);
       setThirdPage(true);
-      calculateGrades(selectedStudent?.coursesAdded.thirdSemester);
+      calculateGrades(selectedStudent?.coursesAdded.thirdSemester, num);
     }
   };
 
@@ -231,12 +231,13 @@ const HomePage = () => {
           ? selectedStudent?.coursesAdded.secondSemester
           : num === 3
           ? selectedStudent?.coursesAdded.thirdSemester
-          : {}
+          : {},
+        num
       );
     }
   };
 
-  const calculateGrades = (courses) => {
+  const calculateGrades = (courses, num) => {
     let totalScore = 0;
 
     const gradedCourses = courses?.map((course) => {
@@ -264,9 +265,12 @@ const HomePage = () => {
       return { courses: name, score: totalScoreCourse, grade, units };
     });
 
-    const averageScore = ((totalScore / (courses?.length * 100)) * 100).toFixed(
+    let averageScore = ((totalScore / (courses?.length * 100)) * 100).toFixed(
       2
     );
+    if (num === 3) {
+      averageScore = calMean(items[0], items[1], averageScore);
+    }
     let status;
 
     if (averageScore > 60) {
@@ -278,7 +282,9 @@ const HomePage = () => {
     } else {
       status = "Certificate of Attendance";
     }
-
+    const updatedItems = [...items];
+    updatedItems[num - 1] = averageScore;
+    setItems(updatedItems);
     setResultData({ gradedCourses, averageScore, status });
     return { gradedCourses, averageScore, status };
   };
@@ -286,14 +292,25 @@ const HomePage = () => {
   const showResult = (num) => {
     if (num === 1) {
       setselectedIndex(num - 1);
-      calculateGrades(userData?.coursesAdded.firstSemester);
+      calculateGrades(userData?.coursesAdded.firstSemester, num);
     } else if (num === 2) {
       setselectedIndex(num - 1);
-      calculateGrades(userData?.coursesAdded.secondSemester);
+      calculateGrades(userData?.coursesAdded.secondSemester, num);
     } else if (num === 3) {
       setselectedIndex(num - 1);
-      calculateGrades(userData?.coursesAdded.thirdSemester);
+      calculateGrades(userData?.coursesAdded.thirdSemester, num);
     }
+  };
+
+  const calMean = (num1, num2, num3) => {
+    let result;
+    if (num3 === 0) {
+      result = (Number(num1) + Number(num2)) / 2;
+    } else {
+      result = (Number(num1) + Number(num2) + Number(num3)) / 3;
+    }
+
+    return result.toFixed(2);
   };
   const styles = StyleSheet.create({
     page: {
@@ -418,7 +435,6 @@ const HomePage = () => {
           <Texxt style={styles.heading}>Fountain University Postgraduate</Texxt>
           <View style={styles.rowsection}>
             <View style={styles.section}>
-              <Texxt>Lecturer: {userData.name}</Texxt>
               <Texxt>
                 Name:{" "}
                 {userRole === "Lecturer" ? selectedStudent.name : userData.name}
@@ -428,6 +444,12 @@ const HomePage = () => {
                 {userRole === "Lecturer"
                   ? selectedStudent.matricno
                   : userData.matricno}
+              </Texxt>
+              <Texxt>
+                Department:{" "}
+                {userRole === "Lecturer"
+                  ? selectedStudent.department
+                  : userData.department}
               </Texxt>
             </View>
             <View style={styles.section}>
@@ -441,17 +463,19 @@ const HomePage = () => {
                   ? selectedStudent.email
                   : userData.email}
               </Texxt>
-              <Texxt>
-                Department:{" "}
-                {userRole === "Lecturer"
-                  ? selectedStudent.department
-                  : userData.department}
-              </Texxt>
             </View>
           </View>
 
           <View style={styles.boldText}>
-            <Texxt>Result Score: {resultData?.averageScore}</Texxt>
+            <Texxt>
+              Result Score:{" "}
+              {selectedIndex === 0
+                ? resultData?.averageScore
+                : selectedIndex === 1
+                ? calMean(items[0], resultData?.averageScore, 0)
+                : calMean(items[0], items[1], resultData?.averageScore)}
+              %
+            </Texxt>
           </View>
           <View style={styles.table}>
             <View style={styles.tableRow}>
@@ -485,9 +509,11 @@ const HomePage = () => {
               </View>
             ))}
           </View>
-          <View style={styles.newsection}>
-            <Texxt>Result Status: {resultData?.status}</Texxt>
-          </View>
+          {selectedIndex === 2 && (
+            <View style={styles.newsection}>
+              <Texxt>Result Status: {resultData?.status}</Texxt>
+            </View>
+          )}
           {userRole === "Lecturer" && (
             <View style={styles.signSection}>
               <View style={styles.signContainer}>
@@ -1072,40 +1098,6 @@ const HomePage = () => {
           </>
         ) : (
           <>
-            {/* {userRole === "Student" && userData.resultReady[0] ? (
-              <>
-                <Button onClick={showResult}>First Semester</Button>
-                {resultData && <SchoolResultDocument />}
-                {resultData && (
-                  <Button my={4} colorScheme="green">
-                    {isClient && (
-                      <PDFDownloadLink
-                        document={<SchoolResultDocument />}
-                        fileName={`${userData.matricno}'s Result.pdf`}
-                      >
-                        Download Reuslt
-                      </PDFDownloadLink>
-                    )}
-                  </Button>
-                )}
-              </>
-            ) : (
-              <>
-                <Flex
-                  p={4}
-                  w="full"
-                  minH="80vh"
-                  bg="white"
-                  fontWeight="semibold"
-                  fontSize="lg"
-                  justifyContent="center"
-                  alignItems="center"
-                >
-                  Results are currently unavailable
-                </Flex>
-              </>
-            )} */}
-
             {userRole === "Student" ? (
               userData.resultReady.length > 0 ? (
                 userData.resultReady.map((isResultReady, index) => (
@@ -1117,7 +1109,12 @@ const HomePage = () => {
                           mt="5"
                           w="full"
                         >
-                          {`Semester ${index + 1}`}
+                          {index + 1 === 1
+                            ? "First"
+                            : index + 1 === 2
+                            ? "Second"
+                            : "Third"}{" "}
+                          Semester
                         </Button>
                         {resultData && index === selectedIndex && (
                           <SchoolResultDocument />
@@ -1146,8 +1143,13 @@ const HomePage = () => {
                         justifyContent="center"
                         alignItems="center"
                       >
-                        Results for Semester {index + 1} are currently
-                        unavailable
+                        Results for{" "}
+                        {index + 1 === 1
+                          ? "First"
+                          : index + 1 === 2
+                          ? "Second"
+                          : "Third"}{" "}
+                        Semester are currently unavailable
                       </Flex>
                     )}
                   </div>
@@ -1171,7 +1173,7 @@ const HomePage = () => {
                 bg="white"
                 w="full"
                 px="32"
-                mt="28"
+                my="28"
                 alignItems="center"
                 justifyContent="center"
               >

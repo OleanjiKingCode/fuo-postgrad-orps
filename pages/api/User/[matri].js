@@ -28,13 +28,22 @@ export default async (req, res) => {
   let matric = addSlash(matri);
   if (method === "GET") {
     try {
-      const student = matri.includes(".com")
-        ? await Users.findOne({ email: matri })
-        : await Users.findOne({ matricno: matric });
-
+      let student;
+      if (req.headers["x-message"] === "password") {
+        student = matri.includes(".com")
+          ? await Users.findOne({ email: matri }).select("email password")
+          : await Users.findOne({ matricno: matric.toUpperCase() }).select(
+              "email password"
+            );
+      } else {
+        student = matri.includes(".com")
+          ? await Users.findOne({ email: matri })
+          : await Users.findOne({ matricno: matric.toUpperCase() });
+      }
+      console.log(student);
       if (!student) {
         await db.disConnect();
-        return "User doesnt exist";
+        return res.status(404).json({ msg: "User doesnt exist" });
       }
       return res.status(200).json(student);
     } catch (error) {
@@ -47,7 +56,6 @@ export default async (req, res) => {
         ? await Users.findOne({ email: matri })
         : await Users.findOne({ matricno: matric });
       const id = student._id;
-      console.log("hgeerfef", body);
       const updatedUser = await Users.findByIdAndUpdate(id, body, {
         new: true,
         runValidators: true,

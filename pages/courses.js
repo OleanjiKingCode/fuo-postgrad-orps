@@ -70,7 +70,6 @@ const Courses = () => {
         const response2 = await axios.get(`/api/Dept/${data.department}`);
         if (response2) {
           const data2 = await response2.data;
-          console.log(data2);
           setDeptData(data2);
         }
         const response4 = await axios.get(`/api/User`);
@@ -129,12 +128,6 @@ const Courses = () => {
         thirdSemesterCourses.push(course);
       }
     }
-    console.log(
-      firstSemesterUnits,
-      deptData?.maxUnits,
-      secondSemestertUnits,
-      thirdSemesterUnits
-    );
 
     if (firstSemesterUnits < deptData?.maxUnits[0]) {
       toast({

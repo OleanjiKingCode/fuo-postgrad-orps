@@ -9,33 +9,39 @@ import {
   InputGroup,
   Input,
   Text,
-  Spinner,
   useToast,
   Heading,
   VStack,
-  chakra,
 } from "@chakra-ui/react";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/router";
 import axios from "axios";
-import { signIn, useSession } from "next-auth/react";
+import { signIn } from "next-auth/react";
 
 const Login = () => {
   const {
     handleSubmit,
     register,
-    formState: { errors, isSubmitting },
+    formState: { errors },
   } = useForm();
   const toast = useToast();
   const router = useRouter();
+  const [isLoading, setisLoading] = React.useState(false);
   const [show, setShow] = React.useState(false);
   const handleClick = () => setShow(!show);
 
   const submitHandler = async ({ matricno, password }) => {
     try {
+      setisLoading(true);
       let matri = matricno.replace(/\//g, "");
-      const response = await axios.get(`./api/User/${matri}`);
+      const message = "password";
+      const config = {
+        headers: {
+          "X-Message": message,
+        },
+      };
+      const response = await axios.get(`/api/User/${matri}`, config);
       if (response) {
         const data = await response.data;
         if (data.password !== password) {
@@ -46,6 +52,7 @@ const Login = () => {
             duration: 4000,
             isClosable: true,
           });
+          setisLoading(false);
           return;
         }
         const result = await signIn("credentials", {
@@ -70,7 +77,6 @@ const Login = () => {
             isClosable: true,
           });
         }
-
         router.push("/dashboard");
       } else {
         toast({
@@ -80,9 +86,17 @@ const Login = () => {
           duration: 4000,
           isClosable: true,
         });
+        setisLoading(false);
       }
     } catch (error) {
-      console.log(error);
+      toast({
+        title: `${error.response.data.msg ?? " Error"}`,
+        description: "",
+        status: "error",
+        duration: 4000,
+        isClosable: true,
+      });
+      setisLoading(false);
     }
   };
   return (
@@ -187,10 +201,9 @@ const Login = () => {
                 bg="#4ed879"
                 _hover={{ bg: "gray", color: "black" }}
                 color="white"
+                isLoading={isLoading}
               >
-                <Text>
-                  {isSubmitting ? <Spinner size="sm" color="white" /> : "Login"}
-                </Text>
+                <Text>Login</Text>
               </Button>
             </Flex>
           </form>

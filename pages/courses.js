@@ -225,53 +225,78 @@ const Courses = () => {
           )
         ) : userRole === "Lecturer" ? (
           <VStack mt={4} p={4} w="full" bg="white">
-            <VStack w={{ base: "48", md: "full" }} gap="3" py="4">
-              <Heading fontSize="lg">List Of Students</Heading>
-              <HStack w="full" px="10" justifyContent="space-between">
-                <Text>
-                  {" "}
-                  <b>DEPARTMENT :</b> {deptData?.name}
-                </Text>
-                <Text>
-                  {" "}
-                  <b>MAX UNITS :</b> {deptData?.maxUnits}
-                </Text>
-              </HStack>
-            </VStack>
-            <Table variant="striped" colorScheme="blue" w="full" py="20">
-              <Thead>
-                <Tr>
-                  <Th>#</Th>
-                  <Th>Student Name</Th>
-                  <Th>Email</Th>
-                  <Th>Matric No</Th>
-                  <Th>Course Registered [1st, 2nd,3rd]</Th>
-                </Tr>
-              </Thead>
-              <Tbody>
-                {userDataWithCourses?.map((student, index) => (
-                  <Tr key={index}>
-                    <Td>{index + 1}</Td>
-                    <Td>{student.name}</Td>
-                    <Td>{student.email}</Td>
-                    <Td>{student.matricno}</Td>
-                    <Td>
-                      <chakra.span px="3">
-                        {" "}
-                        {student.coursesAdded?.firstSemester?.length ?? 0},
-                      </chakra.span>
-                      <chakra.span px="3">
-                        {" "}
-                        {student.coursesAdded?.secondSemester?.length ?? 0},
-                      </chakra.span>
-                      <chakra.span px="3">
-                        {student.coursesAdded?.thirdSemester?.length ?? 0}
-                      </chakra.span>
-                    </Td>
+            <Box
+              w="full"
+              overflowX="scroll"
+              sx={{
+                "&::-webkit-scrollbar": {
+                  display: "none",
+                },
+              }}
+            >
+              <VStack w="full" gap="4">
+                <Heading fontSize="lg">List Of Students</Heading>
+                <Stack
+                  w="full"
+                  justifyContent="space-between"
+                  pb={{ base: "4", md: "4", lg: "8" }}
+                  direction={{ base: "column", lg: "row" }}
+                >
+                  <Text fontSize={{ base: "14px", md: "16px", lg: "18px" }}>
+                    <b>DEPARTMENT :</b> {deptData?.name}
+                  </Text>
+                  <Text fontSize={{ base: "14px", md: "16px", lg: "18px" }}>
+                    <b>MAX UNITS</b>
+                  </Text>
+                  <Text fontSize={{ base: "14px", md: "16px", lg: "18px" }}>
+                    <b>First :</b> {deptData?.maxUnits[0]} Units
+                  </Text>
+                  <Text fontSize={{ base: "14px", md: "16px", lg: "18px" }}>
+                    <b>Second:</b> {deptData?.maxUnits[1]} Units
+                  </Text>{" "}
+                  <Text fontSize={{ base: "14px", md: "16px", lg: "18px" }}>
+                    <b>Third:</b> {deptData?.maxUnits[2]} Units
+                  </Text>
+                </Stack>
+              </VStack>
+
+              <Table variant="striped" colorScheme="blue" w="full" py="20">
+                <Thead>
+                  <Tr>
+                    <Th>#</Th>
+                    <Th>Student Name</Th>
+                    <Th>Email</Th>
+                    <Th>Matric No</Th>
+                    <Th>Course Registered [1st, 2nd,3rd]</Th>
                   </Tr>
-                ))}
-              </Tbody>
-            </Table>
+                </Thead>
+                <Tbody>
+                  {userDataWithCourses?.map((student, index) => (
+                    <Tr key={index}>
+                      <Td>{index + 1}</Td>
+                      <Td>{student.name}</Td>
+                      <Td>{student.email}</Td>
+                      <Td>{student.matricno}</Td>
+                      <Td>
+                        <HStack w="full" gap={{ base: "3", md: "5", lg: "7" }}>
+                          <chakra.span px="3">
+                            {" "}
+                            {student.coursesAdded?.firstSemester?.length ?? 0},
+                          </chakra.span>
+                          <chakra.span px="3">
+                            {" "}
+                            {student.coursesAdded?.secondSemester?.length ?? 0},
+                          </chakra.span>
+                          <chakra.span px="3">
+                            {student.coursesAdded?.thirdSemester?.length ?? 0}
+                          </chakra.span>
+                        </HStack>
+                      </Td>
+                    </Tr>
+                  ))}
+                </Tbody>
+              </Table>
+            </Box>
           </VStack>
         ) : userRole === "Student" ? (
           <>
@@ -291,7 +316,6 @@ const Courses = () => {
                     <Stack
                       w="full"
                       justifyContent="space-between"
-                      px={{ base: "1", md: "10" }}
                       pb="4"
                       direction={{ base: "column", lg: "row" }}
                     >

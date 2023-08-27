@@ -62,7 +62,6 @@ const HomePage = () => {
             <Flex
               direction="column"
               alignItems="center"
-              // justify="center"
               minHeight="100vh"
             >
               <Image

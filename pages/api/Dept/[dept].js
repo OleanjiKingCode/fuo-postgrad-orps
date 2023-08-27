@@ -31,7 +31,6 @@ export default async (req, res) => {
     }
   } else if (method === "PUT") {
     try {
-      console.log(dept);
       const department = await Department.findOne({ name: dept });
       const id = department._id;
       const updatedDepartment = await Department.findByIdAndUpdate(id, body, {

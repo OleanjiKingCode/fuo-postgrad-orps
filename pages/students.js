@@ -12,6 +12,8 @@ import {
   Th,
   Td,
   Icon,
+  chakra,
+  HStack,
 } from "@chakra-ui/react";
 import axios from "axios";
 import { FcCancel, FcCheckmark } from "react-icons/fc";
@@ -26,7 +28,6 @@ const Students = () => {
       const response4 = await axios.get(`/api/User`);
       if (response4) {
         const Users = response4.data.filter((obj) => obj.role === "Student");
-        console.log(Users);
         setUsers(Users);
       }
     };
@@ -56,7 +57,7 @@ const Students = () => {
                 <Th>Email</Th>
                 <Th>Matric No</Th>
                 <Th>Department</Th>
-                <Th>Course Registered</Th>
+                <Th>Course Registered [1st, 2nd,3rd]</Th>
                 <Th>Sex</Th>
                 <Th>Result Ready</Th>
                 <Th>Phone Number</Th>
@@ -71,7 +72,21 @@ const Students = () => {
                     <Td>{student.email}</Td>
                     <Td>{student.matricno}</Td>
                     <Td>{student.department}</Td>
-                    <Td>{student.coursesAdded.length}</Td>
+                    <Td w="full">
+                      <HStack w="full" gap={{ base: "3", md: "5", lg: "7" }}>
+                        <chakra.span px="3">
+                          {" "}
+                          {student.coursesAdded?.firstSemester?.length ?? 0},
+                        </chakra.span>
+                        <chakra.span px="3">
+                          {" "}
+                          {student.coursesAdded?.secondSemester?.length ?? 0},
+                        </chakra.span>
+                        <chakra.span px="3">
+                          {student.coursesAdded?.thirdSemester?.length ?? 0}
+                        </chakra.span>
+                      </HStack>
+                    </Td>
                     <Td>{student.sex}</Td>
                     <Td>
                       {student.resultReady ? (

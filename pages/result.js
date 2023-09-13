@@ -172,17 +172,19 @@ const HomePage = () => {
       };
       isAllCoursesFilled(courseData.firstUpdatedData, 1);
       isAllCoursesFilled(courseData.secondUpdatedData, 2);
-      isAllCoursesFilled(courseData.thirdUpdatedData, 3);
+      let data = isAllCoursesFilled(courseData.thirdUpdatedData, 3);
 
       let matri = updatedStudent.email;
-
       const result = await axios.put(`/api/User/${matri}`, {
         coursesAdded: {
           firstSemester: courseData.firstUpdatedData,
           secondSemester: courseData.secondUpdatedData,
           thirdSemester: courseData.thirdUpdatedData,
         },
-        resultReady: isDisplay,
+        resultReady:
+          isDisplay[isDisplay.length - 1] !== data[data.length - 1]
+            ? data
+            : isDisplay,
       });
       if (result) {
         setRefetchData((prevValue) => !prevValue);
@@ -217,12 +219,9 @@ const HomePage = () => {
             return true;
           });
     data = data?.every((value) => value === true);
-
-    setIsDisplay((prevArray) => {
-      const newArray = [...prevArray];
-      newArray[num - 1] = data;
-      return newArray;
-    });
+    let newArray = isDisplay;
+    newArray[num - 1] = data;
+    setIsDisplay(newArray);
     if (data === true) {
       calculateGrades(
         courses ?? num === 1
@@ -235,6 +234,7 @@ const HomePage = () => {
         num
       );
     }
+    return newArray;
   };
 
   const calculateGrades = (courses, num) => {

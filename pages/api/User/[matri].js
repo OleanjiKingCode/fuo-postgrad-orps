@@ -40,7 +40,6 @@ export default async (req, res) => {
           ? await Users.findOne({ email: matri })
           : await Users.findOne({ matricno: matric.toUpperCase() });
       }
-      console.log(student);
       if (!student) {
         await db.disConnect();
         return res.status(404).json({ msg: "User doesnt exist" });
